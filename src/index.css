@@ -1,0 +1,27 @@
+@import "tailwindcss";
+
+@layer utilities {
+  .glow-emerald {
+    box-shadow: 0 0 25px -5px rgba(16, 185, 129, 0.3);
+  }
+  .glow-emerald-lg {
+    box-shadow: 0 0 40px -5px rgba(16, 185, 129, 0.4);
+  }
+  .border-glow {
+    border-color: rgba(16, 185, 129, 0.4);
+  }
+}
+
+html, body, #root {
+  background-color: #070a12;
+  color: #f8fafc;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  overflow-x: hidden !important;
+  width: 100% !important;
+  max-width: 100vw !important;
+  touch-action: manipulation;
+}
+
+header {
+  padding-top: env(safe-area-inset-top, 0px) !important;
+}
