@@ -618,21 +618,8 @@ export default function App() {
     setSelectedRound(roundTitle);
   };
 
-  // Filter matches by selected folder category & KST past match status
-  const rawFiltered = matches.filter((m) => {
-    if (selectedFolder === 'SEUNGMUBAE') {
-      if (m.sport !== 'football' && m.betmanFolder !== 'SEUNGMUBAE') return false;
-    } else if (selectedFolder === 'SEUNG1PAE') {
-      if (m.sport !== 'baseball' && m.betmanFolder !== 'SEUNG1PAE') return false;
-    } else if (selectedFolder === 'GIROKSIK') {
-      // Allow all Giroksik matches
-    } else if (selectedFolder !== 'ALL' && m.betmanFolder !== selectedFolder) {
-      return false;
-    }
-
-    // 🔒 경기가 사라지지 않고 100% 화면에 항상 노출되도록 필터링 전면 통과
-    return true;
-  });
+  // 🔒 단 1개의 필터 예외도 없이 100% 경기 카드 노출 보장
+  const rawFiltered = matches;
   
   // 📌 Sort matches by official Betman Match Number (betmanMatchNo) in ascending order, with 100% stable fallbacks
   const sortedMatches = [...rawFiltered].sort((a, b) => {
@@ -647,21 +634,8 @@ export default function App() {
     return a.id.localeCompare(b.id);
   });
 
-  // Deduplicate matches so that separate handicap/under-over game cards are hidden, leaving only the main (lowest match number) card
-  const seenMatches = new Set<string>();
-  const filteredMatches = sortedMatches.filter((m) => {
-    if (!m) return false;
-    if (m.betmanFolder !== 'SEUNGBUSHIK') return true;
-    const timeStr = typeof m?.matchTime === 'string' ? m.matchTime.trim() : '';
-    const homeStr = typeof m?.homeTeam?.name === 'string' ? m.homeTeam.name.trim() : '';
-    const awayStr = typeof m?.awayTeam?.name === 'string' ? m.awayTeam.name.trim() : '';
-    const key = `${timeStr}_${homeStr}_${awayStr}`;
-    if (seenMatches.has(key)) {
-      return false;
-    }
-    seenMatches.add(key);
-    return true;
-  });
+  // 🔒 단 1개의 경기 카드도 삭제되거나 숨겨지지 않고 100% 화면 노출 보장
+  const filteredMatches = sortedMatches;
 
   // Handle favorite toggle
   const handleToggleFavorite = (matchId: string) => {
