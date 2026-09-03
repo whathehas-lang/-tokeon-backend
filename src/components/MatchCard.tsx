@@ -175,14 +175,18 @@ export const MatchCardComponent = ({ match, membershipTier = 'VVIP', cardDensity
         isLight ? 'bg-slate-50 border-slate-200 text-slate-900' : 'bg-slate-950 border-slate-800 text-slate-100'
       }`}>
         <div className="flex flex-col">
-          <span className="text-[10px] font-bold text-slate-400 mb-0.5">HOME</span>
-          <span className={`font-black text-sm sm:text-base ${isFinished && homeScore > awayScore ? 'text-emerald-600' : ''}`}>
+          <span className="text-[11px] font-black text-emerald-500 mb-0.5 flex items-center gap-1">
+            <span>🏠 [홈팀]</span>
+          </span>
+          <span className={`font-black text-sm sm:text-base truncate ${isFinished && homeScore > awayScore ? 'text-emerald-600' : ''}`}>
             {sportIcon} {match.homeTeam.name}
           </span>
         </div>
         <div className="flex flex-col items-end">
-          <span className="text-[10px] font-bold text-slate-400 mb-0.5">AWAY</span>
-          <span className={`font-black text-sm sm:text-base ${isFinished && awayScore > homeScore ? 'text-cyan-600' : ''}`}>
+          <span className="text-[11px] font-black text-cyan-400 mb-0.5 flex items-center gap-1">
+            <span>✈️ [원정팀]</span>
+          </span>
+          <span className={`font-black text-sm sm:text-base truncate ${isFinished && awayScore > homeScore ? 'text-cyan-600' : ''}`}>
             {match.awayTeam.name} {sportIcon}
           </span>
         </div>

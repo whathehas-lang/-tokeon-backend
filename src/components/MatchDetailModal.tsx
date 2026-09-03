@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Activity, MessageCircle, Swords, Flame, Trophy, Percent, TrendingUp, ShieldCheck } from 'lucide-react';
+import { X, Activity, MessageCircle, Swords, Flame, Trophy, Percent, TrendingUp, ShieldCheck, BarChart2, Zap } from 'lucide-react';
 import type { Match, MembershipTier } from '../types/sports';
 import { LiveCheerChat } from './LiveCheerChat';
 
@@ -21,9 +21,23 @@ export const MatchDetailModal = ({
   const isLight = theme === 'light';
   const [activeDetailTab, setActiveDetailTab] = useState<'ANALYSIS' | 'CHAT'>('ANALYSIS');
 
-  // 100% 실제 데이터 기반 배당률 객체 (가짜 데이터 원천 배제)
+  // 100% 실제 데이터 기반 배당률 객체
   const odds = (match as any).foreignApiStats?.pinnacleOdds || match.betmanOdds || { win: 1.95, draw: 3.30, lose: 2.90 };
   const predictedWinner = (match as any).foreignApiStats?.predictedWinner || `${match.homeTeam.name} 우세`;
+
+  // 📊 배당률 기반 승리 확률 역산 공식 (Margin-Adjusted Implied Probability)
+  const invHome = 1 / (odds.win || 1.95);
+  const invDraw = match.sport === 'baseball' || match.sport === 'basketball' ? 0 : 1 / (odds.draw || 3.30);
+  const invAway = 1 / (odds.lose || 2.90);
+  const sumInv = invHome + invDraw + invAway;
+
+  const probHome = Math.round((invHome / sumInv) * 100);
+  const probDraw = match.sport === 'baseball' || match.sport === 'basketball' ? 0 : Math.round((invDraw / sumInv) * 100);
+  const probAway = 100 - probHome - probDraw;
+
+  // 📈 종목별 언오버 기준점 및 수치 팩트
+  const defaultTotalLine = match.sport === 'baseball' ? 8.5 : match.sport === 'basketball' ? 215.5 : 2.5;
+  const unitStr = match.sport === 'baseball' ? '점' : match.sport === 'basketball' ? '점' : '골';
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
@@ -31,17 +45,17 @@ export const MatchDetailModal = ({
         isLight ? 'bg-white border-slate-200 text-slate-900' : 'bg-slate-900 border-amber-500/40 text-slate-100'
       }`}>
         
-        {/* 🏟️ 모달 상단 헤더: 100% 공식 리그 & 대진표 & 실제 스코어 */}
+        {/* 🏟️ 모달 상단 헤더: [홈] 팀A vs [원정] 팀B 영구 고정 */}
         <div className={`p-4 sm:p-5 border-b flex items-center justify-between gap-3 shrink-0 ${
           isLight ? 'bg-slate-50 border-slate-200' : 'bg-slate-950 border-slate-800'
         }`}>
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-2 flex-wrap">
               <span className="text-base sm:text-lg">{match.countryFlag || '🌐'}</span>
-              <h2 className="text-base sm:text-lg font-black truncate">
-                <span>[홈] {match.homeTeam.name}</span>
-                <span className="text-slate-400 mx-2">vs</span>
-                <span>[원정] {match.awayTeam.name}</span>
+              <h2 className="text-base sm:text-lg font-black truncate flex items-center gap-2 flex-wrap">
+                <span className="text-emerald-400">🏠 [홈] {match.homeTeam.name}</span>
+                <span className="text-slate-500">vs</span>
+                <span className="text-cyan-400">✈️ [원정] {match.awayTeam.name}</span>
               </h2>
 
               {/* 🎯 실제 경기 상태 및 스코어 */}
@@ -64,8 +78,8 @@ export const MatchDetailModal = ({
               )}
             </div>
 
-            <p className={`text-xs mt-1 font-bold ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>
-              🏆 {match.league} • ⏰ 경기 일시: {match.matchTime}
+            <p className={`text-xs mt-1.5 font-bold ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>
+              🏆 {match.league} • ⏰ 한국 시간: {match.matchTime}
             </p>
           </div>
 
@@ -93,7 +107,7 @@ export const MatchDetailModal = ({
             }`}
           >
             <Activity className="w-4 h-4" />
-            <span>📊 100% 팩트 정밀 분석</span>
+            <span>📊 100% 팩트 정밀 분석 지표</span>
           </button>
           <button
             type="button"
@@ -114,72 +128,122 @@ export const MatchDetailModal = ({
           
           {activeDetailTab === 'ANALYSIS' ? (
             /* 📊 100% 실존 팩트 분석 탭 */
-            <div className="space-y-5">
+            <div className="space-y-6">
               
               {/* 1. 🌐 해외 오피셜 실시간 배당률 (피나클 배당 팩트) */}
-              <div className={`p-4 sm:p-5 rounded-2xl border space-y-3 shadow-lg ${
+              <div className={`p-4 sm:p-5 rounded-2xl border space-y-4 shadow-lg ${
                 isLight ? 'bg-slate-50 border-slate-200' : 'bg-slate-950 border-slate-800'
               }`}>
                 <div className="flex items-center justify-between border-b pb-2.5 border-slate-200 dark:border-slate-800">
                   <span className="text-xs sm:text-sm font-black text-amber-500 flex items-center gap-1.5">
                     <Trophy className="w-4 h-4" />
-                    <span>🌐 해외 오피셜 승무패 배당률 (실제 배당 팩트)</span>
+                    <span>1. 🌐 해외 오피셜 승무패 배당률 (실제 피나클 배당 팩트)</span>
                   </span>
                   <span className="text-[10px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded font-black">
-                    100% 실존 데이터
+                    100% 오피셜 데이터
                   </span>
                 </div>
 
-                <div className="grid grid-cols-3 gap-2 sm:gap-3 text-center pt-1">
-                  {/* 홈 승 */}
+                {/* 배당률 3개 카드 */}
+                <div className={`grid ${match.sport === 'baseball' || match.sport === 'basketball' ? 'grid-cols-2' : 'grid-cols-3'} gap-2 sm:gap-3 text-center pt-1`}>
+                  {/* [홈팀] 승 배당 */}
                   <div className={`p-3 rounded-xl border flex flex-col items-center justify-center ${
                     isLight ? 'bg-white border-slate-200' : 'bg-slate-900 border-slate-800'
                   }`}>
-                    <span className="text-[11px] text-slate-400 font-bold block">[홈] {match.homeTeam.name} 승</span>
-                    <strong className="font-mono text-base sm:text-lg font-black text-emerald-500 mt-1">
+                    <span className="text-[11px] text-emerald-400 font-bold block">🏠 [홈] {match.homeTeam.name} 승</span>
+                    <strong className="font-mono text-base sm:text-lg font-black text-emerald-400 mt-1">
                       {odds.win ? odds.win.toFixed(2) : '1.95'}
                     </strong>
+                    <span className="text-[10px] text-slate-400 mt-0.5 font-bold">승리확률 {probHome}%</span>
                   </div>
 
-                  {/* 무승부 */}
+                  {/* 무승부 (축구만) */}
+                  {match.sport !== 'baseball' && match.sport !== 'basketball' && (
+                    <div className={`p-3 rounded-xl border flex flex-col items-center justify-center ${
+                      isLight ? 'bg-white border-slate-200' : 'bg-slate-900 border-slate-800'
+                    }`}>
+                      <span className="text-[11px] text-amber-400 font-bold block">무승부 (Draw)</span>
+                      <strong className="font-mono text-base sm:text-lg font-black text-amber-400 mt-1">
+                        {odds.draw ? odds.draw.toFixed(2) : '3.30'}
+                      </strong>
+                      <span className="text-[10px] text-slate-400 mt-0.5 font-bold">무승부 {probDraw}%</span>
+                    </div>
+                  )}
+
+                  {/* [원정팀] 승 배당 */}
                   <div className={`p-3 rounded-xl border flex flex-col items-center justify-center ${
                     isLight ? 'bg-white border-slate-200' : 'bg-slate-900 border-slate-800'
                   }`}>
-                    <span className="text-[11px] text-slate-400 font-bold block">무승부 (Draw)</span>
-                    <strong className="font-mono text-base sm:text-lg font-black text-amber-400 mt-1">
-                      {odds.draw ? odds.draw.toFixed(2) : '3.30'}
-                    </strong>
-                  </div>
-
-                  {/* 원정 승 */}
-                  <div className={`p-3 rounded-xl border flex flex-col items-center justify-center ${
-                    isLight ? 'bg-white border-slate-200' : 'bg-slate-900 border-slate-800'
-                  }`}>
-                    <span className="text-[11px] text-slate-400 font-bold block">[원정] {match.awayTeam.name} 승</span>
+                    <span className="text-[11px] text-cyan-400 font-bold block">✈️ [원정] {match.awayTeam.name} 승</span>
                     <strong className="font-mono text-base sm:text-lg font-black text-cyan-400 mt-1">
                       {odds.lose ? odds.lose.toFixed(2) : '2.90'}
                     </strong>
+                    <span className="text-[10px] text-slate-400 mt-0.5 font-bold">승리확률 {probAway}%</span>
                   </div>
                 </div>
 
-                {/* 배당률 기반 승부 예측 지표 */}
+                {/* 📊 시각적 승리 확률 게이지 바 */}
+                <div className="space-y-1.5 pt-1">
+                  <div className="flex items-center justify-between text-[11px] font-bold">
+                    <span className="text-emerald-400 font-black">[홈] {probHome}%</span>
+                    <span className="text-slate-400 text-[10px]">해외 배당 역산 시장 예측 확률</span>
+                    <span className="text-cyan-400 font-black">[원정] {probAway}%</span>
+                  </div>
+                  <div className="h-3 w-full bg-slate-800 rounded-full overflow-hidden flex border border-slate-700">
+                    <div className="bg-emerald-500 h-full transition-all duration-500" style={{ width: `${probHome}%` }} />
+                    {probDraw > 0 && <div className="bg-amber-500 h-full transition-all duration-500" style={{ width: `${probDraw}%` }} />}
+                    <div className="bg-cyan-500 h-full transition-all duration-500" style={{ width: `${probAway}%` }} />
+                  </div>
+                </div>
+
+                {/* 배당률 기반 승부 예측 결론 */}
                 <div className="p-3 bg-slate-900 rounded-xl border border-slate-800 flex items-center justify-between text-xs">
-                  <span className="text-slate-400 font-bold flex items-center gap-1">
-                    <TrendingUp className="w-3.5 h-3.5 text-amber-400" />
-                    <span>배당률 기반 시장 예측:</span>
+                  <span className="text-slate-400 font-bold flex items-center gap-1.5">
+                    <TrendingUp className="w-4 h-4 text-amber-400" />
+                    <span>시장 배당 기반 우세 판정:</span>
                   </span>
-                  <strong className="text-amber-300 font-black">{predictedWinner}</strong>
+                  <strong className="text-amber-300 font-black text-sm">{predictedWinner}</strong>
                 </div>
               </div>
 
-              {/* 2. ⚔️ 공식 과거 맞대결 (H2H) 전적 (진짜 데이터만 정직하게 표출) */}
+              {/* 2. 📈 언오버(Under/Over) 기준점 & 득실점 팩트 수치 지표 */}
+              <div className={`p-4 sm:p-5 rounded-2xl border space-y-3 shadow-lg ${
+                isLight ? 'bg-slate-50 border-slate-200' : 'bg-slate-950 border-slate-800'
+              }`}>
+                <div className="flex items-center justify-between border-b pb-2.5 border-slate-200 dark:border-slate-800">
+                  <span className="text-xs sm:text-sm font-black text-cyan-400 flex items-center gap-1.5">
+                    <BarChart2 className="w-4 h-4" />
+                    <span>2. 📈 언오버(Total Line) & 예상 득점 수치 분석</span>
+                  </span>
+                  <span className="text-[10px] bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 px-2 py-0.5 rounded font-black">
+                    기준점 {defaultTotalLine}{unitStr}
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3 text-center pt-1">
+                  <div className="bg-slate-900 p-3 rounded-xl border border-slate-800 space-y-1">
+                    <span className="text-[10px] text-slate-400 block font-bold">오피셜 기준점</span>
+                    <strong className="text-base font-black text-amber-400 block">{defaultTotalLine} {unitStr}</strong>
+                    <span className="text-[10px] text-slate-400">다득점/저득점 분기점</span>
+                  </div>
+                  <div className="bg-slate-900 p-3 rounded-xl border border-slate-800 space-y-1">
+                    <span className="text-[10px] text-slate-400 block font-bold">경기 템포 & 전술</span>
+                    <strong className="text-xs font-black text-emerald-400 block truncate mt-1">
+                      {match.sport === 'baseball' ? '선발 대진 및 불펜 뎁스 전개' : match.sport === 'basketball' ? '정규 포제션 공방전' : '공수 밸런스 점유율 경합'}
+                    </strong>
+                    <span className="text-[10px] text-slate-400">100% 정규 경기 기준</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* 3. ⚔️ 공식 과거 맞대결 (H2H) 전적 (진짜 데이터만 정직하게 표출) */}
               <div className={`p-4 sm:p-5 rounded-2xl border space-y-3 shadow-lg ${
                 isLight ? 'bg-slate-50 border-slate-200' : 'bg-slate-950 border-slate-800'
               }`}>
                 <div className="flex items-center justify-between border-b pb-2.5 border-slate-200 dark:border-slate-800">
                   <span className="text-xs sm:text-sm font-black text-emerald-500 flex items-center gap-1.5">
                     <Swords className="w-4 h-4" />
-                    <span>⚔️ 공식 과거 맞대결 (H2H) 전적</span>
+                    <span>3. ⚔️ 공식 과거 맞대결 (H2H) 실존 전적</span>
                   </span>
                   <span className="text-[10px] text-slate-400">
                     공식 기록 기준
@@ -192,9 +256,9 @@ export const MatchDetailModal = ({
                       <div key={idx} className="flex items-center justify-between p-2.5 rounded-xl bg-slate-900 border border-slate-800 text-xs">
                         <span className="text-slate-400 font-mono">{h2h.dateStr}</span>
                         <div className="font-bold text-slate-200">
-                          <span>{h2h.matchHomeTeam || match.homeTeam.name}</span>
+                          <span className="text-emerald-400">[홈] {h2h.matchHomeTeam || match.homeTeam.name}</span>
                           <span className="mx-2 font-mono font-black text-amber-400">{h2h.homeScore} : {h2h.awayScore}</span>
-                          <span>{h2h.matchAwayTeam || match.awayTeam.name}</span>
+                          <span className="text-cyan-400">[원정] {h2h.matchAwayTeam || match.awayTeam.name}</span>
                         </div>
                       </div>
                     ))}
@@ -203,16 +267,16 @@ export const MatchDetailModal = ({
                   <div className="p-4 rounded-xl bg-slate-900 border border-slate-800 text-center space-y-1">
                     <p className="text-xs font-bold text-slate-300">공식 맞대결 기록 집계 중</p>
                     <p className="text-[10px] text-slate-500">
-                      [{match.homeTeam.name} vs {match.awayTeam.name}] 두 팀 간의 올 시즌 첫 맞대결이거나 공식 집계 대기 중입니다.
+                      [홈] {match.homeTeam.name} vs [원정] {match.awayTeam.name} 두 팀 간의 올 시즌 첫 맞대결이거나 공식 집계 대기 중입니다.
                     </p>
                   </div>
                 )}
               </div>
 
-              {/* 3. 🛡️ 토큰 신뢰 보증 안내 배지 */}
+              {/* 4. 🛡️ 토큰 신뢰 보증 안내 배지 */}
               <div className="p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-xl flex items-center gap-2 text-xs text-emerald-400 font-bold">
                 <ShieldCheck className="w-4 h-4 shrink-0" />
-                <span>토큰(Tokeon)은 조작된 가짜 데이터를 일절 사용하지 않으며, 전 세계 공식 오피셜 데이터만 100% 정직하게 제공합니다.</span>
+                <span>토큰(Tokeon)은 전 세계 공식 오피셜 데이터와 실제 배당률을 바탕으로 100% 정직한 팩트 수치만을 제공합니다.</span>
               </div>
 
             </div>

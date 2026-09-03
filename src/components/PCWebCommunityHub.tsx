@@ -190,8 +190,12 @@ export const PCWebCommunityHub = ({
                   <span>{m.countryFlag || '🌐'} {m.league}</span>
                   <span className="text-amber-400 font-mono">{m.matchTime}</span>
                 </div>
-                <div className="font-extrabold text-xs text-white truncate">
-                  {m.homeTeam.name} vs {m.awayTeam.name}
+                <div className="font-extrabold text-xs text-white truncate flex items-center gap-1.5">
+                  <span className="text-emerald-400 font-bold">[홈]</span>
+                  <span>{m.homeTeam.name}</span>
+                  <span className="text-slate-500 font-normal">vs</span>
+                  <span className="text-cyan-400 font-bold">[원정]</span>
+                  <span>{m.awayTeam.name}</span>
                 </div>
               </button>
             ))}
@@ -208,7 +212,7 @@ export const PCWebCommunityHub = ({
               <MessageSquare className="w-5 h-5 text-amber-400 animate-pulse shrink-0" />
               <div>
                 <h2 className="text-sm sm:text-base font-black text-white truncate">
-                  {selectedCustomRoom ? selectedCustomRoom.roomTitle : `${selectedMatch.homeTeam?.name || '전세계'} vs ${selectedMatch.awayTeam?.name || '라이브 톡'}`}
+                  {selectedCustomRoom ? selectedCustomRoom.roomTitle : `[홈] ${selectedMatch.homeTeam?.name || '홈팀'} vs [원정] ${selectedMatch.awayTeam?.name || '원정팀'}`}
                 </h2>
                 <p className="text-[11px] text-slate-400 font-bold">
                   {selectedCustomRoom ? selectedCustomRoom.description : `${selectedMatch.league} 오피셜 실시간 라이브 분석 채널`}
