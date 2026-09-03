@@ -629,21 +629,18 @@ export default function App() {
   const rawFiltered = matches.filter((m) => {
     if (!m) return false;
 
-    // 🔒 1. 시간이 지난 경기 (이미 시작했거나 종료된 경기) 100% 자동 숨김
+    // 🔒 1. 시간이 지난 경기 (이미 종료된 경기) 숨김 파이프라인
     if (hidePassedMatches) {
-      if ((m as any).isStarted || m.status === 'FINISHED' || m.status === 'LIVE') {
+      if (m.status === 'FINISHED') {
         return false;
       }
-      // 경기 시각 비교 파싱 (현재 시각 경과 여부)
+      // ISO UTC 시각을 한국 시각(KST)과 정확히 비교
       const now = new Date();
-      const currentHours = now.getHours();
-      const currentMinutes = now.getMinutes();
-      const timeStr = m.matchTime || '';
-      const matchHourMatch = timeStr.match(/(\d{1,2}):(\d{2})/);
-      if (matchHourMatch) {
-        const mHour = parseInt(matchHourMatch[1], 10);
-        const mMin = parseInt(matchHourMatch[2], 10);
-        if (currentHours > mHour || (currentHours === mHour && currentMinutes >= mMin)) {
+      const rawTime = (m as any).rawTimeIso || m.matchTime || '';
+      if (rawTime.includes('T')) {
+        const matchDt = new Date(rawTime);
+        // 이미 2시간 이상 지난 경기는 자동 제외
+        if (!isNaN(matchDt.getTime()) && now.getTime() - matchDt.getTime() > 2 * 3600 * 1000) {
           return false;
         }
       }
