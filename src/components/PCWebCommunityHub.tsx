@@ -115,6 +115,63 @@ export const PCWebCommunityHub = ({
   });
 
   const activeRoomId = selectedCustomRoom ? selectedCustomRoom.id : selectedMatch.id;
+  const [onlineCount, setOnlineCount] = useState<number>(1);
+  const [isWsConnected, setIsWsConnected] = useState<boolean>(false);
+  const wsRef = useRef<WebSocket | null>(null);
+
+  // ⚡ FastAPI WebSocket 실시간 양방향 통신 채널 연결
+  useEffect(() => {
+    let ws: WebSocket | null = null;
+    try {
+      const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+      const wsHost = window.location.hostname || 'localhost';
+      // 로컬 개발 환경 및 서버 환경 포트 8000 자동 감지
+      const wsUrl = `${wsProtocol}//${wsHost}:8000/ws/chat/${encodeURIComponent(activeRoomId)}`;
+      ws = new WebSocket(wsUrl);
+
+      ws.onopen = () => {
+        setIsWsConnected(true);
+      };
+
+      ws.onmessage = (event) => {
+        try {
+          const payload = JSON.parse(event.data);
+          if (payload.type === 'USER_COUNT') {
+            setOnlineCount(payload.count || 1);
+          } else if (payload.type === 'CHAT_MESSAGE' && payload.data) {
+            const incoming = payload.data as ChatMessage;
+            setChatMessages(prev => {
+              const currentList = prev[activeRoomId] || [];
+              if (currentList.some(m => m.id === incoming.id)) return prev;
+              return {
+                ...prev,
+                [activeRoomId]: [...currentList, incoming]
+              };
+            });
+          }
+        } catch (e) {}
+      };
+
+      ws.onclose = () => {
+        setIsWsConnected(false);
+      };
+
+      ws.onerror = () => {
+        setIsWsConnected(false);
+      };
+
+      wsRef.current = ws;
+    } catch (e) {
+      setIsWsConnected(false);
+    }
+
+    return () => {
+      if (ws) {
+        ws.close();
+      }
+    };
+  }, [activeRoomId]);
+
   const currentMatchChats = (chatMessages[activeRoomId] && chatMessages[activeRoomId].length > 0)
     ? chatMessages[activeRoomId]
     : [
@@ -129,7 +186,7 @@ export const PCWebCommunityHub = ({
     if (!inputMsg.trim()) return;
 
     const newMsg: ChatMessage = {
-      id: Date.now().toString(),
+      id: `${Date.now()}-${Math.random().toString(36).substr(2, 5)}`,
       senderName: userProfile.name,
       senderTier: membershipTier === 'VVIP' ? 'VVIP 팩트마스터' : '토큰 멤버',
       senderAvatar: membershipTier === 'VVIP' ? '👑' : '🎟️',
@@ -138,10 +195,16 @@ export const PCWebCommunityHub = ({
       isVvip: membershipTier === 'VVIP'
     };
 
+    // 1. 로컬 상태 즉시 반영
     setChatMessages(prev => ({
       ...prev,
       [activeRoomId]: [...(prev[activeRoomId] || []), newMsg]
     }));
+
+    // 2. FastAPI WebSocket 양방향 브로드캐스트 전송 (접속한 모든 유저에게 0.01초 만에 배포)
+    if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
+      wsRef.current.send(JSON.stringify(newMsg));
+    }
 
     setInputMsg('');
   };
@@ -211,10 +274,21 @@ export const PCWebCommunityHub = ({
             <div className="flex items-center gap-2 min-w-0">
               <MessageSquare className="w-5 h-5 text-amber-400 animate-pulse shrink-0" />
               <div>
-                <h2 className="text-sm sm:text-base font-black text-white truncate">
-                  {selectedCustomRoom ? selectedCustomRoom.roomTitle : `[홈] ${selectedMatch.homeTeam?.name || '홈팀'} vs [원정] ${selectedMatch.awayTeam?.name || '원정팀'}`}
-                </h2>
-                <p className="text-[11px] text-slate-400 font-bold">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <h2 className="text-sm sm:text-base font-black text-white truncate">
+                    {selectedCustomRoom ? selectedCustomRoom.roomTitle : `[홈] ${selectedMatch.homeTeam?.name || '홈팀'} vs [원정] ${selectedMatch.awayTeam?.name || '원정팀'}`}
+                  </h2>
+                  <span className={`px-2 py-0.5 rounded-full text-[10px] font-black flex items-center gap-1 ${
+                    isWsConnected ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40' : 'bg-slate-800 text-slate-400'
+                  }`}>
+                    <span className={`w-1.5 h-1.5 rounded-full ${isWsConnected ? 'bg-emerald-400 animate-ping' : 'bg-slate-500'}`} />
+                    <span>{isWsConnected ? 'FastAPI 웹소켓 연결' : '폴백 모드'}</span>
+                  </span>
+                  <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                    접속 {onlineCount}명
+                  </span>
+                </div>
+                <p className="text-[11px] text-slate-400 font-bold mt-0.5">
                   {selectedCustomRoom ? selectedCustomRoom.description : `${selectedMatch.league} 오피셜 실시간 라이브 분석 채널`}
                 </p>
               </div>

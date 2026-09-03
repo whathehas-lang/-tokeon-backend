@@ -7,6 +7,7 @@ import { MatchDetailModal } from './components/MatchDetailModal';
 import { MatchLiveChatModal } from './components/MatchLiveChatModal';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { PCWebCommunityHub } from './components/PCWebCommunityHub';
+import { SportsBlogSection } from './components/SportsBlogSection';
 import { UserProfileModal, type UserProfileData } from './components/UserProfileModal';
 import { LoginModal } from './components/LoginModal';
 import { SubscriptionPaywallModal } from './components/SubscriptionPaywallModal';
@@ -852,167 +853,92 @@ export default function App() {
             
 
 
-            {/* PC DESKTOP MODE vs MOBILE APP MODE */}
+            {/* 🖥️ PC DESKTOP 3-SPLIT LAYOUT (좌: 핸드폰 화면 / 중: 실시간 채팅 / 우: 블로그) */}
             {viewMode === 'PC_WEB' ? (
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start relative">
+              <div className="grid grid-cols-1 xl:grid-cols-12 gap-4 xl:gap-5 items-start relative w-full">
                 
-                {/* LEFT MAIN GRID (8 COLS): 2-COLUMN MATCH CARDS GRID */}
-                <div className="lg:col-span-8 space-y-4">
-                  
-                  {/* 📊 상단 실시간 경기 수 안내 배지 */}
-                  <div className={`flex items-center justify-between p-2.5 rounded-xl border text-xs shadow-sm ${
-                    isLight ? 'bg-white border-slate-200' : 'bg-slate-900 border-amber-500/40'
-                  }`}>
-                    <div className="flex items-center gap-2">
-                      <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
-                      <span className={`font-black text-xs ${isLight ? 'text-slate-800' : 'text-slate-200'}`}>
-                        전 세계 5대 스포츠 실시간 경기 목록
-                      </span>
-                    </div>
-                    <span className={`text-[11px] font-bold font-mono px-2.5 py-0.5 rounded-full ${
-                      isLight ? 'bg-amber-100 text-amber-900 border border-amber-300' : 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
-                    }`}>
-                      현재 표출 경기: {filteredMatches.length}경기
-                    </span>
-                  </div>
-
-                  <div className="flex flex-col space-y-4">
-                    {filteredMatches.map((match) => (
-                      <MatchCard
-                        key={match.id}
-                        match={match}
-                        membershipTier={membershipTier}
-                        cardDensity={cardDensity}
-                        markedPicks={markedPicks[match.id] || []}
-                        allMatches={matches}
-                        onSelectMatch={(m) => handleOpenDetailModal(m)}
-                        onOpenChat={handleOpenMatchChat}
-                        onToggleFavorite={handleToggleFavorite}
-                        onTogglePick={handleTogglePick}
-                        theme={theme}
-                      />
-                    ))}
-                  </div>
-
-                  {/* ➕ Load More Button (20개씩 더보기) */}
-                  {!searchMatchNo && matchLimit < 1000 && (
-                    <div className="pt-2 text-center">
-                      <button
-                        onClick={() => setMatchLimit((prev) => prev + 20)}
-                        className={`px-6 py-2.5 border text-xs font-black rounded-xl shadow transition-all cursor-pointer ${
-                          isLight 
-                            ? 'bg-white hover:bg-slate-50 border-amber-400 text-amber-700' 
-                            : 'bg-slate-900 hover:bg-slate-800 border-amber-500/50 text-amber-300'
-                        }`}
-                      >
-                        ➕ 베트맨 경기 더보기 (+20개 로딩)
-                      </button>
-                    </div>
-                  )}
-                </div>
-
-                {/* RIGHT SIDEBAR (4 COLS): FIXED FULL-HEIGHT REAL-TIME CHAT PANEL */}
-                <div className="lg:col-span-4 space-y-4">
-                  <div className={`p-4 rounded-2xl border space-y-3 shadow-2xl flex flex-col h-[calc(100vh-120px)] fixed top-24 right-4 lg:right-8 xl:right-12 z-30 w-[320px] xl:w-[380px] backdrop-blur-xl ${
-                    isLight ? 'bg-white/95 border-slate-200' : 'bg-slate-900/95 border-amber-500/40'
-                  }`}>
-                    <div className={`flex items-center justify-between border-b pb-2.5 shrink-0 ${
-                      isLight ? 'border-slate-200' : 'border-slate-800'
-                    }`}>
-                      <div className="flex items-center gap-2">
-                        <MessageSquare className="w-4 h-4 text-amber-500 animate-pulse" />
-                        <h3 className={`text-xs font-black ${isLight ? 'text-slate-900' : 'text-white'}`}>💬 실시간 라이브 톡</h3>
+                {/* 📱 1. [LEFT PANE (4 COLS)]: 핸드폰 모바일 화면 디바이스 프레임 */}
+                <div className="xl:col-span-4 flex flex-col items-center">
+                  <div className="w-full max-w-[420px] rounded-[36px] border-[6px] border-slate-800/90 shadow-2xl overflow-hidden bg-slate-950 flex flex-col h-[calc(100vh-110px)] sticky top-20">
+                    
+                    {/* 스마트폰 상단 스피커 & 카메라 노치 바 */}
+                    <div className="bg-slate-900 px-4 py-2 border-b border-slate-800/80 flex items-center justify-between shrink-0 select-none">
+                      <div className="flex items-center gap-1.5 text-[10px] text-amber-400 font-mono font-bold">
+                        <span>📱 TOKEON MOBILE</span>
                       </div>
-                      <div className="flex items-center gap-1.5 shrink-0">
-                        {/* Notification settings toggle button */}
-                        <button
-                          type="button"
-                          onClick={() => {
-                            const nextMap: Record<'sound' | 'browser' | 'none', 'sound' | 'browser' | 'none'> = {
-                              sound: 'browser',
-                              browser: 'none',
-                              none: 'sound'
-                            };
-                            const next = nextMap[chatNotificationSettings];
-                            setChatNotificationSettings(next);
-                            if (next === 'browser') {
-                              if ('Notification' in window) {
-                                Notification.requestPermission().then(perm => {
-                                  if (perm !== 'granted') {
-                                    alert('브라우저 바탕화면 알림 권한이 필요합니다. 브라우저 설정에서 알림을 허용해주세요!');
-                                  } else {
-                                    new Notification('🔔 토큰 실시간 톡 알림 활성화!', {
-                                      body: '새로운 분석 톡이 도착하면 바탕화면에 바탕화면 알림이 표시됩니다.',
-                                     tag: 'tokeon-init'
-                                    });
-                                  }
-                                });
-                              } else {
-                                alert('이 브라우저는 바탕화면 알림을 지원하지 않습니다.');
-                              }
-                            }
-                          }}
-                          className={`text-[9px] px-2 py-0.5 border rounded-lg font-black flex items-center gap-1 shadow-sm transition-all cursor-pointer ${
-                            chatNotificationSettings === 'sound'
-                              ? 'bg-amber-100 border-amber-300 text-amber-800'
-                              : chatNotificationSettings === 'browser'
-                              ? 'bg-cyan-100 border-cyan-300 text-cyan-800'
-                              : 'bg-slate-100 border-slate-300 text-slate-500'
-                          }`}
-                          title="클릭하여 알림 설정을 변경합니다 (소리 🔊 -> 브라우저 🖥️ -> 알림끔 🚫)"
-                        >
-                          <span>{chatNotificationSettings === 'sound' ? '🔊 소리' : chatNotificationSettings === 'browser' ? '🖥️ 바탕화면' : '🚫 알림끔'}</span>
-                        </button>
-                        <span className="text-[10px] bg-emerald-100 text-emerald-800 border border-emerald-300 px-2 py-0.5 rounded font-black shrink-0">
-                          🟢 1명
+                      <div className="w-16 h-3.5 bg-black rounded-full border border-slate-800/80 flex items-center justify-center">
+                        <div className="w-2 h-2 rounded-full bg-slate-800" />
+                      </div>
+                      <div className="flex items-center gap-1 text-[10px] text-emerald-400 font-mono font-bold">
+                        <span>5G ●</span>
+                      </div>
+                    </div>
+
+                    {/* 모바일 화면 내부 실시간 스크롤 경기 피드 */}
+                    <div className="flex-1 overflow-y-auto p-2.5 space-y-3 custom-scrollbar">
+                      <div className="flex items-center justify-between p-2 rounded-xl bg-slate-900 border border-amber-500/30 text-xs">
+                        <div className="flex items-center gap-1.5">
+                          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
+                          <span className="font-black text-[11px] text-slate-200">실시간 매치업</span>
+                        </div>
+                        <span className="text-[10px] font-bold font-mono px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                          {filteredMatches.length}경기
                         </span>
                       </div>
-                    </div>
 
-                    {/* Chat Messages Feed */}
-                    <div 
-                      ref={sidebarChatContainerRef}
-                      className="flex-1 overflow-y-auto space-y-2.5 pr-1 text-xs"
-                    >
-                      {sidebarMessages.map((msg) => (
-                        <div key={msg.id} className={`p-2.5 rounded-xl border space-y-1 ${
-                          isLight ? 'bg-slate-50 border-slate-200' : 'bg-slate-950 border-slate-800'
-                        }`}>
-                          <div className="flex items-center justify-between">
-                            <span className={`font-bold text-[11px] ${msg.color}`}>
-                              👑 [{msg.tier}] {msg.sender}
-                            </span>
-                            <span className={`text-[9px] font-mono ${isLight ? 'text-slate-400' : 'text-slate-500'}`}>{msg.timeStr}</span>
-                          </div>
-                          <p className={`text-xs ${isLight ? 'text-slate-800' : 'text-slate-200'}`}>{msg.text}</p>
-                        </div>
+                      {filteredMatches.map((match) => (
+                        <MatchCard
+                          key={match.id}
+                          match={match}
+                          membershipTier={membershipTier}
+                          cardDensity="COMPACT"
+                          markedPicks={markedPicks[match.id] || []}
+                          allMatches={matches}
+                          onSelectMatch={(m) => handleOpenDetailModal(m)}
+                          onOpenChat={handleOpenMatchChat}
+                          onToggleFavorite={handleToggleFavorite}
+                          onTogglePick={handleTogglePick}
+                          theme={theme}
+                        />
                       ))}
+
+                      {/* ➕ Load More Button */}
+                      {!searchMatchNo && matchLimit < 1000 && (
+                        <div className="pt-1 pb-4 text-center">
+                          <button
+                            onClick={() => setMatchLimit((prev) => prev + 20)}
+                            className="w-full py-2 bg-slate-900 hover:bg-slate-850 border border-amber-500/40 text-amber-300 text-xs font-black rounded-xl shadow transition-all cursor-pointer"
+                          >
+                            ➕ 경기 더보기 (+20)
+                          </button>
+                        </div>
+                      )}
                     </div>
 
-                    {/* Chat Input Box */}
-                    <div className={`pt-2 border-t flex items-center gap-2 shrink-0 ${isLight ? 'border-slate-200' : 'border-slate-800'}`}>
-                      <input
-                        type="text"
-                        placeholder="실시간 톡 참여 (응원 및 의견)..."
-                        value={sidebarInput}
-                        onChange={(e) => setSidebarInput(e.target.value)}
-                        className={`border rounded-xl px-3 py-2 text-xs flex-1 focus:outline-none focus:border-amber-500 ${
-                          isLight ? 'bg-slate-50 border-slate-300 text-slate-950 placeholder-slate-400' : 'bg-slate-950 border-slate-700 text-white placeholder-slate-500'
-                        }`}
-                        onKeyDown={(e) => {
-                          if (e.key === 'Enter') {
-                            handleSendSidebarMessage();
-                          }
-                        }}
-                      />
-                      <button
-                        onClick={handleSendSidebarMessage}
-                        className="px-3 py-2 bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-xs rounded-xl shadow-sm transition-all shrink-0 cursor-pointer"
-                      >
-                        전송
-                      </button>
+                    {/* 스마트폰 하단 홈 바 */}
+                    <div className="bg-slate-900 py-1.5 flex justify-center shrink-0 border-t border-slate-800">
+                      <div className="w-28 h-1 bg-slate-700 rounded-full" />
                     </div>
                   </div>
+                </div>
+
+                {/* 💬 2. [CENTER PANE (4 COLS)]: FastAPI WebSocket 실시간 채팅 */}
+                <div className="xl:col-span-4 h-[calc(100vh-110px)] sticky top-20 flex flex-col">
+                  <PCWebCommunityHub
+                    matches={matches}
+                    userProfile={userProfile}
+                    membershipTier={membershipTier}
+                    onOpenMatchDetail={(m) => handleOpenDetailModal(m)}
+                  />
+                </div>
+
+                {/* 📝 3. [RIGHT PANE (4 COLS)]: 전문 스포츠 분석 블로그 & 칼럼 */}
+                <div className="xl:col-span-4 h-[calc(100vh-110px)] sticky top-20 flex flex-col">
+                  <SportsBlogSection
+                    matches={matches}
+                    theme={theme}
+                    onSelectMatch={(m) => handleOpenDetailModal(m)}
+                  />
                 </div>
 
               </div>
