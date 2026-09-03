@@ -33,78 +33,69 @@ function getRollingDates() {
   return dates;
 }
 
-// 🎯 종목별/리그별 엔드포인트 정의 (사용자 지정 100% 명품 리그 전용 수도꼭지)
+// 🎯 종목별 엔드포인트 정의 (날짜별 수신 후 정밀 메이저 리그 화이트리스트 필터링)
 const TARGET_ENDPOINTS = [
-  // ⚾ 야구 메이저 3대 리그: MLB(1), NPB(12), KBO(15)
-  { sport: 'baseball', host: 'v1.baseball.api-sports.io', endpoint: '/games', leagueId: 1, name: 'MLB 메이저리그', icon: '⚾' },
-  { sport: 'baseball', host: 'v1.baseball.api-sports.io', endpoint: '/games', leagueId: 12, name: 'NPB 일본야구', icon: '⚾' },
-  { sport: 'baseball', host: 'v1.baseball.api-sports.io', endpoint: '/games', leagueId: 15, name: 'KBO 한국야구', icon: '⚾' },
+  // ⚾ 야구 전체 수신 (내부에서 MLB[1], NPB[2], KBO[5]만 100% 추출)
+  { sport: 'baseball', host: 'v1.baseball.api-sports.io', endpoint: '/games', name: '메이저 프로야구', icon: '⚾' },
   
-  // ⚽ 축구 명품 메이저 리그: EPL(39), 라리가(140), 분데스리가(78), 세리에A(135), 리그앙(61), 챔스(2), K리그1(292)
-  { sport: 'football', host: 'v3.football.api-sports.io', endpoint: '/fixtures', leagueId: 39, name: '잉글랜드 프리미어리그', icon: '⚽' },
-  { sport: 'football', host: 'v3.football.api-sports.io', endpoint: '/fixtures', leagueId: 140, name: '스페인 라리가', icon: '⚽' },
-  { sport: 'football', host: 'v3.football.api-sports.io', endpoint: '/fixtures', leagueId: 78, name: '독일 분데스리가', icon: '⚽' },
-  { sport: 'football', host: 'v3.football.api-sports.io', endpoint: '/fixtures', leagueId: 135, name: '이탈리아 세리에 A', icon: '⚽' },
-  { sport: 'football', host: 'v3.football.api-sports.io', endpoint: '/fixtures', leagueId: 61, name: '프랑스 리그 앙', icon: '⚽' },
-  { sport: 'football', host: 'v3.football.api-sports.io', endpoint: '/fixtures', leagueId: 2, name: 'UEFA 챔피언스리그', icon: '⚽' },
-  { sport: 'football', host: 'v3.football.api-sports.io', endpoint: '/fixtures', leagueId: 292, name: '대한민국 K리그 1', icon: '⚽' },
+  // ⚽ 축구 전체 수신 (내부에서 유럽 5대 빅리그, 챔스, K리그1만 100% 추출)
+  { sport: 'football', host: 'v3.football.api-sports.io', endpoint: '/fixtures', name: '유럽 5대 빅리그 & 챔스', icon: '⚽' },
 
-  // 🏀 농구 메이저: NBA(12)
-  { sport: 'basketball', host: 'v1.basketball.api-sports.io', endpoint: '/games', leagueId: 12, name: 'NBA 농구', icon: '🏀' }
+  // 🏀 농구 수신 (내부에서 NBA만 100% 추출)
+  { sport: 'basketball', host: 'v1.basketball.api-sports.io', endpoint: '/games', name: 'NBA 농구', icon: '🏀' }
 ];
 
 // 🏆 [메이저 1부 리그 & 주요 대회 엄선 화이트리스트 필터]
 function isMajorLeagueMatch(m) {
   const sport = m.sport;
-  const league = (m.league || '').toLowerCase();
+  const leagueName = (m.league || '').toLowerCase();
+  const leagueId = m.leagueId;
+  const country = (m.countryName || '').toLowerCase();
 
-  // ⚾ 야구: MLB, NPB, KBO 메이저 3대 리그만 100% 허용
+  // ⚾ 야구: MLB(1), NPB(2), KBO(5) 메이저 3대 프로야구만 100% 허용
   if (sport === 'baseball') {
-    return league.includes('mlb') || 
-           league.includes('major league') || 
-           league.includes('kbo') || 
-           league.includes('npb') || 
-           league.includes('professional baseball') ||
-           m.leagueId === 1 || m.leagueId === 12 || m.leagueId === 15;
+    return [1, 2, 5].includes(leagueId) || 
+           leagueName.includes('mlb') || 
+           leagueName.includes('major league') || 
+           leagueName.includes('kbo') || 
+           leagueName.includes('npb');
   }
 
-  // ⚽ 축구: 유럽 5대 빅리그, 챔피언스리그, 유로파, K리그1, 월드컵/A매치/주요 컵대회만 허용
+  // ⚽ 축구: 유럽 5대 빅리그, 챔피언스리그, 유로파, K리그 1만 100% 허용 (잡리그 0.00% 차단)
   if (sport === 'football') {
     // ❌ 3류 잡리그 블랙리스트 단어 즉시 차단
-    if (league.includes('second') || league.includes('2nd') || league.includes('3rd') || 
-        league.includes('liga 3') || league.includes('liga 2') || league.includes('division 2') ||
-        league.includes('reserve') || league.includes('u20') || league.includes('u19') || league.includes('u21') ||
-        league.includes('u23') || league.includes('kakkonen') || league.includes('alef') || league.includes('amateur') ||
-        league.includes('youth') || league.includes('junior')) {
+    if (leagueName.includes('second') || leagueName.includes('2nd') || leagueName.includes('3rd') || 
+        leagueName.includes('liga 3') || leagueName.includes('liga 2') || leagueName.includes('division 2') ||
+        leagueName.includes('reserve') || leagueName.includes('u20') || leagueName.includes('u19') || leagueName.includes('u21') ||
+        leagueName.includes('u23') || leagueName.includes('kakkonen') || leagueName.includes('alef') || leagueName.includes('amateur') ||
+        leagueName.includes('youth') || leagueName.includes('junior') || leagueName.includes('cup') || leagueName.includes('trophy')) {
       return false;
     }
 
-    // ⭕ 메이저 1부 리그 & 주요 대회 화이트리스트
-    return league.includes('premier league') || 
-           league.includes('la liga') || league.includes('primera') ||
-           league.includes('bundesliga') || 
-           league.includes('serie a') || 
-           league.includes('ligue 1') || 
-           league.includes('champions league') || league.includes('europa') || league.includes('conference league') ||
-           league.includes('k league 1') || league.includes('kleague') ||
-           league.includes('eredivisie') || league.includes('world cup') || league.includes('nations league') ||
-           league.includes('fa cup') || league.includes('copa del rey') || league.includes('coppa italia') || league.includes('dfb pokal') ||
-           league.includes('super cup') || league.includes('asian cup') || league.includes('afc champions');
+    // ⭕ 1) 유럽 5대 빅리그 고유 번호 또는 공식 명칭
+    // EPL(39), 라리가(140), 분데스리가(78), 세리에A(135), 리그앙(61), 챔스(2), 유로파(3), 컨퍼런스(848), K리그1(292)
+    if ([39, 140, 78, 135, 61, 2, 3, 848, 292].includes(leagueId)) {
+      return true;
+    }
+
+    // ⭕ 2) 빅 5 국가 공식 1부 리그 매칭 (잉글랜드, 스페인, 독일, 이탈리아, 프랑스, 대한민국)
+    const isBig5Country = country.includes('england') || country.includes('spain') || country.includes('germany') || 
+                          country.includes('italy') || country.includes('france') || country.includes('korea') || country.includes('world');
+    
+    const isBig5LeagueName = leagueName === 'premier league' || 
+                             leagueName === 'la liga' || leagueName === 'primera división' ||
+                             leagueName === 'bundesliga' || 
+                             leagueName === 'serie a' || 
+                             leagueName === 'ligue 1' || 
+                             leagueName === 'k league 1' ||
+                             leagueName.includes('uefa champions league');
+
+    return isBig5Country && isBig5LeagueName;
   }
 
-  // 🏀 농구: NBA, KBL 등
+  // 🏀 농구: NBA(12) 및 KBL
   if (sport === 'basketball') {
-    return league.includes('nba') || league.includes('kbl') || league.includes('euroleague') || league.includes('wkbl');
-  }
-
-  // 🏐 배구: V-리그 및 주요 리그
-  if (sport === 'volleyball') {
-    return league.includes('v-league') || league.includes('v league') || league.includes('nations league') || league.includes('championship');
-  }
-
-  // 🏒 하키: NHL
-  if (sport === 'hockey') {
-    return league.includes('nhl');
+    return leagueId === 12 || leagueName.includes('nba') || leagueName.includes('kbl');
   }
 
   return false;
@@ -163,13 +154,15 @@ function fetchSingleEndpoint(target, dateStr) {
             } catch (e) {}
 
             return {
-              id: `auto-${target.sport}-${target.leagueId || 'all'}-${dateStr}-${idx + 1}`,
+              id: `auto-${target.sport}-${m.league?.id || 'all'}-${dateStr}-${idx + 1}`,
               betmanMatchNo: 9500 + idx + 1,
               sport: target.sport,
               league: m.league?.name || target.name,
+              leagueId: m.league?.id || null,
+              countryName: m.league?.country || m.country?.name || 'Global',
               countryFlag: target.icon,
-              homeTeam: { id: `h-${idx}`, name: home, logo: target.icon, countryName: 'Global', rank: 1 },
-              awayTeam: { id: `a-${idx}`, name: away, logo: target.icon, countryName: 'Global', rank: 2 },
+              homeTeam: { id: `h-${idx}`, name: home, logo: m.teams?.home?.logo || target.icon, countryName: m.league?.country || 'Global', rank: 1 },
+              awayTeam: { id: `a-${idx}`, name: away, logo: m.teams?.away?.logo || target.icon, countryName: m.league?.country || 'Global', rank: 2 },
               homeScore: m.goals?.home ?? m.scores?.home?.total ?? 0,
               awayScore: m.goals?.away ?? m.scores?.away?.total ?? 0,
               matchTime: displayTime,
