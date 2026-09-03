@@ -1,10 +1,8 @@
 import { sportsApiClient } from './sportsApiClient';
 import { apiCacheService } from './apiCacheService';
-import { betmanRoundRegistry, BETMAN_GAMES_METADATA } from '../betman/betmanRoundRegistry';
 import type { Match, BetmanFolderCategory } from '../../types/sports';
 import type { RawApiMatchResponse } from './types';
 import { mapRawApiMatchToMatch } from '../mappers/matchDataMapper';
-import { INITIAL_MATCHES } from '../../mock/sportsData';
 import { verifiedMatchDatabase } from '../db/verifiedMatchDatabase';
 import { betmanLiveSyncService } from '../betman/betmanLiveSyncService';
 
@@ -14,11 +12,6 @@ export class SportsApiService {
     const cachedMatches = apiCacheService.get<Match[]>(cacheKey);
     if (cachedMatches && cachedMatches.length > 0) {
       return cachedMatches;
-    }
-
-    if (sportsApiClient.isMockMode()) {
-      const { verifiedMatches } = verifiedMatchDatabase.ingestAndVerifyMatches(INITIAL_MATCHES);
-      return verifiedMatches;
     }
 
     try {
@@ -31,44 +24,36 @@ export class SportsApiService {
       }
 
       const response = await sportsApiClient.get<RawApiMatchResponse>(endpoint, params);
-      if (!response || !response.response || response.response.length === 0) {
-        const { verifiedMatches } = verifiedMatchDatabase.ingestAndVerifyMatches(INITIAL_MATCHES);
+      if (response && response.response && response.response.length > 0) {
+        const mappedMatches = response.response.map((raw, idx) => mapRawApiMatchToMatch(raw, idx));
+        const { verifiedMatches } = verifiedMatchDatabase.ingestAndVerifyMatches(mappedMatches);
+        apiCacheService.set(cacheKey, verifiedMatches);
         return verifiedMatches;
       }
-
-      const mappedMatches = response.response.map((raw, idx) => mapRawApiMatchToMatch(raw, idx));
-      const { verifiedMatches } = verifiedMatchDatabase.ingestAndVerifyMatches(mappedMatches);
-      apiCacheService.set(cacheKey, verifiedMatches);
-      return verifiedMatches;
     } catch (error) {
       console.error('[SportsApiService] Error fetching live matches:', error);
-      const { verifiedMatches } = verifiedMatchDatabase.ingestAndVerifyMatches(INITIAL_MATCHES);
-      return verifiedMatches;
     }
+    return [];
   }
 
   /**
    * 📡 렌더 24시간 백엔드에서 오피셜 베트맨 경기 목록 직통 네트워크 fetch 수신
+   * (🔒 30초 백그라운드 갱신 시 과거 수요일 더미 데이터 폴백 덮어쓰기 100% 차단!)
    */
   public async fetchBetmanMatchesByRound(
-    roundName: string,
-    folderCategory: BetmanFolderCategory = 'ALL',
+    _roundName: string,
+    _folderCategory: BetmanFolderCategory = 'ALL',
     _searchMatchNo?: number,
     _limit: number = 999999
   ): Promise<Match[]> {
-    // 🌐 렌더 24시간 백엔드 직통 네트워크 수신
+    // 🌐 렌더 24시간 백엔드 오피셜 직통 네트워크 수신
     const liveMatches = await betmanLiveSyncService.getMatchesAsync();
     if (liveMatches && liveMatches.length > 0) {
       return liveMatches;
     }
     
-    // Fallback
-    const gmId = folderCategory === 'SEUNGMUBAE' ? 'G011' : folderCategory === 'SEUNG1PAE' ? 'G024' : folderCategory === 'GIROKSIK' ? 'G102' : 'G101';
-    const metadata = BETMAN_GAMES_METADATA[gmId];
-    const defaultTs = metadata?.defaultRoundTs || '260103';
-    const gmTs = roundName.includes('회차') ? (roundName.match(/\d+/) || [defaultTs])[0] : defaultTs;
-    
-    return betmanRoundRegistry.getMatchesByGameAndRound(gmId, gmTs);
+    // 🔒 덮어쓰기 폴백 완전 차단 ➔ 라이브 데이터만 유지
+    return liveMatches || [];
   }
 }
 
