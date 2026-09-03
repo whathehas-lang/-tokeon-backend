@@ -88,28 +88,30 @@ export const MatchCardComponent = ({ match, membershipTier = 'VVIP', cardDensity
         </div>
 
         {/* Compact Teams vs Starter Line */}
-        <div className={`flex items-center justify-between gap-2 px-3 py-2 rounded-lg border text-xs ${
-          isLight ? 'bg-slate-50 border-slate-200 text-slate-900' : 'bg-slate-950 border-slate-800 text-slate-100'
+        <div className={`flex items-center justify-between gap-2 px-3 py-2.5 rounded-lg border text-xs ${
+          isLight ? 'bg-slate-50 border-slate-200 text-slate-900' : 'bg-slate-950/70 border-slate-800 text-slate-100'
         }`}>
           <div className="flex items-center gap-2 min-w-0 flex-1">
-            <span className={`font-black truncate ${isFinished && homeScore > awayScore ? 'text-emerald-600 font-extrabold' : 'text-emerald-700'}`}>
-              {sportIcon} [홈] {match.homeTeam.name}
+            <span className={`font-bold truncate ${isFinished && homeScore > awayScore ? 'text-emerald-500 font-extrabold' : isLight ? 'text-slate-900' : 'text-slate-100'}`}>
+              <span className="text-[10px] text-slate-400 font-semibold mr-1">[홈]</span>
+              {sportIcon} {match.homeTeam.name}
             </span>
             {isFinished ? (
-              <span className="font-mono font-black text-xs px-2 py-0.5 bg-rose-500/15 text-rose-600 dark:text-rose-400 rounded border border-rose-300/50">
+              <span className="font-mono font-bold text-xs px-2 py-0.5 bg-rose-500/10 text-rose-500 rounded border border-rose-500/20 shrink-0">
                 {homeScore} : {awayScore}
               </span>
             ) : (
-              <span className="text-slate-400 font-bold text-[10px]">vs</span>
+              <span className="text-slate-400 font-bold text-[10px] shrink-0">vs</span>
             )}
-            <span className={`font-black truncate ${isFinished && awayScore > homeScore ? 'text-cyan-600 font-extrabold' : 'text-cyan-700'}`}>
-              [원정] {match.awayTeam.name} {sportIcon}
+            <span className={`font-bold truncate ${isFinished && awayScore > homeScore ? 'text-emerald-500 font-extrabold' : isLight ? 'text-slate-900' : 'text-slate-100'}`}>
+              <span className="text-[10px] text-slate-400 font-semibold mr-1">[원정]</span>
+              {match.awayTeam.name} {sportIcon}
             </span>
           </div>
 
           {match.sport === 'baseball' && match.homeTeam.starterPitcherInfo && match.awayTeam.starterPitcherInfo ? (
-            <span className={`text-[10px] font-bold shrink-0 px-2 py-0.5 rounded border ${
-              isLight ? 'bg-white text-slate-800 border-slate-200' : 'bg-slate-900 text-amber-300 border-slate-800'
+            <span className={`text-[10px] font-semibold shrink-0 px-2 py-0.5 rounded border ${
+              isLight ? 'bg-white text-slate-700 border-slate-200' : 'bg-slate-900 text-slate-300 border-slate-800'
             }`}>
               {match.homeTeam.starterPitcherInfo.name} vs {match.awayTeam.starterPitcherInfo.name}
             </span>

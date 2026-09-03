@@ -14,6 +14,7 @@ interface PCWebCommunityHubProps {
   membershipTier: MembershipTier;
   onOpenMatchDetail: (match: Match) => void;
   targetRoomId?: string;
+  theme?: 'light' | 'dark';
 }
 
 interface CustomVvipRoom {
@@ -48,8 +49,10 @@ export const PCWebCommunityHub = ({
   matches,
   userProfile,
   membershipTier,
-  onOpenMatchDetail
+  onOpenMatchDetail,
+  theme = 'dark'
 }: PCWebCommunityHubProps) => {
+  const isLight = theme === 'light';
   const globalChatRoom = {
     id: 'global-all-chat',
     homeTeam: { name: '전세계 라이브 톡' },
@@ -210,32 +213,36 @@ export const PCWebCommunityHub = ({
   };
 
   return (
-    <div className="w-full bg-slate-950 text-slate-100 rounded-3xl border-2 border-amber-500/40 shadow-2xl overflow-hidden p-2 sm:p-3.5 h-full backdrop-blur-xl flex flex-col">
+    <div className={`w-full rounded-2xl border shadow-xl overflow-hidden p-2 sm:p-3 h-full flex flex-col ${
+      isLight ? 'bg-slate-50 border-slate-200 text-slate-900' : 'bg-slate-950 border-slate-800 text-slate-100'
+    }`}>
       
       {/* MAIN CONTAINER */}
       <div className="flex flex-row items-stretch gap-2 sm:gap-3 flex-1 overflow-hidden">
         
         {/* 👈 LEFT VERTICAL SIDEBAR PANEL */}
-        <div className="w-[125px] sm:w-[200px] md:w-80 bg-slate-900/90 border-2 border-slate-800 rounded-2xl p-1.5 sm:p-3 flex flex-col space-y-2.5 shrink-0 shadow-2xl h-full overflow-hidden">
+        <div className={`w-[125px] sm:w-[180px] md:w-64 border rounded-xl p-1.5 sm:p-2.5 flex flex-col space-y-2 shrink-0 h-full overflow-hidden ${
+          isLight ? 'bg-white border-slate-200' : 'bg-slate-900 border-slate-800'
+        }`}>
           
           <button
             onClick={() => setSelectedMatch(globalChatRoom)}
-            className={`w-full py-2 px-2.5 rounded-xl text-xs font-black transition-all flex items-center justify-between border cursor-pointer ${
+            className={`w-full py-2 px-2.5 rounded-lg text-xs font-bold transition-all flex items-center justify-between border cursor-pointer ${
               !selectedCustomRoom && selectedMatch.id === 'global-all-chat'
-                ? 'bg-amber-500 text-slate-950 border-amber-300 shadow-lg ring-2 ring-amber-400/50 scale-[1.01]'
-                : 'bg-slate-950/90 text-slate-200 border-slate-800 hover:border-amber-400/80 hover:bg-slate-900'
+                ? 'bg-emerald-600 text-white border-emerald-500 shadow-sm'
+                : isLight ? 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100' : 'bg-slate-950 text-slate-300 border-slate-800 hover:bg-slate-800'
             }`}
           >
             <div className="flex items-center gap-1.5 min-w-0">
-              <Globe className="w-4 h-4 text-amber-400 shrink-0 animate-pulse" />
-              <span className="truncate">🌐 전세계 라이브 톡</span>
+              <Globe className="w-3.5 h-3.5 shrink-0" />
+              <span className="truncate">전체 라이브 톡</span>
             </div>
-            <span className="text-[10px] bg-emerald-500/20 text-emerald-400 px-1.5 py-0.5 rounded font-mono font-bold shrink-0">
+            <span className="text-[9px] bg-emerald-500/20 text-emerald-400 px-1.5 py-0.5 rounded font-mono font-bold shrink-0">
               LIVE
             </span>
           </button>
 
-          <div className="flex-1 overflow-y-auto space-y-2 pr-1 custom-scrollbar">
+          <div className="flex-1 overflow-y-auto space-y-1.5 pr-0.5 custom-scrollbar">
             {matches.slice(0, 30).map((m) => (
               <button
                 key={m.id}
@@ -243,22 +250,20 @@ export const PCWebCommunityHub = ({
                   setSelectedCustomRoom(null);
                   setSelectedMatch(m);
                 }}
-                className={`w-full p-2 rounded-xl text-left transition-all border flex flex-col space-y-1 cursor-pointer ${
+                className={`w-full p-2 rounded-lg text-left transition-all border flex flex-col space-y-0.5 cursor-pointer ${
                   !selectedCustomRoom && selectedMatch.id === m.id
-                    ? 'bg-amber-500/20 border-amber-400 text-amber-300'
-                    : 'bg-slate-950/60 border-slate-850 hover:bg-slate-900 text-slate-300'
+                    ? isLight ? 'bg-emerald-50 border-emerald-400 text-emerald-950 font-bold' : 'bg-emerald-950/30 border-emerald-600 text-emerald-300 font-bold'
+                    : isLight ? 'bg-white border-slate-200 hover:bg-slate-100 text-slate-700' : 'bg-slate-950 border-slate-850 hover:bg-slate-850 text-slate-300'
                 }`}
               >
-                <div className="flex items-center justify-between text-[10px] text-slate-400 font-bold">
-                  <span>{m.countryFlag || '🌐'} {m.league}</span>
-                  <span className="text-amber-400 font-mono">{m.matchTime}</span>
+                <div className="flex items-center justify-between text-[10px] text-slate-400">
+                  <span className="truncate">{m.countryFlag || '🌐'} {m.league}</span>
+                  <span className="font-mono text-slate-400 shrink-0">{m.matchTime}</span>
                 </div>
-                <div className="font-extrabold text-xs text-white truncate flex items-center gap-1.5">
-                  <span className="text-emerald-400 font-bold">[홈]</span>
-                  <span>{m.homeTeam.name}</span>
-                  <span className="text-slate-500 font-normal">vs</span>
-                  <span className="text-cyan-400 font-bold">[원정]</span>
-                  <span>{m.awayTeam.name}</span>
+                <div className="text-xs truncate flex items-center gap-1">
+                  <span className="font-semibold truncate">{m.homeTeam.name}</span>
+                  <span className="text-slate-400 text-[10px]">vs</span>
+                  <span className="font-semibold truncate">{m.awayTeam.name}</span>
                 </div>
               </button>
             ))}
@@ -267,30 +272,27 @@ export const PCWebCommunityHub = ({
         </div>
 
         {/* 👉 RIGHT MAIN CHAT AREA */}
-        <div className="flex-1 bg-slate-900/90 border-2 border-slate-800 rounded-2xl p-2.5 sm:p-4 flex flex-col justify-between shadow-2xl h-full overflow-hidden">
+        <div className={`flex-1 border rounded-xl p-2.5 sm:p-3.5 flex flex-col justify-between h-full overflow-hidden ${
+          isLight ? 'bg-white border-slate-200' : 'bg-slate-900 border-slate-800'
+        }`}>
           
           {/* Room Header */}
-          <div className="flex items-center justify-between border-b border-slate-800 pb-3 shrink-0">
+          <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-2.5 shrink-0">
             <div className="flex items-center gap-2 min-w-0">
-              <MessageSquare className="w-5 h-5 text-amber-400 animate-pulse shrink-0" />
+              <MessageSquare className="w-4 h-4 text-emerald-500 shrink-0" />
               <div>
                 <div className="flex items-center gap-2 flex-wrap">
-                  <h2 className="text-sm sm:text-base font-black text-white truncate">
-                    {selectedCustomRoom ? selectedCustomRoom.roomTitle : `[홈] ${selectedMatch.homeTeam?.name || '홈팀'} vs [원정] ${selectedMatch.awayTeam?.name || '원정팀'}`}
+                  <h2 className="text-xs sm:text-sm font-bold truncate text-slate-900 dark:text-slate-100">
+                    {selectedCustomRoom ? selectedCustomRoom.roomTitle : `${selectedMatch.homeTeam?.name || '홈팀'} vs ${selectedMatch.awayTeam?.name || '원정팀'}`}
                   </h2>
-                  <span className={`px-2 py-0.5 rounded-full text-[10px] font-black flex items-center gap-1 ${
-                    isWsConnected ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40' : 'bg-slate-800 text-slate-400'
-                  }`}>
-                    <span className={`w-1.5 h-1.5 rounded-full ${isWsConnected ? 'bg-emerald-400 animate-ping' : 'bg-slate-500'}`} />
-                    <span>{isWsConnected ? 'FastAPI 웹소켓 연결' : '폴백 모드'}</span>
+                  <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-emerald-500/15 text-emerald-500 border border-emerald-500/30 flex items-center gap-1">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                    <span>실시간 연결</span>
                   </span>
-                  <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30">
-                    접속 {onlineCount}명
+                  <span className="px-1.5 py-0.5 rounded-md text-[10px] font-mono text-slate-400 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+                    {onlineCount}명 참여
                   </span>
                 </div>
-                <p className="text-[11px] text-slate-400 font-bold mt-0.5">
-                  {selectedCustomRoom ? selectedCustomRoom.description : `${selectedMatch.league} 오피셜 실시간 라이브 분석 채널`}
-                </p>
               </div>
             </div>
 
@@ -303,46 +305,50 @@ export const PCWebCommunityHub = ({
                 };
                 setHubNotificationSettings(nextMap[hubNotificationSettings]);
               }}
-              className="px-2.5 py-1 bg-slate-950 border border-slate-800 rounded-xl text-xs font-bold text-amber-400 hover:border-amber-500/50 transition-all"
+              className="px-2.5 py-1 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all cursor-pointer"
             >
-              {hubNotificationSettings === 'sound' ? '🔊 소리ON' : hubNotificationSettings === 'browser' ? '🖥️ 알림ON' : '🚫 알림OFF'}
+              {hubNotificationSettings === 'sound' ? '🔊 소리' : hubNotificationSettings === 'browser' ? '🖥️ 브라우저' : '🚫 무음'}
             </button>
           </div>
 
           {/* Chat Feed */}
-          <div ref={chatContainerRef} className="flex-1 overflow-y-auto space-y-3 py-3 pr-2 custom-scrollbar">
+          <div ref={chatContainerRef} className="flex-1 overflow-y-auto space-y-2.5 py-2.5 pr-1 custom-scrollbar">
             {currentMatchChats.map((msg) => (
-              <div key={msg.id} className="p-3 rounded-2xl bg-slate-950/80 border border-slate-800/80 space-y-1">
+              <div key={msg.id} className={`p-2.5 rounded-xl border space-y-1 ${
+                isLight ? 'bg-slate-50 border-slate-200' : 'bg-slate-950/70 border-slate-800'
+              }`}>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-1.5">
-                    <span className="text-sm">{msg.senderAvatar}</span>
-                    <span className="font-black text-xs text-amber-400">{msg.senderName}</span>
-                    <span className="text-[9px] px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-300 font-bold border border-amber-500/30">
+                    <span className="text-xs">{msg.senderAvatar}</span>
+                    <span className="font-bold text-xs text-slate-900 dark:text-slate-200">{msg.senderName}</span>
+                    <span className="text-[9px] px-1.5 py-0.2 rounded bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400 font-semibold">
                       {msg.senderTier}
                     </span>
                   </div>
-                  <span className="text-[10px] text-slate-500 font-mono">{msg.timeStr}</span>
+                  <span className="text-[10px] text-slate-400 font-mono">{msg.timeStr}</span>
                 </div>
-                <p className="text-xs text-slate-200 leading-relaxed">{msg.text}</p>
+                <p className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed">{msg.text}</p>
               </div>
             ))}
           </div>
 
           {/* Chat Input */}
-          <div className="pt-2 border-t border-slate-800 flex items-center gap-2 shrink-0">
+          <div className="pt-2 border-t border-slate-200 dark:border-slate-800 flex items-center gap-2 shrink-0">
             <input
               type="text"
-              placeholder="전 세계 스포츠 라이브 톡에 메시지를 입력하세요..."
+              placeholder="메시지를 입력하세요..."
               value={inputMsg}
               onChange={(e) => setInputMsg(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleSendMsg()}
-              className="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-500 transition-all"
+              className={`flex-1 border rounded-xl px-3.5 py-2 text-xs focus:outline-none transition-all ${
+                isLight ? 'bg-slate-50 border-slate-200 text-slate-900 focus:border-emerald-500 placeholder-slate-400' : 'bg-slate-950 border-slate-800 text-slate-100 focus:border-emerald-500 placeholder-slate-500'
+              }`}
             />
             <button
               onClick={handleSendMsg}
-              className="px-4 py-2.5 bg-gradient-to-r from-amber-400 to-yellow-500 text-slate-950 font-black text-xs rounded-xl shadow-lg hover:from-amber-300 hover:to-yellow-400 transition-all shrink-0 cursor-pointer"
+              className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl shadow-sm transition-all shrink-0 cursor-pointer"
             >
-              전송 🚀
+              전송
             </button>
           </div>
 

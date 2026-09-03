@@ -132,19 +132,19 @@ export const SportsBlogSection: React.FC<SportsBlogSectionProps> = ({
 
   return (
     <div className={`flex flex-col h-full rounded-2xl border shadow-xl overflow-hidden ${
-      isLight ? 'bg-white border-slate-200 text-slate-900' : 'bg-slate-950 border-amber-500/30 text-slate-100'
+      isLight ? 'bg-white border-slate-200 text-slate-900' : 'bg-slate-900 border-slate-800 text-slate-100'
     }`}>
       {/* 🏷️ 블로그 헤더 */}
-      <div className={`p-4 border-b shrink-0 flex items-center justify-between ${
-        isLight ? 'bg-slate-50 border-slate-200' : 'bg-slate-900 border-slate-800'
+      <div className={`p-3.5 sm:p-4 border-b shrink-0 flex items-center justify-between ${
+        isLight ? 'bg-slate-50 border-slate-200' : 'bg-slate-900/90 border-slate-800'
       }`}>
         <div className="flex items-center gap-2">
-          <BookOpen className="w-5 h-5 text-amber-400" />
-          <h2 className="text-sm font-black tracking-tight">📝 스포츠 분석 블로그 & 칼럼</h2>
+          <BookOpen className="w-4 h-4 text-emerald-500" />
+          <h2 className="text-xs sm:text-sm font-bold tracking-tight">스포츠 분석 블로그</h2>
         </div>
         <button
           onClick={() => setIsWriteModalOpen(true)}
-          className="px-3 py-1.5 bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-slate-950 text-xs font-black rounded-xl shadow-md flex items-center gap-1 cursor-pointer transition-all"
+          className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-xl shadow-sm flex items-center gap-1 cursor-pointer transition-all"
         >
           <Edit3 className="w-3.5 h-3.5" />
           <span>글쓰기</span>
@@ -153,35 +153,35 @@ export const SportsBlogSection: React.FC<SportsBlogSectionProps> = ({
 
       {/* 🔍 검색 및 카테고리 필터 */}
       <div className={`p-3 border-b space-y-2 shrink-0 ${
-        isLight ? 'bg-slate-100/50 border-slate-200' : 'bg-slate-900/60 border-slate-800/80'
+        isLight ? 'bg-slate-50/50 border-slate-200' : 'bg-slate-950/60 border-slate-800'
       }`}>
         <div className="relative">
-          <Search className="w-4 h-4 absolute left-3 top-2.5 text-slate-400" />
+          <Search className="w-4 h-4 absolute left-3 top-2 text-slate-400" />
           <input
             type="text"
             placeholder="팀명, 선수명, 분석 키워드 검색..."
             value={searchWord}
             onChange={(e) => setSearchWord(e.target.value)}
             className={`w-full pl-9 pr-3 py-1.5 rounded-xl text-xs border focus:outline-none transition-all ${
-              isLight ? 'bg-white border-slate-200 focus:border-amber-500' : 'bg-slate-950 border-slate-800 focus:border-amber-400 text-slate-200'
+              isLight ? 'bg-white border-slate-200 focus:border-emerald-500 text-slate-900' : 'bg-slate-900 border-slate-700 focus:border-emerald-500 text-slate-100'
             }`}
           />
         </div>
-        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 text-[11px] font-bold">
+        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 text-[11px] font-medium">
           {[
             { id: 'ALL', label: '전체' },
-            { id: 'PREVIEW', label: '⚾ 경기 프리뷰' },
-            { id: 'COLUMN', label: '📊 데이터 칼럼' },
-            { id: 'PICK', label: '🎯 승부처 PICK' },
-            { id: 'STRATEGY', label: '🧠 베팅 전략' }
+            { id: 'PREVIEW', label: '경기 프리뷰' },
+            { id: 'COLUMN', label: '데이터 칼럼' },
+            { id: 'PICK', label: '승부처 PICK' },
+            { id: 'STRATEGY', label: '베팅 전략' }
           ].map(c => (
             <button
               key={c.id}
               onClick={() => setActiveCategory(c.id)}
-              className={`px-2.5 py-1 rounded-lg shrink-0 transition-all cursor-pointer ${
+              className={`px-2.5 py-1 rounded-lg shrink-0 transition-all cursor-pointer font-bold ${
                 activeCategory === c.id
-                  ? 'bg-amber-500 text-slate-950 font-black shadow-sm'
-                  : isLight ? 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-200' : 'bg-slate-950 text-slate-400 border border-slate-800 hover:text-white'
+                  ? 'bg-emerald-600 text-white shadow-sm'
+                  : isLight ? 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-100' : 'bg-slate-800 text-slate-400 border border-slate-700 hover:text-white'
               }`}
             >
               {c.label}
@@ -198,12 +198,14 @@ export const SportsBlogSection: React.FC<SportsBlogSectionProps> = ({
             onClick={() => setSelectedPost(post)}
             className={`p-3.5 rounded-xl border transition-all cursor-pointer hover:scale-[1.01] shadow-sm ${
               isLight
-                ? 'bg-white border-slate-200 hover:border-amber-400 hover:shadow-md'
-                : 'bg-slate-900/90 border-slate-800 hover:border-amber-500/50 hover:bg-slate-850'
+                ? 'bg-white border-slate-200 hover:border-emerald-500 hover:shadow-md text-slate-900'
+                : 'bg-slate-900/90 border-slate-800 hover:border-slate-700 hover:bg-slate-850 text-slate-100'
             }`}
           >
             <div className="flex items-center justify-between gap-2 mb-1.5">
-              <span className="px-2 py-0.5 rounded-md text-[10px] font-black bg-amber-500/20 text-amber-300 border border-amber-500/30">
+              <span className={`px-2 py-0.5 rounded-md text-[10px] font-bold border ${
+                isLight ? 'bg-slate-100 text-slate-700 border-slate-200' : 'bg-slate-800 text-slate-300 border-slate-700'
+              }`}>
                 {post.categoryLabel}
               </span>
               <div className="flex items-center gap-1 text-[10px] text-slate-400">
@@ -212,7 +214,9 @@ export const SportsBlogSection: React.FC<SportsBlogSectionProps> = ({
               </div>
             </div>
 
-            <h3 className="text-xs sm:text-sm font-black line-clamp-2 leading-snug mb-1 text-amber-200 hover:text-amber-100">
+            <h3 className={`text-xs sm:text-sm font-bold line-clamp-2 leading-snug mb-1 ${
+              isLight ? 'text-slate-900 hover:text-emerald-600' : 'text-slate-100 hover:text-emerald-400'
+            }`}>
               {post.title}
             </h3>
 
@@ -220,18 +224,22 @@ export const SportsBlogSection: React.FC<SportsBlogSectionProps> = ({
               {post.summary}
             </p>
 
-            <div className="flex items-center justify-between pt-2 border-t border-slate-800/80 text-[11px]">
-              <div className="flex items-center gap-1.5 text-slate-300">
-                <User className="w-3.5 h-3.5 text-amber-400" />
-                <span className="font-bold">{post.author}</span>
-                <span className="text-[9px] px-1 py-0.2 rounded bg-slate-800 text-amber-300 font-mono">
+            <div className={`flex items-center justify-between pt-2 border-t text-[11px] ${
+              isLight ? 'border-slate-100' : 'border-slate-800'
+            }`}>
+              <div className="flex items-center gap-1.5">
+                <User className="w-3.5 h-3.5 text-slate-400" />
+                <span className={`font-semibold ${isLight ? 'text-slate-700' : 'text-slate-300'}`}>{post.author}</span>
+                <span className={`text-[9px] px-1 py-0.2 rounded font-mono ${
+                  isLight ? 'bg-slate-100 text-slate-600' : 'bg-slate-800 text-slate-400'
+                }`}>
                   {post.authorBadge}
                 </span>
               </div>
               <div className="flex items-center gap-3">
                 <button
                   onClick={(e) => handleLike(post.id, e)}
-                  className="flex items-center gap-1 text-rose-400 hover:scale-110 transition-all"
+                  className="flex items-center gap-1 text-rose-500 hover:scale-110 transition-all"
                 >
                   <Heart className="w-3.5 h-3.5 fill-rose-500/30" />
                   <span className="font-mono text-xs font-bold">{post.likes}</span>
@@ -250,35 +258,35 @@ export const SportsBlogSection: React.FC<SportsBlogSectionProps> = ({
       {selectedPost && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
           <div className={`w-full max-w-lg rounded-2xl border p-5 shadow-2xl space-y-4 max-h-[85vh] overflow-y-auto ${
-            isLight ? 'bg-white border-slate-200 text-slate-900' : 'bg-slate-900 border-amber-500/40 text-slate-100'
+            isLight ? 'bg-white border-slate-200 text-slate-900' : 'bg-slate-900 border-slate-800 text-slate-100'
           }`}>
-            <div className="flex items-center justify-between border-b pb-3 border-slate-800">
-              <span className="text-xs px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 font-black">
+            <div className="flex items-center justify-between border-b pb-3 border-slate-200 dark:border-slate-800">
+              <span className="text-xs px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 font-bold border border-emerald-500/30">
                 {selectedPost.categoryLabel}
               </span>
               <button
                 onClick={() => setSelectedPost(null)}
-                className="p-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300"
+                className="p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-400 cursor-pointer"
               >
                 ✕
               </button>
             </div>
 
-            <h2 className="text-base font-black text-amber-300">{selectedPost.title}</h2>
+            <h2 className="text-base font-bold text-slate-900 dark:text-slate-100">{selectedPost.title}</h2>
 
-            <div className="flex items-center justify-between text-xs text-slate-400 border-b pb-2 border-slate-800">
+            <div className="flex items-center justify-between text-xs text-slate-500 border-b pb-2 border-slate-200 dark:border-slate-800">
               <span>작성자: {selectedPost.author} ({selectedPost.authorBadge})</span>
               <span>{selectedPost.createdAt}</span>
             </div>
 
-            <div className="text-xs sm:text-sm leading-relaxed whitespace-pre-wrap text-slate-200">
+            <div className="text-xs sm:text-sm leading-relaxed whitespace-pre-wrap text-slate-700 dark:text-slate-300">
               {selectedPost.content}
             </div>
 
             {selectedPost.tags.length > 0 && (
               <div className="flex flex-wrap gap-1.5 pt-2">
                 {selectedPost.tags.map((t, idx) => (
-                  <span key={idx} className="text-[10px] px-2 py-0.5 rounded-full bg-slate-800 text-amber-300">
+                  <span key={idx} className="text-[10px] px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
                     #{t}
                   </span>
                 ))}
@@ -292,17 +300,17 @@ export const SportsBlogSection: React.FC<SportsBlogSectionProps> = ({
       {isWriteModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
           <form onSubmit={handleCreatePost} className={`w-full max-w-lg rounded-2xl border p-5 shadow-2xl space-y-4 ${
-            isLight ? 'bg-white border-slate-200 text-slate-900' : 'bg-slate-900 border-amber-500/40 text-slate-100'
+            isLight ? 'bg-white border-slate-200 text-slate-900' : 'bg-slate-900 border-slate-800 text-slate-100'
           }`}>
-            <div className="flex items-center justify-between border-b pb-3 border-slate-800">
-              <h3 className="text-sm font-black text-amber-300 flex items-center gap-1.5">
-                <Edit3 className="w-4 h-4" />
+            <div className="flex items-center justify-between border-b pb-3 border-slate-200 dark:border-slate-800">
+              <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 flex items-center gap-1.5">
+                <Edit3 className="w-4 h-4 text-emerald-500" />
                 <span>스포츠 분석 칼럼 / 블로그 글 등록</span>
               </h3>
               <button
                 type="button"
                 onClick={() => setIsWriteModalOpen(false)}
-                className="p-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300"
+                className="p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-400 cursor-pointer"
               >
                 ✕
               </button>
@@ -310,66 +318,66 @@ export const SportsBlogSection: React.FC<SportsBlogSectionProps> = ({
 
             <div className="space-y-3 text-xs">
               <div>
-                <label className="block mb-1 font-bold text-slate-400">카테고리</label>
+                <label className="block mb-1 font-bold text-slate-500 dark:text-slate-400">카테고리</label>
                 <select
                   value={newCategory}
                   onChange={(e) => setNewCategory(e.target.value as any)}
-                  className="w-full p-2 rounded-xl bg-slate-950 border border-slate-800 text-slate-200"
+                  className="w-full p-2 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-200"
                 >
-                  <option value="PREVIEW">⚾ 경기 프리뷰</option>
-                  <option value="COLUMN">📊 데이터 칼럼</option>
-                  <option value="PICK">🎯 승부처 PICK</option>
-                  <option value="STRATEGY">🧠 베팅 전략</option>
+                  <option value="PREVIEW">경기 프리뷰</option>
+                  <option value="COLUMN">데이터 칼럼</option>
+                  <option value="PICK">승부처 PICK</option>
+                  <option value="STRATEGY">베팅 전략</option>
                 </select>
               </div>
 
               <div>
-                <label className="block mb-1 font-bold text-slate-400">글 제목</label>
+                <label className="block mb-1 font-bold text-slate-500 dark:text-slate-400">글 제목</label>
                 <input
                   type="text"
                   placeholder="분석글 제목을 입력하세요..."
                   value={newTitle}
                   onChange={(e) => setNewTitle(e.target.value)}
-                  className="w-full p-2 rounded-xl bg-slate-950 border border-slate-800 text-slate-200"
+                  className="w-full p-2 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-200"
                   required
                 />
               </div>
 
               <div>
-                <label className="block mb-1 font-bold text-slate-400">분석 내용</label>
+                <label className="block mb-1 font-bold text-slate-500 dark:text-slate-400">분석 내용</label>
                 <textarea
                   placeholder="경기 관전 포인트, 투수/타선 분석, 전술 등을 자유롭게 작성하세요..."
                   value={newContent}
                   onChange={(e) => setNewContent(e.target.value)}
                   rows={6}
-                  className="w-full p-2 rounded-xl bg-slate-950 border border-slate-800 text-slate-200 custom-scrollbar"
+                  className="w-full p-2 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-200 custom-scrollbar"
                   required
                 />
               </div>
 
               <div>
-                <label className="block mb-1 font-bold text-slate-400">태그 (쉼표로 구분)</label>
+                <label className="block mb-1 font-bold text-slate-500 dark:text-slate-400">태그 (쉼표로 구분)</label>
                 <input
                   type="text"
                   placeholder="MLB, 야구, 승부예측"
                   value={newTags}
                   onChange={(e) => setNewTags(e.target.value)}
-                  className="w-full p-2 rounded-xl bg-slate-950 border border-slate-800 text-slate-200"
+                  className="w-full p-2 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-200"
                 />
               </div>
             </div>
 
-            <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-800">
+            <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-200 dark:border-slate-800">
               <button
                 type="button"
                 onClick={() => setIsWriteModalOpen(false)}
-                className="px-4 py-2 rounded-xl text-xs bg-slate-800 text-slate-300 hover:bg-slate-700 cursor-pointer"
+                className="px-3.5 py-2 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer font-bold"
               >
                 취소
               </button>
               <button
                 type="submit"
-                className="px-5 py-2 rounded-xl text-xs bg-gradient-to-r from-amber-500 to-yellow-500 text-slate-950 font-black cursor-pointer shadow-md"
+                className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-bold cursor-pointer transition-all shadow-sm"
               >
                 등록하기
               </button>

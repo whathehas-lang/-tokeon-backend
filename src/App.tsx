@@ -795,14 +795,20 @@ export default function App() {
             <div className="hidden lg:flex flex-row gap-3.5 xl:gap-5 w-full items-stretch h-[calc(100vh-140px)] min-h-[700px]">
               
               {/* 📱 1. [LEFT PANE 32%]: 실제 핸드폰에서 보이는 경기 화면 그대로 (가짜 껍데기/노치 없이 깔끔한 모바일 뷰) */}
-              <div className="w-[32%] xl:w-[30%] h-full flex flex-col shrink-0 bg-slate-950/95 border-2 border-amber-500/30 rounded-2xl shadow-xl overflow-hidden">
+              <div className={`w-[32%] xl:w-[30%] h-full flex flex-col shrink-0 rounded-2xl border shadow-xl overflow-hidden ${
+                isLight ? 'bg-white border-slate-200' : 'bg-slate-900 border-slate-800'
+              }`}>
                 {/* 좌측 경기 목록 헤더 */}
-                <div className="p-3 border-b border-slate-800 bg-slate-900 flex items-center justify-between shrink-0">
+                <div className={`p-3.5 border-b flex items-center justify-between shrink-0 ${
+                  isLight ? 'bg-slate-50 border-slate-200' : 'bg-slate-900/90 border-slate-800'
+                }`}>
                   <div className="flex items-center gap-2">
                     <span className="w-2 h-2 rounded-full bg-emerald-500" />
-                    <span className="font-bold text-xs text-white">실시간 경기</span>
+                    <span className="font-bold text-xs sm:text-sm text-slate-900 dark:text-slate-100">실시간 경기</span>
                   </div>
-                  <span className="text-[11px] font-mono font-bold px-2 py-0.5 rounded bg-slate-800 text-slate-300">
+                  <span className={`text-[11px] font-mono font-bold px-2 py-0.5 rounded border ${
+                    isLight ? 'bg-slate-100 text-slate-700 border-slate-200' : 'bg-slate-800 text-slate-300 border-slate-700'
+                  }`}>
                     {filteredMatches.length}경기
                   </span>
                 </div>
@@ -830,7 +836,11 @@ export default function App() {
                     <div className="pt-2 pb-6 text-center">
                       <button
                         onClick={() => setMatchLimit((prev) => prev + 20)}
-                        className="w-full py-2.5 bg-slate-900 hover:bg-slate-850 border border-amber-500/40 text-amber-300 text-xs font-black rounded-xl shadow transition-all cursor-pointer"
+                        className={`w-full py-2.5 rounded-xl border text-xs font-bold shadow-sm transition-all cursor-pointer ${
+                          isLight
+                            ? 'bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-300'
+                            : 'bg-slate-800 hover:bg-slate-750 text-slate-300 border-slate-700'
+                        }`}
                       >
                         ➕ 경기 더보기 (+20개 로딩)
                       </button>
@@ -846,6 +856,7 @@ export default function App() {
                   userProfile={userProfile}
                   membershipTier={membershipTier}
                   onOpenMatchDetail={(m) => handleOpenDetailModal(m)}
+                  theme={theme}
                 />
               </div>
 
@@ -895,6 +906,7 @@ export default function App() {
               userProfile={userProfile}
               membershipTier={membershipTier}
               onOpenMatchDetail={(m) => handleOpenDetailModal(m)}
+              theme={theme}
             />
 
             {/* 2. [배너 입점 문의 📲] 바 */}
