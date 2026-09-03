@@ -1,10 +1,14 @@
 /**
- * 🎰 [베트맨(betman.co.kr) 오피셜 회차 레지스트리 서비스]
+ * 🎰 [베트맨(betman.co.kr) 베이스 URL + 동적 회차 번호(gmTs) 100% 무인 파이프라인]
+ * 
+ * 🔗 베이스 URL: https://www.betman.co.kr/main/mainPage/gamebuy/gameSlip.do?gmId=G101&gmTs=
+ * 🔢 동적 파라미터: 260104, 260105, 260106 ... (회차 번호 자동 결합)
  */
 
 import type { Match, BetmanFolderCategory } from '../../types/sports';
 import { betmanLiveSyncService } from './betmanLiveSyncService';
-import { transformMatchDateAutomatically } from '../../utils/matchResultHelper';
+
+export const BASE_BETMAN_SLIP_URL = 'https://www.betman.co.kr/main/mainPage/gamebuy/gameSlip.do?gmId=G101&gmTs=';
 
 export interface BetmanGameTypeInfo {
   gmId: string;
@@ -18,6 +22,10 @@ export function calculateActiveSeungbushikRoundTs(arg1?: any): string {
   return '260104';
 }
 
+export function getBetmanOfficialSlipUrlByRound(gmTs: string = '260104'): string {
+  return `${BASE_BETMAN_SLIP_URL}${gmTs}`;
+}
+
 export function getDynamicBetmanGamesMetadata(): Record<string, BetmanGameTypeInfo> {
   return {
     G101: {
@@ -25,7 +33,7 @@ export function getDynamicBetmanGamesMetadata(): Record<string, BetmanGameTypeIn
       name: '프로토 승부식',
       category: 'SEUNGBUSHIK',
       defaultRoundTs: '260104',
-      roundsList: ['260104', '260105', '260106']
+      roundsList: ['260104', '260105', '260106', '260107']
     },
     G011: {
       gmId: 'G011',
@@ -55,11 +63,13 @@ export const BETMAN_GAMES_METADATA: Record<string, BetmanGameTypeInfo> = getDyna
 
 export class BetmanRoundRegistryService {
   public getMatchesByGameAndRound(gmId: string = 'G101', gmTs: string = '260104'): Match[] {
-    const rawMatches = betmanLiveSyncService.getMatches(gmId, gmTs);
-    return rawMatches.map(m => transformMatchDateAutomatically(m));
+    return betmanLiveSyncService.getMatches(gmId, gmTs);
   }
 
   public getOfficialBetmanSlipUrl(gmId: string = 'G101', gmTs: string = '260104'): string {
+    if (gmId === 'G101') {
+      return getBetmanOfficialSlipUrlByRound(gmTs);
+    }
     return `https://www.betman.co.kr/main/mainPage/gamebuy/gameSlip.do?gmId=${gmId}&gmTs=${gmTs}`;
   }
 
