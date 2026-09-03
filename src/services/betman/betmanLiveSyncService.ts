@@ -3,11 +3,10 @@
  */
 
 import type { Match } from '../../types/sports';
-import { OFFICIAL_260103_MATCHES } from '../../mock/official260103Schedule';
 
 export const RENDER_BACKEND_URL = 'https://tokeon-backend.onrender.com';
 
-let lastKnownLiveMatches: Match[] = OFFICIAL_260103_MATCHES;
+let lastKnownLiveMatches: Match[] = [];
 
 export class BetmanLiveSyncService {
   private static instance: BetmanLiveSyncService;

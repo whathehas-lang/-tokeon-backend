@@ -33,25 +33,24 @@ function getRollingDates() {
   return dates;
 }
 
-// 🎯 종목별/리그별 엔드포인트 정의 (메이저 프로 리그 전담)
+// 🎯 종목별/리그별 엔드포인트 정의 (사용자 지정 100% 명품 리그 전용 수도꼭지)
 const TARGET_ENDPOINTS = [
-  // ⚾ 1. 메이저 3대 야구 전담 쿼리 (마이너리그, 멕시칸리그 등 잡야구 100% 원천 배제)
+  // ⚾ 야구 메이저 3대 리그: MLB(1), NPB(12), KBO(15)
   { sport: 'baseball', host: 'v1.baseball.api-sports.io', endpoint: '/games', leagueId: 1, name: 'MLB 메이저리그', icon: '⚾' },
   { sport: 'baseball', host: 'v1.baseball.api-sports.io', endpoint: '/games', leagueId: 12, name: 'NPB 일본야구', icon: '⚾' },
   { sport: 'baseball', host: 'v1.baseball.api-sports.io', endpoint: '/games', leagueId: 15, name: 'KBO 한국야구', icon: '⚾' },
   
-  // ⚽ 2. 글로벌 축구 (유럽 5대 리그 & 챔스 & K리그 등 주요 대회 수집 후 필터링)
-  { sport: 'football', host: 'v3.football.api-sports.io', endpoint: '/fixtures', leagueId: null, name: '글로벌 축구', icon: '⚽' },
+  // ⚽ 축구 명품 메이저 리그: EPL(39), 라리가(140), 분데스리가(78), 세리에A(135), 리그앙(61), 챔스(2), K리그1(292)
+  { sport: 'football', host: 'v3.football.api-sports.io', endpoint: '/fixtures', leagueId: 39, name: '잉글랜드 프리미어리그', icon: '⚽' },
+  { sport: 'football', host: 'v3.football.api-sports.io', endpoint: '/fixtures', leagueId: 140, name: '스페인 라리가', icon: '⚽' },
+  { sport: 'football', host: 'v3.football.api-sports.io', endpoint: '/fixtures', leagueId: 78, name: '독일 분데스리가', icon: '⚽' },
+  { sport: 'football', host: 'v3.football.api-sports.io', endpoint: '/fixtures', leagueId: 135, name: '이탈리아 세리에 A', icon: '⚽' },
+  { sport: 'football', host: 'v3.football.api-sports.io', endpoint: '/fixtures', leagueId: 61, name: '프랑스 리그 앙', icon: '⚽' },
+  { sport: 'football', host: 'v3.football.api-sports.io', endpoint: '/fixtures', leagueId: 2, name: 'UEFA 챔피언스리그', icon: '⚽' },
+  { sport: 'football', host: 'v3.football.api-sports.io', endpoint: '/fixtures', leagueId: 292, name: '대한민국 K리그 1', icon: '⚽' },
 
-  // 🏀 3. 글로벌 농구
-  { sport: 'basketball', host: 'v1.basketball.api-sports.io', endpoint: '/games', leagueId: 12, name: 'NBA 농구', icon: '🏀' },
-  { sport: 'basketball', host: 'v1.basketball.api-sports.io', endpoint: '/games', leagueId: null, name: '글로벌 농구', icon: '🏀' },
-
-  // 🏐 4. 글로벌 배구
-  { sport: 'volleyball', host: 'v1.volleyball.api-sports.io', endpoint: '/games', leagueId: null, name: '글로벌 배구', icon: '🏐' },
-
-  // 🏒 5. 글로벌 하키
-  { sport: 'hockey', host: 'v1.hockey.api-sports.io', endpoint: '/games', leagueId: null, name: '글로벌 하키', icon: '🏒' }
+  // 🏀 농구 메이저: NBA(12)
+  { sport: 'basketball', host: 'v1.basketball.api-sports.io', endpoint: '/games', leagueId: 12, name: 'NBA 농구', icon: '🏀' }
 ];
 
 // 🏆 [메이저 1부 리그 & 주요 대회 엄선 화이트리스트 필터]
