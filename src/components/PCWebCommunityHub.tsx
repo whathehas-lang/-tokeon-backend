@@ -210,7 +210,7 @@ export const PCWebCommunityHub = ({
   };
 
   return (
-    <div className="w-full bg-slate-950 text-slate-100 rounded-3xl border-2 border-amber-500/40 shadow-2xl overflow-hidden p-2 sm:p-3.5 h-[calc(100vh-100px)] backdrop-blur-xl sticky top-20 flex flex-col">
+    <div className="w-full bg-slate-950 text-slate-100 rounded-3xl border-2 border-amber-500/40 shadow-2xl overflow-hidden p-2 sm:p-3.5 h-full backdrop-blur-xl flex flex-col">
       
       {/* MAIN CONTAINER */}
       <div className="flex flex-row items-stretch gap-2 sm:gap-3 flex-1 overflow-hidden">

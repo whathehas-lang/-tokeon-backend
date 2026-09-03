@@ -777,8 +777,8 @@ export default function App() {
       />
 
       {/* Dynamic View Mode Main Container */}
-      <main className={`flex-1 w-full mx-auto px-3 sm:px-6 py-4 space-y-4 ${
-        viewMode === 'PC_WEB' ? 'max-w-7xl' : 'max-w-xl md:max-w-3xl lg:max-w-4xl'
+      <main className={`flex-1 w-full mx-auto px-2 sm:px-4 py-3 space-y-3 ${
+        viewMode === 'PC_WEB' ? 'max-w-[1920px]' : 'max-w-xl md:max-w-3xl lg:max-w-4xl'
       }`}>
 
 
@@ -855,18 +855,18 @@ export default function App() {
 
             {/* 🖥️ PC DESKTOP 3-SPLIT LAYOUT (좌: 핸드폰 화면 / 중: 실시간 채팅 / 우: 블로그) */}
             {viewMode === 'PC_WEB' ? (
-              <div className="grid grid-cols-1 xl:grid-cols-12 gap-4 xl:gap-5 items-start relative w-full">
+              <div className="flex flex-col lg:flex-row gap-3.5 xl:gap-5 w-full items-stretch h-[calc(100vh-140px)] min-h-[700px]">
                 
-                {/* 📱 1. [LEFT PANE (4 COLS)]: 핸드폰 모바일 화면 디바이스 프레임 */}
-                <div className="xl:col-span-4 flex flex-col items-center">
-                  <div className="w-full max-w-[420px] rounded-[36px] border-[6px] border-slate-800/90 shadow-2xl overflow-hidden bg-slate-950 flex flex-col h-[calc(100vh-110px)] sticky top-20">
+                {/* 📱 1. [LEFT PANE]: 핸드폰 모바일 화면 디바이스 프레임 (너비 약 32%) */}
+                <div className="w-full lg:w-[32%] xl:w-[30%] h-full flex flex-col items-center shrink-0">
+                  <div className="w-full h-full rounded-[36px] border-[6px] border-slate-800 shadow-2xl overflow-hidden bg-slate-950 flex flex-col">
                     
                     {/* 스마트폰 상단 스피커 & 카메라 노치 바 */}
                     <div className="bg-slate-900 px-4 py-2 border-b border-slate-800/80 flex items-center justify-between shrink-0 select-none">
                       <div className="flex items-center gap-1.5 text-[10px] text-amber-400 font-mono font-bold">
-                        <span>📱 TOKEON MOBILE</span>
+                        <span>📱 TOKEON APP</span>
                       </div>
-                      <div className="w-16 h-3.5 bg-black rounded-full border border-slate-800/80 flex items-center justify-center">
+                      <div className="w-16 h-3.5 bg-black rounded-full border border-slate-800 flex items-center justify-center">
                         <div className="w-2 h-2 rounded-full bg-slate-800" />
                       </div>
                       <div className="flex items-center gap-1 text-[10px] text-emerald-400 font-mono font-bold">
@@ -922,8 +922,8 @@ export default function App() {
                   </div>
                 </div>
 
-                {/* 💬 2. [CENTER PANE (4 COLS)]: FastAPI WebSocket 실시간 채팅 */}
-                <div className="xl:col-span-4 h-[calc(100vh-110px)] sticky top-20 flex flex-col">
+                {/* 💬 2. [CENTER PANE]: FastAPI WebSocket 실시간 채팅 (중앙 38~40% 꽉 채움) */}
+                <div className="w-full lg:w-[38%] xl:w-[40%] h-full flex flex-col min-w-0 flex-1">
                   <PCWebCommunityHub
                     matches={matches}
                     userProfile={userProfile}
@@ -932,8 +932,8 @@ export default function App() {
                   />
                 </div>
 
-                {/* 📝 3. [RIGHT PANE (4 COLS)]: 전문 스포츠 분석 블로그 & 칼럼 */}
-                <div className="xl:col-span-4 h-[calc(100vh-110px)] sticky top-20 flex flex-col">
+                {/* 📝 3. [RIGHT PANE]: 전문 스포츠 분석 블로그 & 칼럼 (우측 30%) */}
+                <div className="w-full lg:w-[30%] xl:w-[30%] h-full flex flex-col shrink-0 min-w-0">
                   <SportsBlogSection
                     matches={matches}
                     theme={theme}
