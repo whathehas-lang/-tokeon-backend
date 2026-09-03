@@ -630,18 +630,25 @@ export default function App() {
   const rawFiltered = matches.filter((m) => {
     if (!m) return false;
 
-    // 🔒 1. 시간이 지난 경기 (이미 종료된 경기) 숨김 파이프라인
+    // 🔒 1. 시간이 지난 경기 (경기 시작과 동시에 100% 즉시 숨김)
     if (hidePassedMatches) {
-      if (m.status === 'FINISHED') {
+      if (m.status === 'FINISHED' || m.status === 'LIVE' || (m as any).isStarted) {
         return false;
       }
-      // ISO UTC 시각을 한국 시각(KST)과 정확히 비교
-      const now = new Date();
+      
+      const nowSeconds = Math.floor(Date.now() / 1000);
+      const matchTimestamp = (m as any).timestamp;
+      
+      // 1) 초 단위 유닉스 타임스탬프 기준: 시작 시각이 현재 시각 이하(과거/현재)면 즉시 100% 숨김
+      if (matchTimestamp && matchTimestamp <= nowSeconds) {
+        return false;
+      }
+
+      // 2) ISO 문자열 기준: 시작 시각이 현재 시각 이하이면 즉시 100% 숨김
       const rawTime = (m as any).rawTimeIso || m.matchTime || '';
       if (rawTime.includes('T')) {
         const matchDt = new Date(rawTime);
-        // 이미 2시간 이상 지난 경기는 자동 제외
-        if (!isNaN(matchDt.getTime()) && now.getTime() - matchDt.getTime() > 2 * 3600 * 1000) {
+        if (!isNaN(matchDt.getTime()) && matchDt.getTime() <= Date.now()) {
           return false;
         }
       }
