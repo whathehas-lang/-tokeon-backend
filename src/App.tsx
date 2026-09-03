@@ -806,7 +806,7 @@ export default function App() {
 
             {/* PC DESKTOP MODE vs MOBILE APP MODE */}
             {viewMode === 'PC_WEB' ? (
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start relative">
                 
                 {/* LEFT MAIN GRID (8 COLS): 2-COLUMN MATCH CARDS GRID */}
                 <div className="lg:col-span-8 space-y-4">
@@ -891,7 +891,7 @@ export default function App() {
                 </div>
 
                 {/* RIGHT SIDEBAR (4 COLS): STICKY FULL-HEIGHT REAL-TIME CHAT PANEL */}
-                <div className="lg:col-span-4 space-y-4 sticky top-20">
+                <div className="lg:col-span-4 space-y-4 sticky top-20 self-start z-30">
                   <div className={`p-4 rounded-2xl border space-y-3 shadow-2xl flex flex-col h-[calc(100vh-100px)] ${
                     isLight ? 'bg-white border-slate-200' : 'bg-slate-900/95 border-amber-500/40'
                   }`}>
