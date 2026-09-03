@@ -597,7 +597,8 @@ export default function App() {
   };
 
   const [hidePassedMatches, setHidePassedMatches] = useState<boolean>(() => {
-    return localStorage.getItem('tokeon_hide_passed_matches') === 'true';
+    const saved = localStorage.getItem('tokeon_hide_passed_matches');
+    return saved ? saved === 'true' : true; // 🔒 기본값 true: 지난 경기는 화면에서 100% 숨김
   });
 
   useEffect(() => {
