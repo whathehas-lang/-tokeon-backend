@@ -783,69 +783,7 @@ export default function App() {
 
 
 
-        {/* 📌 3-DAY FREE TRIAL COUNTDOWN NEON BANNER */}
-        <div className={`p-3 rounded-2xl border flex flex-col sm:flex-row items-center justify-between gap-3 shadow-md transition-all ${
-          isTrialExpired
-            ? isLight ? 'bg-rose-50 border-rose-300 text-rose-900' : 'bg-gradient-to-r from-rose-950 via-slate-900 to-rose-950 border-rose-500/70 text-rose-200'
-            : isLight ? 'bg-gradient-to-r from-amber-50 via-yellow-50 to-amber-50 border-amber-300 text-amber-950' : 'bg-gradient-to-r from-amber-950 via-slate-900 to-amber-950 border-amber-500/70 text-amber-200'
-        }`}>
-          <div className="flex items-center gap-2.5 min-w-0">
-            {isTrialExpired ? (
-              <AlertTriangle className="w-5 h-5 text-rose-500 shrink-0 animate-bounce" />
-            ) : (
-              <Clock className="w-5 h-5 text-amber-500 shrink-0 animate-pulse" />
-            )}
-            <div className="min-w-0">
-              <div className="flex items-center gap-2">
-                <span className={`font-black text-xs sm:text-sm ${isLight ? 'text-slate-950' : 'text-white'}`}>
-                  {isTrialExpired ? '⛔ 무료 3일 체험이 만료되었습니다!' : '⏳ [무료 3일 체험 진행중]'}
-                </span>
-                <span className={`text-[10px] px-2 py-0.5 rounded font-mono font-black ${
-                  isTrialExpired ? 'bg-rose-500 text-white' : 'bg-amber-400 text-slate-950'
-                }`}>
-                  {isTrialExpired ? 'EXPIRED' : '3-DAY TRIAL'}
-                </span>
-              </div>
-              <p className={`text-[11px] font-medium truncate mt-0.5 ${isLight ? 'text-slate-700' : 'text-slate-300'}`}>
-                {isTrialExpired
-                  ? '서비스 연결이 제한되었습니다. 오피셜 팩트 데이터 이용을 위해 유료 멤버십으로 전환해 주세요.'
-                  : `무료 체험 남은 시간: ${formatTimerStr(trialSecondsLeft)} (만료 시 유료 전용 전환)`}
-              </p>
-            </div>
-          </div>
 
-          <div className="flex items-center gap-2 shrink-0">
-            {isTrialExpired ? (
-              <button
-                onClick={() => setIsPaywallOpen(true)}
-                className="px-4 py-2 bg-gradient-to-r from-amber-400 to-yellow-500 hover:from-amber-300 hover:to-yellow-400 text-slate-950 font-black text-xs rounded-xl shadow-lg transition-all flex items-center gap-1.5 cursor-pointer border border-yellow-200"
-              >
-                <CreditCard className="w-4 h-4 text-slate-950" />
-                <span>유료 멤버십 구독하기 💳</span>
-              </button>
-            ) : (
-              <>
-                <button
-                  onClick={() => setIsPaywallOpen(true)}
-                  className="px-3 py-1.5 bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-[11px] rounded-xl shadow-sm transition-all flex items-center gap-1 cursor-pointer border border-amber-300"
-                >
-                  <span>유료 전환 👑</span>
-                </button>
-                
-                {/* 🧪 테스트용 3일 만료 즉시 시뮬레이션 버튼 */}
-                <button
-                  onClick={handleSimulateTrialExpired}
-                  className={`px-2.5 py-1.5 text-[10px] font-bold rounded-xl border transition-all cursor-pointer ${
-                    isLight ? 'bg-white hover:bg-rose-50 text-rose-600 border-rose-300' : 'bg-slate-800 hover:bg-slate-700 text-rose-300 border-rose-500/30'
-                  }`}
-                  title="3일 만료 차단 테스트"
-                >
-                  <span>⏰ 3일 만료 테스트</span>
-                </button>
-              </>
-            )}
-          </div>
-        </div>
 
         {/* HOME TAB CONTENT (경기목록 탭 전용) */}
         {activeTab === 'home' && (
@@ -858,14 +796,14 @@ export default function App() {
               
               {/* 📱 1. [LEFT PANE 32%]: 실제 핸드폰에서 보이는 경기 화면 그대로 (가짜 껍데기/노치 없이 깔끔한 모바일 뷰) */}
               <div className="w-[32%] xl:w-[30%] h-full flex flex-col shrink-0 bg-slate-950/95 border-2 border-amber-500/30 rounded-2xl shadow-xl overflow-hidden">
-                {/* 모바일 뷰 상단 상태 헤더 */}
-                <div className="p-3 border-b border-slate-800 bg-slate-900/90 flex items-center justify-between shrink-0">
+                {/* 좌측 경기 목록 헤더 */}
+                <div className="p-3 border-b border-slate-800 bg-slate-900 flex items-center justify-between shrink-0">
                   <div className="flex items-center gap-2">
-                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping" />
-                    <span className="font-black text-xs text-amber-300">실시간 매치업 (모바일 뷰)</span>
+                    <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                    <span className="font-bold text-xs text-white">실시간 경기</span>
                   </div>
-                  <span className="text-[11px] font-mono font-black px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40">
-                    {filteredMatches.length}경기 라이브
+                  <span className="text-[11px] font-mono font-bold px-2 py-0.5 rounded bg-slate-800 text-slate-300">
+                    {filteredMatches.length}경기
                   </span>
                 </div>
 
