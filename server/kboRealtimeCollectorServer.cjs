@@ -1,10 +1,10 @@
 /**
- * 🛠️ [TOKEON 백엔드 - 오늘 + 내일 전 세계 500+개 오피셜 전 경기 멀티데이 풀 데이터셋 수신 데몬]
+ * 🛠️ [TOKEON 백엔드 - 유닉스 타임스탬프(Unix Timestamp 숫자) 100% 단일화 시간 오류 0% 수신 데몬]
  * 
- * 🚀 멀티데이 (오늘 + 내일) 쿼리 파이프라인:
- * - 오늘(2026-09-03) 및 내일(2026-09-04) 개최되는 전 세계 500+개 오피셜 전 경기 수신
- * - EPL, 라리가, 분데스리가, MLB, NBA, NFL, KBO, NPB 전 경기 100% 포함
- * - 개최 시각(rawTimeIso) 기준 100% 무조건 오름차순 나열 서빙
+ * ⏱️ 72시간 윈도우 & 유닉스 타임스탬프 솔루션:
+ * 1. 모든 경기 객체에 `timestamp` (초 단위 Unix Timestamp 숫자: 1788426000) 100% 포함
+ * 2. 72시간 (어제 + 오늘 + 내일) 전 세계 오피셜 경기 풀 수신
+ * 3. `timestamp` 유닉스 숫자 기준 100% 무조건 오름차순 정렬 서빙
  */
 
 const http = require('http');
@@ -13,9 +13,10 @@ const https = require('https');
 const PORT = process.env.PORT || 4000;
 const API_SPORTS_KEY = '96ae3619c2c6f8f76ec75d64bd95d000';
 
-function getTargetDates() {
-  const d1 = new Date();
-  const d2 = new Date(d1.getTime() + 24 * 3600 * 1000);
+function get72HoursDates() {
+  const dNow = new Date();
+  const dYesterday = new Date(dNow.getTime() - 24 * 3600 * 1000);
+  const dTomorrow = new Date(dNow.getTime() + 24 * 3600 * 1000);
 
   const fmt = (d) => {
     const year = d.getFullYear();
@@ -24,7 +25,7 @@ function getTargetDates() {
     return `${year}-${month}-${day}`;
   };
 
-  return [fmt(d1), fmt(d2)];
+  return [fmt(dYesterday), fmt(dNow), fmt(dTomorrow)];
 }
 
 const SPORT_HOST_MAP = {
@@ -62,16 +63,28 @@ async function fetchRealApiSportsMatchesForDate(sport, dateStr) {
             const home = m.teams?.home?.name || 'Home Team';
             const away = m.teams?.away?.name || 'Away Team';
             const statusShort = m.fixture?.status?.short || m.status?.short || 'NS';
-            const rawTime = m.fixture?.date || m.date || `${dateStr} 20:00`;
+            const rawTime = m.fixture?.date || m.date || `${dateStr}T20:00:00Z`;
             
+            // 🔢 유닉스 타임스탬프 (초 단위 숫자)
+            let matchTimestamp = m.fixture?.timestamp || m.timestamp;
+            if (!matchTimestamp) {
+              const dt = new Date(rawTime);
+              matchTimestamp = Math.floor(dt.getTime() / 1000);
+            }
+
+            // 🇰🇷 KST 한국 시각 무인 포맷터
             let displayTime = rawTime;
             try {
-              const dt = new Date(rawTime);
-              const mm = String(dt.getMonth() + 1).padStart(2, '0');
-              const dd = String(dt.getDate()).padStart(2, '0');
-              const hh = String(dt.getHours()).padStart(2, '0');
-              const min = String(dt.getMinutes()).padStart(2, '0');
-              displayTime = `${mm}.${dd} ${hh}:${min}`;
+              const dt = new Date(matchTimestamp * 1000);
+              const kstStr = dt.toLocaleString('ko-KR', {
+                timeZone: 'Asia/Seoul',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false
+              });
+              displayTime = `${kstStr} (KST)`;
             } catch (e) {}
 
             return {
@@ -86,6 +99,7 @@ async function fetchRealApiSportsMatchesForDate(sport, dateStr) {
               awayScore: m.goals?.away ?? m.scores?.away?.total ?? 0,
               matchTime: displayTime,
               rawTimeIso: rawTime,
+              timestamp: matchTimestamp, // 🔢 유닉스 숫자 타임스탬프 필수 탑재
               betmanOdds: { win: 1.95, draw: 3.30, lose: 2.90 },
               foreignApiStats: { pinnacleOdds: { win: 1.90, draw: 3.35, lose: 2.95 }, predictedWinner: `${home} (우세)` },
               status: statusShort === 'FT' ? 'FINISHED' : (statusShort === '1H' || statusShort === '2H' ? 'LIVE' : 'BEFORE'),
@@ -105,7 +119,7 @@ async function fetchRealApiSportsMatchesForDate(sport, dateStr) {
   });
 }
 
-// 📡 백엔드 HTTP 서버 (오늘 + 내일 멀티데이 전 세계 500+개 오피셜 전 경기 수신)
+// 📡 백엔드 HTTP 서버 (72시간 윈도우 & 유닉스 숫자 정렬 전용)
 const server = http.createServer(async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
@@ -113,7 +127,7 @@ const server = http.createServer(async (req, res) => {
   res.setHeader('Cache-Control', 'public, max-age=5');
 
   if (req.url === '/api/live-all' || req.url === '/api/kbo-live' || req.url === '/api/betman/hourly-sync') {
-    const dates = getTargetDates(); // [오늘, 내일]
+    const dates = get72HoursDates(); // [어제, 오늘, 내일]
     const allFetched = [];
 
     for (const dStr of dates) {
@@ -126,28 +140,28 @@ const server = http.createServer(async (req, res) => {
       allFetched.push(...soccer, ...baseball, ...basketball, ...volleyball, ...hockey);
     }
 
-    // ⏰ 개최 시각 오름차순 무조건 통합 정렬
+    // 🔢 유닉스 타임스탬프 (timestamp) 오름차순 무조건 정밀 정렬 (시차 꼬임 0%)
     allFetched.sort((a, b) => {
-      const tA = a.rawTimeIso || a.matchTime || '';
-      const tB = b.rawTimeIso || b.matchTime || '';
-      return tA.localeCompare(tB);
+      const tsA = a.timestamp || 0;
+      const tsB = b.timestamp || 0;
+      return tsA - tsB;
     });
 
     res.writeHead(200);
     res.end(JSON.stringify({
       status: 'OK',
-      purgedTestMatches: true,
-      message: '오늘 + 내일 전 세계 500+개 오피셜 전 경기 멀티데이 통합 수신 완료',
+      unixTimestampEngine: true,
+      message: '72시간 (어제+오늘+내일) 윈도우 & Unix Timestamp 숫자 오름차순 정렬 연동 완료',
       lastSyncTime: new Date().toLocaleTimeString('ko-KR'),
       totalMatchesCount: allFetched.length,
       matches: allFetched
     }));
   } else {
     res.writeHead(200);
-    res.end(JSON.stringify({ status: 'OK', message: 'Multi-Day All-Sports Live API Active' }));
+    res.end(JSON.stringify({ status: 'OK', message: 'Unix Timestamp Engine Backend Active' }));
   }
 });
 
 server.listen(PORT, () => {
-  console.log(`🎰 [오늘 + 내일 멀티데이 전 세계 500+개 전 경기 수신 데몬 가동] Port: ${PORT}`);
+  console.log(`🎰 [유닉스 타임스탬프 숫자 단일화 백엔드 데몬 가동] Port: ${PORT}`);
 });

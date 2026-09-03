@@ -670,14 +670,17 @@ export default function App() {
     return true;
   });
 
-  // ⏰ 4. 100% 무조건 시간별(matchTime) 오름차순 정렬 (종목 구분 없이 시각순 나열)
+  // ⏰ 4. 100% 무조건 유닉스 타임스탬프(timestamp 숫자) 오름차순 정렬 (시차 꼬임 0%)
   const filteredMatches = [...rawFiltered].sort((a, b) => {
+    const tsA = (a as any).timestamp || 0;
+    const tsB = (b as any).timestamp || 0;
+    if (tsA !== tsB) return tsA - tsB;
     const timeA = a.matchTime || '';
     const timeB = b.matchTime || '';
     return timeA.localeCompare(timeB);
   });
   
-  // 📌 100% 무조건 시간별 오름차순 정렬 (종목 구분 없이 시각순 통합 나열)
+  // 📌 100% 무조건 유닉스 타임스탬프 오름차순 정렬
   const sortedMatches = filteredMatches;
 
   // Handle favorite toggle
