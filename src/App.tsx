@@ -649,15 +649,15 @@ export default function App() {
       }
     }
 
-    // 🔒 2. 카테고리/폴더 필터링 (전 세계 스포츠 ALL 모드일 때는 전 종목 100% 바이패스 출력)
+    // 🔒 2. 카테고리/종목 필터링 (버튼 클릭 시 해당 종목만 필터링)
     if (selectedFolder === 'SEUNGMUBAE') {
       if (m.sport !== 'football' && m.betmanFolder !== 'SEUNGMUBAE') return false;
     } else if (selectedFolder === 'SEUNG1PAE') {
       if (m.sport !== 'baseball' && m.betmanFolder !== 'SEUNG1PAE') return false;
     } else if (selectedFolder === 'GIROKSIK') {
       if (m.betmanFolder !== 'GIROKSIK') return false;
-    } else if (selectedFolder === 'SEUNGBUSHIK') {
-      // 승부식 및 전 세계 스포츠 전체보기 ➔ 100% 바이패스
+    } else if (selectedFolder !== 'ALL' && selectedFolder !== 'SEUNGBUSHIK' && (m.sport as string) !== (selectedFolder as string)) {
+      return false;
     }
 
     // 🔒 3. 검색어 필터링
@@ -672,21 +672,16 @@ export default function App() {
     }
     return true;
   });
-  
-  // 📌 오피셜 경기 번호 순 정밀 정렬
-  const sortedMatches = [...rawFiltered].sort((a, b) => {
-    const noA = a.betmanMatchNo || (a as any).matchNo || 0;
-    const noB = b.betmanMatchNo || (b as any).matchNo || 0;
-    if (noA !== noB) return noA - noB;
 
+  // ⏰ 4. 100% 무조건 시간별(matchTime) 오름차순 정렬 (종목 구분 없이 시각순 나열)
+  const filteredMatches = [...rawFiltered].sort((a, b) => {
     const timeA = a.matchTime || '';
     const timeB = b.matchTime || '';
-    if (timeA !== timeB) return timeA.localeCompare(timeB);
-
-    return a.id.localeCompare(b.id);
+    return timeA.localeCompare(timeB);
   });
-
-  const filteredMatches = sortedMatches;
+  
+  // 📌 100% 무조건 시간별 오름차순 정렬 (종목 구분 없이 시각순 통합 나열)
+  const sortedMatches = filteredMatches;
 
   // Handle favorite toggle
   const handleToggleFavorite = (matchId: string) => {
