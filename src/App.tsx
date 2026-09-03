@@ -660,13 +660,12 @@ export default function App() {
       return false;
     }
 
-    // 🔒 3. 검색어 필터링
+    // 🔒 3. 팀명 검색어 필터링
     if (searchMatchNo && searchMatchNo.trim() !== '') {
       const q = searchMatchNo.trim();
-      const noStr = String(m.betmanMatchNo || '');
       const homeStr = m.homeTeam?.name || '';
       const awayStr = m.awayTeam?.name || '';
-      if (!noStr.includes(q) && !homeStr.includes(q) && !awayStr.includes(q)) {
+      if (!homeStr.includes(q) && !awayStr.includes(q)) {
         return false;
       }
     }

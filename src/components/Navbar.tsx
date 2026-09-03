@@ -82,7 +82,6 @@ export const Navbar: React.FC<NavbarProps> = ({
                     : 'bg-slate-850 hover:bg-slate-800 border-slate-750 text-slate-200'
                 }`}
               >
-                <span className="font-extrabold text-emerald-600 text-[11px]">{m.betmanMatchNo}번</span>
                 <span className="font-bold text-[11px]">{m.homeTeam.name}</span>
                 
                 {/* 3번: 종료된 경기 오피셜 결과 체크 표기 */}

@@ -44,16 +44,13 @@ export const MatchCardComponent = ({ match, membershipTier = 'VVIP', cardDensity
         }`}
         onClick={() => onSelectMatch(match)}
       >
-        {/* Header line: Match No, League, Time */}
+        {/* Header line: League, Time */}
         <div className="flex items-center justify-between text-xs">
           <div className="flex items-center gap-1.5 min-w-0">
-            <span className="px-2 py-0.5 rounded-md bg-emerald-500 text-white font-black text-[11px] shrink-0 shadow-sm">
-              {match.betmanMatchNo}번
-            </span>
             <span className={`font-bold px-2 py-0.5 rounded border text-[10px] truncate ${
               isLight ? 'bg-slate-100 text-slate-700 border-slate-200' : 'bg-slate-950 text-slate-300 border-slate-800'
             }`}>
-              {match.countryFlag || '🇰🇷'} {match.league}
+              {match.countryFlag || '🌐'} {match.league}
             </span>
             {isFinished ? (
               <span className="px-1.5 py-0.5 rounded bg-rose-500/15 text-rose-600 dark:text-rose-400 border border-rose-300 dark:border-rose-800 font-black text-[10px] shrink-0">
@@ -134,13 +131,10 @@ export const MatchCardComponent = ({ match, membershipTier = 'VVIP', cardDensity
     >
       <div className="flex items-center justify-between text-xs">
         <div className="flex items-center gap-1.5 min-w-0">
-          <span className="px-2 py-0.5 rounded-md bg-emerald-500 text-white font-black text-[11px] shrink-0 shadow-sm">
-            {match.betmanMatchNo}번
-          </span>
           <span className={`font-bold px-2 py-0.5 rounded border text-[10px] truncate ${
             isLight ? 'bg-slate-100 text-slate-700 border-slate-200' : 'bg-slate-950 text-slate-300 border-slate-800'
           }`}>
-            {match.countryFlag || '🇰🇷'} {match.league}
+            {match.countryFlag || '🌐'} {match.league}
           </span>
           {isFinished ? (
             <span className="px-2 py-0.5 rounded bg-rose-500/15 text-rose-600 dark:text-rose-400 border border-rose-300 dark:border-rose-800 font-black text-[10px] shrink-0">
