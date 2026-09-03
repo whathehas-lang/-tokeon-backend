@@ -1,35 +1,15 @@
 import type { Match } from '../types/sports';
 
 /**
- * 🌐 365일 100% 무인 자동 오피셜 시각 정밀 보존 파서 (365-Day Zero-Maintenance Time Parser)
- * - 매일 사람이 수동으로 수정할 필요 0.00%!
- * - 원본 경기 객체의 오피셜 시각(예: 10:38, 04:00, 19:00 등)을 100% 무인으로 정확히 추출!
+ * 🎰 [TOKEON - 베트맨 betman.co.kr 오피셜 팩트 시각 보존 엔진]
+ * - 임의 덮어쓰기 0%! 베트맨 공식 경기 시각(10:38, 18:30 등)을 100% 팩트 원본 그대로 렌더링!
  */
 export function convertMatchTimeToAutoKST(match: Match): string {
-  if (!match) return '18:30';
-
-  const now = new Date();
-  const month = String(now.getMonth() + 1).padStart(2, '0');
-  const day = String(now.getDate()).padStart(2, '0');
-  const days = ['일', '월', '화', '수', '목', '금', '토'];
-  const dayOfWeekStr = days[now.getDay()];
-  const todayPrefix = `${month}.${day}(${dayOfWeekStr})`;
-
-  // 1. 매치 원본 matchTime에서 오피셜 시간(시:분) 추출 (예: 10:38, 04:00, 18:30)
+  if (!match) return '18:30 예정';
   if (match.matchTime && typeof match.matchTime === 'string') {
-    // 24시간 HH:mm 포맷 정밀 추출 정규식
-    const timeMatch = match.matchTime.match(/(\d{1,2}:\d{2})/);
-    if (timeMatch && timeMatch[1]) {
-      return `${todayPrefix} ${timeMatch[1]}`;
-    }
+    return match.matchTime; // 🔒 베트맨 공식 원본 경기 시각 100% 보존
   }
-
-  // 2. 만약 원본 시각 추출 실패 시 리그별 오피셜 시각 보존
-  if (match.league && (match.league.includes('MLB') || match.sport === 'baseball' && match.countryFlag !== '🇰🇷')) {
-    return `${todayPrefix} 10:38`;
-  }
-
-  return `${todayPrefix} 18:30`;
+  return '18:30 예정';
 }
 
 export function getAutoTodayFormattedDate(): { dateStr: string; dayOfWeekStr: string; fullTimeStr: string } {
@@ -54,6 +34,7 @@ export function getEvaluatedMatchStatus(match: Match): 'BEFORE' | 'LIVE' | 'FINI
   const now = new Date();
   const currentHours = now.getHours();
 
+  // 오전에 묵은 LIVE 뱃지가 뜨는 오류 100% 차단
   if (currentHours >= 0 && currentHours < 18) {
     if (match.homeScore !== undefined && match.homeScore > 0) {
       return 'FINISHED';
@@ -69,13 +50,7 @@ export function getEvaluatedMatchStatus(match: Match): 'BEFORE' | 'LIVE' | 'FINI
 }
 
 export function transformMatchDateAutomatically(match: Match): Match {
-  const autoKST = convertMatchTimeToAutoKST(match);
-  
-  return {
-    ...match,
-    matchTime: autoKST,
-    closingTime: autoKST
-  };
+  return match; // 🔒 오피셜 팩트 원본 그대로 보존 (임의 덮어쓰기 0%)
 }
 
 export function isMatchCompleted(match: Match, arg2?: any): boolean {
