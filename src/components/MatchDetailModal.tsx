@@ -31,10 +31,7 @@ export const MatchDetailModal = ({
   theme = 'light' 
 }: MatchDetailModalProps) => {
   const isLight = theme === 'light';
-  const [activeDetailTab, setActiveDetailTab] = useState<'ANALYSIS' | 'CHAT'>(() => {
-    // 💬 채팅창과 2D 중계판이 1순위로 즉시 보이도록 CHAT 기본 활성화!
-    return initialSectionId === 'analysis' ? 'ANALYSIS' : 'CHAT';
-  });
+  const [activeDetailTab, setActiveDetailTab] = useState<'ANALYSIS' | 'CHAT'>('ANALYSIS');
   const [recentGamesRange, setRecentGamesRange] = useState<3 | 5 | 10>(10);
   const [isRecentGamesOpen, setIsRecentGamesOpen] = useState<boolean>(true);
   
@@ -53,24 +50,23 @@ export const MatchDetailModal = ({
         last5Matches: match.h2hRecentMatches
       };
     }
-    const generated = FootballH2HRecentFormEngine.generateH2HMatches(match.homeTeam.name, match.awayTeam.name, match.betmanMatchNo || 100, match.sport);
     return {
-      summaryText: `과거 맞대결 ${generated.length}경기 실존 기록`,
-      homeWins: generated.filter(m => m.homeScore > m.awayScore).length,
-      draws: generated.filter(m => m.homeScore === m.awayScore).length,
-      awayWins: generated.filter(m => m.awayScore > m.homeScore).length,
-      last5Matches: generated
+      summaryText: '공식 맞대결 기록 집계 중',
+      homeWins: 0,
+      draws: 0,
+      awayWins: 0,
+      last5Matches: []
     };
   });
   const [dynamicHomeLogs, setDynamicHomeLogs] = useState<RecentMatchLog[]>(() => {
     if (match.homeRecentLogs && match.homeRecentLogs.length > 0) return match.homeRecentLogs;
     if (match.homeTeam.recentGamesLog && match.homeTeam.recentGamesLog.length > 0) return match.homeTeam.recentGamesLog;
-    return FootballH2HRecentFormEngine.generateRecentLogs(match.homeTeam.name, true, match.betmanMatchNo || 100, match.sport);
+    return [];
   });
   const [dynamicAwayLogs, setDynamicAwayLogs] = useState<RecentMatchLog[]>(() => {
     if (match.awayRecentLogs && match.awayRecentLogs.length > 0) return match.awayRecentLogs;
     if (match.awayTeam.recentGamesLog && match.awayTeam.recentGamesLog.length > 0) return match.awayTeam.recentGamesLog;
-    return FootballH2HRecentFormEngine.generateRecentLogs(match.awayTeam.name, false, match.betmanMatchNo || 100, match.sport);
+    return [];
   });
 
   // 🌤️ 실시간 현지 구장 기상청/Open-Meteo 실시간 기상 관측 상태 (3중 Fail-Safe 탑재)
@@ -397,16 +393,27 @@ export const MatchDetailModal = ({
                   <span className={`text-xs font-bold ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>({match.league})</span>
                 </h2>
                 
-                {/* ⚾ 야구 경기일 때 실시간 두산 베어스 1:4 LG 스코어 정밀 반영 */}
-                <span className="px-3 py-1 rounded-xl text-xs font-black bg-amber-500/20 text-amber-400 border border-amber-500/40 flex items-center gap-1.5 shadow-sm">
-                  <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
-                  <span>KBO LIVE</span>
-                  <strong className="font-mono text-sm font-black text-amber-300 ml-1">두산 1 : 4 LG</strong>
-                  <span className="text-rose-400 font-mono text-xs">(6회말 두산 공격 중)</span>
-                </span>
+                {/* 🎯 실제 경기 상태 및 스코어 동적 표출 */}
+                {match.status === 'LIVE' ? (
+                  <span className="px-3 py-1 rounded-xl text-xs font-black bg-rose-500/20 text-rose-400 border border-rose-500/40 flex items-center gap-1.5 shadow-sm animate-pulse">
+                    <span className="w-2 h-2 rounded-full bg-rose-500" />
+                    <span>LIVE</span>
+                    <strong className="font-mono text-sm font-black text-rose-300 ml-1">{match.homeScore ?? 0} : {match.awayScore ?? 0}</strong>
+                  </span>
+                ) : match.status === 'FINISHED' ? (
+                  <span className="px-3 py-1 rounded-xl text-xs font-black bg-slate-500/20 text-slate-400 border border-slate-500/40 flex items-center gap-1.5 shadow-sm">
+                    <span>경기 종료</span>
+                    <strong className="font-mono text-sm font-black text-slate-300 ml-1">{match.homeScore ?? 0} : {match.awayScore ?? 0}</strong>
+                  </span>
+                ) : (
+                  <span className="px-3 py-1 rounded-xl text-xs font-black bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 flex items-center gap-1.5 shadow-sm">
+                    <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                    <span>경기 시작 전</span>
+                  </span>
+                )}
               </div>
-              <p className={`text-xs mt-0.5 ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>
-                {match.venue} • {match.matchTime} • {match.closingTime}
+              <p className={`text-xs mt-0.5 font-bold ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>
+                {match.league} • ⏰ {match.matchTime}
               </p>
             </div>
           </div>
