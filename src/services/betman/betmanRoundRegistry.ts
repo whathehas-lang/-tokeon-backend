@@ -15,7 +15,7 @@ export interface BetmanGameTypeInfo {
 }
 
 export function calculateActiveSeungbushikRoundTs(arg1?: any): string {
-  return '260103';
+  return '260104';
 }
 
 export function getDynamicBetmanGamesMetadata(): Record<string, BetmanGameTypeInfo> {
@@ -24,8 +24,8 @@ export function getDynamicBetmanGamesMetadata(): Record<string, BetmanGameTypeIn
       gmId: 'G101',
       name: '프로토 승부식',
       category: 'SEUNGBUSHIK',
-      defaultRoundTs: '260103',
-      roundsList: ['260103', '260104', '260105', '260106']
+      defaultRoundTs: '260104',
+      roundsList: ['260104', '260105', '260106']
     },
     G011: {
       gmId: 'G011',
@@ -54,12 +54,12 @@ export function getDynamicBetmanGamesMetadata(): Record<string, BetmanGameTypeIn
 export const BETMAN_GAMES_METADATA: Record<string, BetmanGameTypeInfo> = getDynamicBetmanGamesMetadata();
 
 export class BetmanRoundRegistryService {
-  public getMatchesByGameAndRound(gmId: string = 'G101', gmTs: string = '260103'): Match[] {
+  public getMatchesByGameAndRound(gmId: string = 'G101', gmTs: string = '260104'): Match[] {
     const rawMatches = betmanLiveSyncService.getMatches(gmId, gmTs);
     return rawMatches.map(m => transformMatchDateAutomatically(m));
   }
 
-  public getOfficialBetmanSlipUrl(gmId: string = 'G101', gmTs: string = '260103'): string {
+  public getOfficialBetmanSlipUrl(gmId: string = 'G101', gmTs: string = '260104'): string {
     return `https://www.betman.co.kr/main/mainPage/gamebuy/gameSlip.do?gmId=${gmId}&gmTs=${gmTs}`;
   }
 
