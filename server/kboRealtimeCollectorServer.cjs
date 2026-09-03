@@ -1,10 +1,5 @@
 /**
- * 🛠️ [TOKEON 백엔드 - 수기 테스트 경기 100% 완전 삭제 & 오직 API-Sports 실시간 수신 전용 파이프라인]
- * 
- * 🧹 청소 및 완전 초기화:
- * 1. 🗑️ 수기로 만들었던 테스트 경기 객체 (8198번, 8680번 등더미 데이터) 100% 완전 전면 삭제
- * 2. 📡 오직 해외 API-Sports (x-apisports-key: 96ae3619c2c6f8f76ec75d64bd95d000) 실시간 수신 통신 전용 파이프라인
- * 3. 24시간 Render 클라우드 실시간 서빙 (fake test data 0.00%)
+ * 🛠️ [TOKEON 백엔드 - 5대 종목 (축구, 야구, 농구, 배구, 하키) 균등 수신 & 시간순 정렬 서빙 데몬]
  */
 
 const http = require('http');
@@ -21,21 +16,27 @@ function getTodayString() {
   return `${year}-${month}-${day}`;
 }
 
-// 📡 해외 API-Sports 5대 종목 실시간 라이브 페처 (수기 테스트 경기는 100% 싹 지움)
+const SPORT_HOST_MAP = {
+  football: { host: 'v3.football.api-sports.io', endpoint: '/fixtures', name: '축구' },
+  baseball: { host: 'v1.baseball.api-sports.io', endpoint: '/games', name: '야구' },
+  basketball: { host: 'v1.basketball.api-sports.io', endpoint: '/games', name: '농구' },
+  volleyball: { host: 'v1.volleyball.api-sports.io', endpoint: '/games', name: '배구' },
+  hockey: { host: 'v1.hockey.api-sports.io', endpoint: '/games', name: '하키' }
+};
+
 async function fetchRealApiSportsMatches(sport = 'football') {
   return new Promise((resolve) => {
     const today = getTodayString();
-    const host = sport === 'football' ? 'v3.football.api-sports.io' : 'v1.baseball.api-sports.io';
-    const endpoint = sport === 'football' ? '/fixtures' : '/games';
-    const path = `${endpoint}?date=${today}`;
+    const config = SPORT_HOST_MAP[sport] || SPORT_HOST_MAP.football;
+    const path = `${config.endpoint}?date=${today}`;
 
     const options = {
-      hostname: host,
+      hostname: config.host,
       path: path,
       method: 'GET',
       headers: {
         'x-apisports-key': API_SPORTS_KEY,
-        'x-rapidapi-host': host
+        'x-rapidapi-host': config.host
       }
     };
 
@@ -46,23 +47,35 @@ async function fetchRealApiSportsMatches(sport = 'football') {
         try {
           const json = JSON.parse(body);
           const rawList = json.response || [];
-          const cleanMatches = rawList.slice(0, 50).map((m, idx) => {
+          const cleanMatches = rawList.slice(0, 20).map((m, idx) => {
             const home = m.teams?.home?.name || 'Home Team';
             const away = m.teams?.away?.name || 'Away Team';
             const statusShort = m.fixture?.status?.short || m.status?.short || 'NS';
-            const matchTime = m.fixture?.date || m.date || `${today} 20:00`;
+            const rawTime = m.fixture?.date || m.date || `${today} 20:00`;
             
+            // 시각 포맷 정밀 맵핑
+            let displayTime = rawTime;
+            try {
+              const dt = new Date(rawTime);
+              const mm = String(dt.getMonth() + 1).padStart(2, '0');
+              const dd = String(dt.getDate()).padStart(2, '0');
+              const hh = String(dt.getHours()).padStart(2, '0');
+              const min = String(dt.getMinutes()).padStart(2, '0');
+              displayTime = `${mm}.${dd} ${hh}:${min}`;
+            } catch (e) {}
+
             return {
               id: `real-api-${sport}-${idx + 1}`,
               betmanMatchNo: 9500 + idx + 1,
               sport: sport,
               league: m.league?.name || 'Global League',
-              countryFlag: '🌐',
+              countryFlag: sport === 'football' ? '⚽' : sport === 'baseball' ? '⚾' : sport === 'basketball' ? '🏀' : sport === 'volleyball' ? '🏐' : '🏒',
               homeTeam: { id: `h-${idx}`, name: home, logo: '⚽', countryName: 'Global', rank: 1 },
               awayTeam: { id: `a-${idx}`, name: away, logo: '⚽', countryName: 'Global', rank: 2 },
               homeScore: m.goals?.home ?? m.scores?.home?.total ?? 0,
               awayScore: m.goals?.away ?? m.scores?.away?.total ?? 0,
-              matchTime: matchTime,
+              matchTime: displayTime,
+              rawTimeIso: rawTime,
               betmanOdds: { win: 1.95, draw: 3.30, lose: 2.90 },
               foreignApiStats: { pinnacleOdds: { win: 1.90, draw: 3.35, lose: 2.95 }, predictedWinner: `${home} (우세)` },
               status: statusShort === 'FT' ? 'FINISHED' : (statusShort === '1H' || statusShort === '2H' ? 'LIVE' : 'BEFORE'),
@@ -82,7 +95,7 @@ async function fetchRealApiSportsMatches(sport = 'football') {
   });
 }
 
-// 📡 백엔드 HTTP 서버 (수기 테스트 경기는 100% 싹 지워짐)
+// 📡 백엔드 HTTP 서버 (5대 종목 균등 수신 & 시간순 정렬 서빙)
 const server = http.createServer(async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
@@ -90,25 +103,36 @@ const server = http.createServer(async (req, res) => {
   res.setHeader('Cache-Control', 'public, max-age=5');
 
   if (req.url === '/api/live-all' || req.url === '/api/kbo-live' || req.url === '/api/betman/hourly-sync') {
-    const realSoccer = await fetchRealApiSportsMatches('football');
-    const realBaseball = await fetchRealApiSportsMatches('baseball');
-    const allRealMatches = [...realSoccer, ...realBaseball];
+    const soccer = await fetchRealApiSportsMatches('football');
+    const baseball = await fetchRealApiSportsMatches('baseball');
+    const basketball = await fetchRealApiSportsMatches('basketball');
+    const volleyball = await fetchRealApiSportsMatches('volleyball');
+    const hockey = await fetchRealApiSportsMatches('hockey');
+
+    const allMatches = [...soccer, ...baseball, ...basketball, ...volleyball, ...hockey];
+    
+    // ⏰ 5대 종목 100% 개최 시각 오름차순 무조건 통합 정렬
+    allMatches.sort((a, b) => {
+      const tA = a.rawTimeIso || a.matchTime || '';
+      const tB = b.rawTimeIso || b.matchTime || '';
+      return tA.localeCompare(tB);
+    });
 
     res.writeHead(200);
     res.end(JSON.stringify({
       status: 'OK',
       purgedTestMatches: true,
-      message: '수기 테스트 경기 100% 싹 삭제 완료. 오직 API-Sports 실시간 수신 경기만 제공',
+      message: '5대 종목(축구, 야구, 농구, 배구, 하키) 균등 수신 & 100% 개최 시각 오름차순 나열 완수',
       lastSyncTime: new Date().toLocaleTimeString('ko-KR'),
-      totalMatchesCount: allRealMatches.length,
-      matches: allRealMatches
+      totalMatchesCount: allMatches.length,
+      matches: allMatches
     }));
   } else {
     res.writeHead(200);
-    res.end(JSON.stringify({ status: 'OK', message: 'Test Matches Purged. Live API-Sports Only' }));
+    res.end(JSON.stringify({ status: 'OK', message: '5-Sports Balanced Live API Active' }));
   }
 });
 
 server.listen(PORT, () => {
-  console.log(`🎰 [수기 테스트 경기 100% 삭제 완료 & API-Sports 전용 백엔드 데몬 가동] Port: ${PORT}`);
+  console.log(`🎰 [5대 종목 (축구, 야구, 농구, 배구, 하키) 균등 수신 & 시간순 정렬 데몬 가동] Port: ${PORT}`);
 });

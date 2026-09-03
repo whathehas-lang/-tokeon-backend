@@ -31,7 +31,7 @@ import { authService } from './services/auth/authService';
 export default function App() {
   const dynamicMeta = getDynamicBetmanGamesMetadata();
   const [matches, setMatches] = useState<Match[]>(() => BetmanLiveSyncService.getAllLiveMatches());
-  const [selectedFolder, setSelectedFolder] = useState<BetmanFolderCategory>('SEUNGBUSHIK');
+  const [selectedFolder, setSelectedFolder] = useState<BetmanFolderCategory>('ALL');
   const [selectedRound, setSelectedRound] = useState<string>(`프로토 승부식 ${dynamicMeta.G101.defaultRoundTs}회차 (betman.co.kr 오피셜 슬립)`);
   const [auditReport, setAuditReport] = useState<VerificationAuditReport | null>(() => verifiedMatchDatabase.getLatestAuditReport());
   const [isAuditModalOpen, setIsAuditModalOpen] = useState<boolean>(false);
