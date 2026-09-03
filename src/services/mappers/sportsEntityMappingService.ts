@@ -50,6 +50,22 @@ export const TEAM_ENTITY_TABLE: TeamEntity[] = [
   { apiTeamId: 530, nameKo: 'AT 마드리드', nameEn: 'Atletico Madrid', aliases: ['아틀레티코', 'Atletico Madrid', 'ATM', 'AT마드리드', '아틀레티코마드리드'], league: 'LA_LIGA', logo: 'https://media.api-sports.io/football/teams/530.png' },
   { apiTeamId: 533, nameKo: '비야레알', nameEn: 'Villarreal', aliases: ['비야레알', 'Villarreal', 'VIL'], league: 'LA_LIGA', logo: 'https://media.api-sports.io/football/teams/533.png' },
   { apiTeamId: 548, nameKo: '레알 소시에다드', nameEn: 'Real Sociedad', aliases: ['소시에다드', 'Real Sociedad', 'RSO', '레알소시에다드'], league: 'LA_LIGA', logo: 'https://media.api-sports.io/football/teams/548.png' },
+  { apiTeamId: 538, nameKo: '셀타 비고', nameEn: 'Celta Vigo', aliases: ['셀타', '셀타비고', 'Celta', 'Celta Vigo'], league: 'LA_LIGA', logo: 'https://media.api-sports.io/football/teams/538.png' },
+  { apiTeamId: 543, nameKo: '레알 베티스', nameEn: 'Real Betis', aliases: ['베티스', '레알베티스', 'Betis', 'Real Betis'], league: 'LA_LIGA', logo: 'https://media.api-sports.io/football/teams/543.png' },
+
+  // === LIGUE 1 (프랑스 리그 앙) ===
+  { apiTeamId: 85, nameKo: '파리 생제르맹', nameEn: 'Paris Saint Germain', aliases: ['PSG', '파리', '파리생제르맹', 'Paris SG'], league: 'OTHER', logo: 'https://media.api-sports.io/football/teams/85.png' },
+  { apiTeamId: 91, nameKo: '모나코', nameEn: 'Monaco', aliases: ['모나코', 'AS모나코', 'Monaco', 'AS Monaco'], league: 'OTHER', logo: 'https://media.api-sports.io/football/teams/91.png' },
+  { apiTeamId: 80, nameKo: '리옹', nameEn: 'Lyon', aliases: ['리옹', '올림피크리옹', 'Lyon'], league: 'OTHER', logo: 'https://media.api-sports.io/football/teams/80.png' },
+  { apiTeamId: 79, nameKo: '릴', nameEn: 'Lille', aliases: ['릴', 'Lille', 'LOSC릴', 'LOSC Lille'], league: 'OTHER', logo: 'https://media.api-sports.io/football/teams/79.png' },
+  { apiTeamId: 96, nameKo: '툴루즈', nameEn: 'Toulouse', aliases: ['툴루즈', 'Toulouse', '툴루즈FC'], league: 'OTHER', logo: 'https://media.api-sports.io/football/teams/96.png' },
+  { apiTeamId: 108, nameKo: '오세르', nameEn: 'Auxerre', aliases: ['오세르', 'Auxerre', 'AJ오세르'], league: 'OTHER', logo: 'https://media.api-sports.io/football/teams/108.png' },
+
+  // === BUNDESLIGA (독일 분데스리가) ===
+  { apiTeamId: 157, nameKo: '바이에른 뮌헨', nameEn: 'Bayern Munich', aliases: ['뮌헨', '바이에른', 'Bayern', 'Bayern Munich'], league: 'OTHER', logo: 'https://media.api-sports.io/football/teams/157.png' },
+  { apiTeamId: 165, nameKo: '도르트문트', nameEn: 'Borussia Dortmund', aliases: ['도르트문트', '돌문', 'Dortmund', 'BVB'], league: 'OTHER', logo: 'https://media.api-sports.io/football/teams/165.png' },
+  { apiTeamId: 172, nameKo: '슈투트가르트', nameEn: 'VfB Stuttgart', aliases: ['슈투트가르트', '슈투트', 'Stuttgart', 'VfB Stuttgart'], league: 'OTHER', logo: 'https://media.api-sports.io/football/teams/172.png' },
+  { apiTeamId: 192, nameKo: 'FC 쾰른', nameEn: '1. FC Köln', aliases: ['쾰른', 'FC쾰른', 'Koln', '1. FC Koln'], league: 'OTHER', logo: 'https://media.api-sports.io/football/teams/192.png' },
 
   // === SERIE A (이탈리아 세리에 A) ===
   { apiTeamId: 505, nameKo: '인터 밀란', nameEn: 'Inter', aliases: ['인테르', 'Inter', 'INT', '인터밀란', 'FC인터밀란'], league: 'SERIE_A', logo: 'https://media.api-sports.io/football/teams/505.png' },
@@ -57,6 +73,8 @@ export const TEAM_ENTITY_TABLE: TeamEntity[] = [
   { apiTeamId: 496, nameKo: '유벤투스', nameEn: 'Juventus', aliases: ['유베', 'Juventus', 'JUV', '유벤투스FC'], league: 'SERIE_A', logo: 'https://media.api-sports.io/football/teams/496.png' },
   { apiTeamId: 492, nameKo: '나폴리', nameEn: 'Napoli', aliases: ['나폴리', 'Napoli', 'NAP', 'SSC나폴리'], league: 'SERIE_A', logo: 'https://media.api-sports.io/football/teams/492.png' },
   { apiTeamId: 497, nameKo: 'AS 로마', nameEn: 'AS Roma', aliases: ['로마', 'AS Roma', 'ROM', 'AS로마'], league: 'SERIE_A', logo: 'https://media.api-sports.io/football/teams/497.png' },
+  { apiTeamId: 495, nameKo: '제노아', nameEn: 'Genoa', aliases: ['제노아', 'Genoa', 'Genoa CFC'], league: 'SERIE_A', logo: 'https://media.api-sports.io/football/teams/495.png' },
+  { apiTeamId: 894, nameKo: '코모', nameEn: 'Como', aliases: ['코모', 'Como', 'Como 1907'], league: 'SERIE_A', logo: 'https://media.api-sports.io/football/teams/894.png' },
 
   // === CHAMPIONSHIP (잉글랜드 챔피언십 24개 구단) ===
   { apiTeamId: 1379, nameKo: '링컨 시티', nameEn: 'Lincoln', aliases: ['링컨', '링컨시티', 'Lincoln', 'Lincoln City'], league: 'OTHER', logo: 'https://media.api-sports.io/football/teams/1379.png' },
