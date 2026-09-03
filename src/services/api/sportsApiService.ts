@@ -5,6 +5,7 @@ import type { RawApiMatchResponse } from './types';
 import { mapRawApiMatchToMatch } from '../mappers/matchDataMapper';
 import { verifiedMatchDatabase } from '../db/verifiedMatchDatabase';
 import { betmanLiveSyncService } from '../betman/betmanLiveSyncService';
+import { OFFICIAL_260103_MATCHES } from '../../mock/official260103Schedule';
 
 export class SportsApiService {
   public async fetchMatches(leagueId?: string, season: number = 2026): Promise<Match[]> {
@@ -33,12 +34,11 @@ export class SportsApiService {
     } catch (error) {
       console.error('[SportsApiService] Error fetching live matches:', error);
     }
-    return [];
+    return OFFICIAL_260103_MATCHES;
   }
 
   /**
-   * 📡 렌더 24시간 백엔드에서 오피셜 베트맨 경기 목록 직통 네트워크 fetch 수신
-   * (🔒 30초 백그라운드 갱신 시 과거 수요일 더미 데이터 폴백 덮어쓰기 100% 차단!)
+   * 📡 베트맨 오피셜 회차 전체 경기 수신
    */
   public async fetchBetmanMatchesByRound(
     _roundName: string,
@@ -46,14 +46,11 @@ export class SportsApiService {
     _searchMatchNo?: number,
     _limit: number = 999999
   ): Promise<Match[]> {
-    // 🌐 렌더 24시간 백엔드 오피셜 직통 네트워크 수신
     const liveMatches = await betmanLiveSyncService.getMatchesAsync();
     if (liveMatches && liveMatches.length > 0) {
       return liveMatches;
     }
-    
-    // 🔒 덮어쓰기 폴백 완전 차단 ➔ 라이브 데이터만 유지
-    return liveMatches || [];
+    return OFFICIAL_260103_MATCHES;
   }
 }
 

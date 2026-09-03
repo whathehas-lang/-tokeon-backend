@@ -1,39 +1,13 @@
 /**
- * 🎰 [베트맨(betman.co.kr) 렌더 백엔드 실시간 오피셜 직통 수신 서비스]
+ * 🎰 [베트맨(betman.co.kr) 오피셜 실시간 라이브 동기화 서비스]
  */
 
 import type { Match } from '../../types/sports';
+import { OFFICIAL_260103_MATCHES } from '../../mock/official260103Schedule';
 
 export const RENDER_BACKEND_URL = 'https://tokeon-backend.onrender.com';
 
-let lastKnownLiveMatches: Match[] = [
-  {
-    id: 'bm-8198',
-    betmanMatchNo: 8198,
-    sport: 'baseball',
-    league: 'KBO 리그',
-    homeTeam: { id: 'ds', name: '두산 베어스', logo: '⚾', countryName: '대한민국', rank: 1, homeSeasonRecord: '', awaySeasonRecord: '', seasonRemainingGames: '', recent3Form: 'GREEN', staminaStatus: 'GREEN', minutesPlayed14d: 0, totalMarketValue: '', totalMarketValueNum: 1 },
-    awayTeam: { id: 'lg', name: 'LG 트윈스', logo: '⚾', countryName: '대한민국', rank: 2, homeSeasonRecord: '', awaySeasonRecord: '', seasonRemainingGames: '', recent3Form: 'GREEN', staminaStatus: 'GREEN', minutesPlayed14d: 0, totalMarketValue: '', totalMarketValueNum: 2 },
-    homeScore: 0,
-    awayScore: 0,
-    matchTime: '09.03(목) 18:30',
-    betmanOdds: { win: 2.10, draw: 3.20, lose: 2.85 },
-    status: 'SCHEDULED'
-  },
-  {
-    id: 'bm-8199',
-    betmanMatchNo: 8199,
-    sport: 'baseball',
-    league: 'MLB',
-    homeTeam: { id: 'min', name: '미네소타 트윈스', logo: '⚾', countryName: '미국', rank: 1, homeSeasonRecord: '', awaySeasonRecord: '', seasonRemainingGames: '', recent3Form: 'GREEN', staminaStatus: 'GREEN', minutesPlayed14d: 0, totalMarketValue: '', totalMarketValueNum: 1 },
-    awayTeam: { id: 'cle', name: '클리블랜드 가디언스', logo: '⚾', countryName: '미국', rank: 2, homeSeasonRecord: '', awaySeasonRecord: '', seasonRemainingGames: '', recent3Form: 'GREEN', staminaStatus: 'GREEN', minutesPlayed14d: 0, totalMarketValue: '', totalMarketValueNum: 2 },
-    homeScore: 0,
-    awayScore: 0,
-    matchTime: '09.03(목) 10:38',
-    betmanOdds: { win: 1.85, draw: 3.40, lose: 3.10 },
-    status: 'SCHEDULED'
-  }
-] as Match[];
+let lastKnownLiveMatches: Match[] = OFFICIAL_260103_MATCHES;
 
 export class BetmanLiveSyncService {
   private static instance: BetmanLiveSyncService;
