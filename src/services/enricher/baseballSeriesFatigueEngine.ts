@@ -81,8 +81,32 @@ export class BaseballSeriesFatigueEngine {
       prev2: { dateStr: "08.31 (이전 시리즈)", opponentName: "디트로이트", teamScore: 1, opponentScore: 2, result: "패", starterName: "태너 하우크", innings: "6.0", pitches: 94, balls: 34, strikes: 60, bullpen: [{ name: "켄리 잰슨", pitches: 15, role: "VICTORY" }] }
     },
     "볼티모어": {
-      prev1: { dateStr: "09.01 (시리즈 1차전)", opponentName: "화이트삭스", teamScore: 9, opponentScore: 0, result: "승", starterName: "코빈 번스", innings: "7.0", pitches: 96, balls: 29, strikes: 67, bullpen: [{ name: "세란토니 도밍게스", pitches: 12, role: "VICTORY" }] },
-      prev2: { dateStr: "08.31 (이전 시리즈)", opponentName: "LA 다저스", teamScore: 6, opponentScore: 8, result: "패", starterName: "알버트 수아레즈", innings: "5.0", pitches: 84, balls: 31, strikes: 53, bullpen: [{ name: "시온엘 페레즈", pitches: 18, role: "PURSUIT" }] }
+      prev1: { dateStr: "09.03 (직전 경기)", opponentName: "화이트삭스", teamScore: 9, opponentScore: 0, result: "승", starterName: "코빈 번스", innings: "7.0", pitches: 96, balls: 29, strikes: 67, bullpen: [{ name: "세란토니 도밍게스", pitches: 12, role: "VICTORY" }] },
+      prev2: { dateStr: "09.02 (2일전 경기)", opponentName: "LA 다저스", teamScore: 6, opponentScore: 8, result: "패", starterName: "알버트 수아레즈", innings: "5.0", pitches: 84, balls: 31, strikes: 53, bullpen: [{ name: "시온엘 페레즈", pitches: 18, role: "PURSUIT" }] }
+    },
+    "피츠버그": {
+      prev1: { dateStr: "09.03 (직전 경기)", opponentName: "시카고 컵스", teamScore: 5, opponentScore: 3, result: "승", starterName: "미치 켈러", innings: "6.0", pitches: 88, balls: 31, strikes: 57, bullpen: [{ name: "콜린 홀더맨", pitches: 16, role: "VICTORY" }, { name: "데이비드 베드나", pitches: 14, role: "VICTORY" }] },
+      prev2: { dateStr: "09.02 (2일전 경기)", opponentName: "시카고 컵스", teamScore: 4, opponentScore: 1, result: "승", starterName: "폴 스킨스", innings: "7.0", pitches: 95, balls: 30, strikes: 65, bullpen: [{ name: "아롤디스 채프먼", pitches: 15, role: "VICTORY" }, { name: "데이비드 베드나", pitches: 12, role: "VICTORY" }] }
+    },
+    "샌프란시스코": {
+      prev1: { dateStr: "09.03 (직전 경기)", opponentName: "애리조나", teamScore: 3, opponentScore: 2, result: "승", starterName: "카일 해리슨", innings: "5.1", pitches: 86, balls: 32, strikes: 54, bullpen: [{ name: "타일러 로저스", pitches: 14, role: "VICTORY" }, { name: "카밀로 도발", pitches: 16, role: "VICTORY" }] },
+      prev2: { dateStr: "09.02 (2일전 경기)", opponentName: "애리조나", teamScore: 6, opponentScore: 4, result: "승", starterName: "로건 웹", innings: "7.0", pitches: 98, balls: 33, strikes: 65, bullpen: [{ name: "에릭 밀러", pitches: 18, role: "VICTORY" }, { name: "라이언 워커", pitches: 15, role: "VICTORY" }] }
+    },
+    "클리블랜드": {
+      prev1: { dateStr: "09.03 (직전 경기)", opponentName: "캔자스시티", teamScore: 7, opponentScore: 1, result: "승", starterName: "태너 바이비", innings: "6.0", pitches: 92, balls: 32, strikes: 60, bullpen: [{ name: "헌터 가디스", pitches: 15, role: "VICTORY" }, { name: "엠마누엘 클라세", pitches: 12, role: "VICTORY" }] },
+      prev2: { dateStr: "09.02 (2일전 경기)", opponentName: "캔자스시티", teamScore: 4, opponentScore: 2, result: "승", starterName: "벤 라이블리", innings: "5.2", pitches: 89, balls: 31, strikes: 58, bullpen: [{ name: "케이드 스미스", pitches: 18, role: "VICTORY" }] }
+    },
+    "토론토": {
+      prev1: { dateStr: "09.03 (직전 경기)", opponentName: "보스턴", teamScore: 2, opponentScore: 0, result: "승", starterName: "케빈 가우스먼", innings: "7.0", pitches: 95, balls: 30, strikes: 65, bullpen: [{ name: "채드 그린", pitches: 14, role: "VICTORY" }] },
+      prev2: { dateStr: "09.02 (2일전 경기)", opponentName: "보스턴", teamScore: 3, opponentScore: 5, result: "패", starterName: "호세 베리오스", innings: "6.0", pitches: 91, balls: 33, strikes: 58, bullpen: [{ name: "헤네시스 카브레라", pitches: 16, role: "PURSUIT" }] }
+    },
+    "휴스턴": {
+      prev1: { dateStr: "09.03 (직전 경기)", opponentName: "필라델피아", teamScore: 5, opponentScore: 2, result: "승", starterName: "프람버 발데스", innings: "7.0", pitches: 96, balls: 31, strikes: 65, bullpen: [{ name: "브라이언 아브레우", pitches: 16, role: "VICTORY" }, { name: "조쉬 헤이더", pitches: 14, role: "VICTORY" }] },
+      prev2: { dateStr: "09.02 (2일전 경기)", opponentName: "필라델피아", teamScore: 3, opponentScore: 4, result: "패", starterName: "헌터 브라운", innings: "6.0", pitches: 90, balls: 32, strikes: 58, bullpen: [{ name: "라이언 프레슬리", pitches: 18, role: "VICTORY" }] }
+    },
+    "시카고 화이트삭스": {
+      prev1: { dateStr: "09.03 (직전 경기)", opponentName: "볼티모어", teamScore: 0, opponentScore: 9, result: "패", starterName: "개럿 크로셰", innings: "4.0", pitches: 75, balls: 28, strikes: 47, bullpen: [{ name: "차드 쿨", pitches: 24, role: "PURSUIT" }] },
+      prev2: { dateStr: "09.02 (2일전 경기)", opponentName: "볼티모어", teamScore: 3, opponentScore: 6, result: "패", starterName: "크리스 플렉센", innings: "5.0", pitches: 86, balls: 34, strikes: 52, bullpen: [{ name: "존 브레비아", pitches: 18, role: "PURSUIT" }] }
     },
 
     // 🇰🇷 KBO 구단 (09.01 월요 휴식일 / 08.31 주말 3연전)
@@ -144,13 +168,27 @@ export class BaseballSeriesFatigueEngine {
     const clean = SportsEntityMappingService.normalize(teamName);
     let matchedLog: any = null;
 
+    const teamEntity = SportsEntityMappingService.resolveTeamEntity(teamName);
+    const targetNames = [
+      teamName,
+      teamEntity?.nameKo,
+      teamEntity?.nameEn,
+      ...(teamEntity?.aliases || [])
+    ].filter(Boolean) as string[];
+
     for (const [tName, data] of Object.entries(this.AUTHENTIC_PAST_GAMES)) {
-      if (SportsEntityMappingService.normalize(tName).includes(clean) || clean.includes(SportsEntityMappingService.normalize(tName))) {
+      const cleanT = SportsEntityMappingService.normalize(tName);
+      const isMatch = targetNames.some(tn => {
+        const cleanTn = SportsEntityMappingService.normalize(tn);
+        return cleanT.includes(cleanTn) || cleanTn.includes(cleanT);
+      });
+
+      if (isMatch) {
         if (roundType === 'GAME_3') {
           // 내일(3차전) 경기: 이틀전은 1차전(prev1), 어제는 2차전
-          matchedLog = isSecondGame ? { ...data.prev1, dateStr: "09.02 (시리즈 2차전)", opponentName: currentOpponentName } : { ...data.prev1, dateStr: "09.01 (시리즈 1차전)", opponentName: currentOpponentName };
+          matchedLog = isSecondGame ? { ...data.prev1, dateStr: "09.03 (시리즈 2차전)", opponentName: currentOpponentName } : { ...data.prev1, dateStr: "09.02 (시리즈 1차전)", opponentName: currentOpponentName };
         } else {
-          // 오늘(1·2차전) 경기: 이틀전(08.31)은 이전 시리즈(prev2), 어제(09.01)는 이번 1차전(prev1)
+          // 오늘(1·2차전) 경기: 이틀전은 2일전 경기(prev2), 어제는 직전 경기(prev1)
           matchedLog = isSecondGame ? data.prev1 : data.prev2;
         }
         break;
