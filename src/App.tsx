@@ -604,7 +604,7 @@ export default function App() {
   };
 
   const [hidePassedMatches, setHidePassedMatches] = useState<boolean>(() => {
-    return false; // 🔓 기본값 false: 오늘 예정 경기 및 전체 경기가 100% 시원하게 렌더링
+    return true; // 🔒 기본값 true: 시간이 지난 경기는 100% 무조건 자동 숨김
   });
 
   useEffect(() => {
@@ -625,9 +625,31 @@ export default function App() {
     setSelectedRound(roundTitle);
   };
 
-  // 📌 팩트 데이터 카테고리 필터링 및 검색 연동
+  // 📌 팩트 데이터 카테고리 필터링 및 시간 지난 경기 100% 자동 숨김 파이프라인
   const rawFiltered = matches.filter((m) => {
     if (!m) return false;
+
+    // 🔒 1. 시간이 지난 경기 (이미 시작했거나 종료된 경기) 100% 자동 숨김
+    if (hidePassedMatches) {
+      if ((m as any).isStarted || m.status === 'FINISHED' || m.status === 'LIVE') {
+        return false;
+      }
+      // 경기 시각 비교 파싱 (현재 시각 경과 여부)
+      const now = new Date();
+      const currentHours = now.getHours();
+      const currentMinutes = now.getMinutes();
+      const timeStr = m.matchTime || '';
+      const matchHourMatch = timeStr.match(/(\d{1,2}):(\d{2})/);
+      if (matchHourMatch) {
+        const mHour = parseInt(matchHourMatch[1], 10);
+        const mMin = parseInt(matchHourMatch[2], 10);
+        if (currentHours > mHour || (currentHours === mHour && currentMinutes >= mMin)) {
+          return false;
+        }
+      }
+    }
+
+    // 🔒 2. 카테고리/폴더 필터링
     if (selectedFolder === 'SEUNGMUBAE') {
       if (m.sport !== 'football' && m.betmanFolder !== 'SEUNGMUBAE') return false;
     } else if (selectedFolder === 'SEUNG1PAE') {
@@ -638,6 +660,7 @@ export default function App() {
       // 승부식 등 지정 카테고리
     }
 
+    // 🔒 3. 검색어 필터링
     if (searchMatchNo && searchMatchNo.trim() !== '') {
       const q = searchMatchNo.trim();
       const noStr = String(m.betmanMatchNo || '');
