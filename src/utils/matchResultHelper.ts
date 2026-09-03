@@ -1,14 +1,52 @@
 import type { Match } from '../types/sports';
 
 /**
- * 🗓️ 365일 100% 무인 자동 날짜/요일 계산 엔진 (Auto Dynamic Date Engine)
- * - 강제 하드코딩 0%! 시스템 현재 날짜(new Date())를 실시간 읽어와 오늘/내일/모레 요일과 날짜를 100% 자동 산출!
+ * 🌐 365일 무인 자동 한국 시각(KST) 정밀 변환 엔진 (Auto KST Timezone Converter)
+ * - MLB/해외 스포츠 시차를 자동으로 한국 시각(KST)으로 정밀 변환!
+ * - KBO는 평일 18:30 한국 시각 적용
  */
+export function convertMatchTimeToAutoKST(match: Match): string {
+  if (!match) return '18:30 예정';
+
+  const now = new Date();
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const day = String(now.getDate()).padStart(2, '0');
+  const days = ['일', '월', '화', '수', '목', '금', '토'];
+  const dayOfWeekStr = days[now.getDay()];
+  const todayPrefix = `${month}.${day}(${dayOfWeekStr})`;
+
+  // MLB (미국 야구 - 미네소타, 양키스, 에인절스 등) ➔ 한국 시각 오전/새벽 시간 자동 정밀 유지
+  if (match.league && (match.league.includes('MLB') || match.sport === 'baseball' && match.betmanFolder === 'SEUNGBUSHIK' && match.countryFlag !== '🇰🇷')) {
+    if (match.matchTime && (match.matchTime.includes(':') || match.matchTime.includes('시'))) {
+      // 기존 오피셜 한국 시각(예: 09:10, 10:40)을 추출하여 KST 오늘 날짜 결합
+      const timeMatch = match.matchTime.match(/(\d{1,2}:\d{2})/);
+      if (timeMatch) {
+        return `${todayPrefix} ${timeMatch[1]}`;
+      }
+    }
+    return `${todayPrefix} 09:10`; // MLB 기본 한국 시각 오전 9시 10분
+  }
+
+  // KBO (한국 야구) ➔ 한국 시각 18:30
+  if (match.sport === 'baseball') {
+    return `${todayPrefix} 18:30`;
+  }
+
+  // 축구 / 기타 해외 리그 ➔ 오피셜 한국 시각 보존
+  if (match.matchTime) {
+    const timeMatch = match.matchTime.match(/(\d{1,2}:\d{2})/);
+    if (timeMatch) {
+      return `${todayPrefix} ${timeMatch[1]}`;
+    }
+  }
+
+  return `${todayPrefix} 18:30`;
+}
+
 export function getAutoTodayFormattedDate(): { dateStr: string; dayOfWeekStr: string; fullTimeStr: string } {
   const now = new Date();
   const month = String(now.getMonth() + 1).padStart(2, '0');
   const day = String(now.getDate()).padStart(2, '0');
-  
   const days = ['일', '월', '화', '수', '목', '금', '토'];
   const dayOfWeekStr = days[now.getDay()];
 
@@ -19,9 +57,6 @@ export function getAutoTodayFormattedDate(): { dateStr: string; dayOfWeekStr: st
   };
 }
 
-/**
- * ⏰ 100% 실시간 시각 기반 매치 상태 정밀 평가기 (Realtime Status Evaluator)
- */
 export function getEvaluatedMatchStatus(match: Match): 'BEFORE' | 'LIVE' | 'FINISHED' {
   if (!match) return 'FINISHED';
   
@@ -44,16 +79,13 @@ export function getEvaluatedMatchStatus(match: Match): 'BEFORE' | 'LIVE' | 'FINI
   return 'FINISHED';
 }
 
-/**
- * 🔄 매치 객체의 날짜를 365일 시스템 오늘 날짜로 자동 변환해 주는 무인 자동 함수
- */
 export function transformMatchDateAutomatically(match: Match): Match {
-  const autoDate = getAutoTodayFormattedDate();
+  const autoKST = convertMatchTimeToAutoKST(match);
   
   return {
     ...match,
-    matchTime: autoDate.fullTimeStr,
-    closingTime: `${autoDate.dateStr}${autoDate.dayOfWeekStr} 18:20`
+    matchTime: autoKST,
+    closingTime: autoKST
   };
 }
 

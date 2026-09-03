@@ -1,7 +1,7 @@
 import React from 'react';
 import { ChevronRight, Star, MessageCircle, BarChart2, Flame } from 'lucide-react';
 import type { Match, MembershipTier } from '../types/sports';
-import { isMatchCompleted, getMatchScore, calculateWinningPicks, getEvaluatedMatchStatus, getAutoTodayFormattedDate } from '../utils/matchResultHelper';
+import { isMatchCompleted, getMatchScore, calculateWinningPicks, getEvaluatedMatchStatus, convertMatchTimeToAutoKST } from '../utils/matchResultHelper';
 
 interface MatchCardProps {
   match: Match;
@@ -23,7 +23,7 @@ export const MatchCardComponent = ({ match, membershipTier = 'VVIP', cardDensity
   const isFinished = evaluatedStatus === 'FINISHED';
   const isLiveNow = evaluatedStatus === 'LIVE';
   const { homeScore, awayScore } = getMatchScore(match);
-  const autoToday = getAutoTodayFormattedDate(); // 🗓️ 365일 무인 자동 날짜/요일 산출기
+  const autoKSTTime = convertMatchTimeToAutoKST(match); // 🌐 365일 무인 자동 한국 시각(KST) 정밀 변환기
 
   const getSportIcon = (sportStr: string) => {
     if (sportStr === 'baseball') return '⚾';
@@ -67,7 +67,7 @@ export const MatchCardComponent = ({ match, membershipTier = 'VVIP', cardDensity
               </span>
             ) : (
               <span className={`font-semibold text-[10px] shrink-0 ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>
-                {autoToday.fullTimeStr}
+                {autoKSTTime}
               </span>
             )}
           </div>
@@ -154,7 +154,7 @@ export const MatchCardComponent = ({ match, membershipTier = 'VVIP', cardDensity
             </span>
           ) : (
             <span className={`font-semibold text-[10px] shrink-0 ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>
-              {autoToday.fullTimeStr}
+              {autoKSTTime}
             </span>
           )}
         </div>
