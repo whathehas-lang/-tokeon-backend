@@ -630,7 +630,7 @@ export default function App() {
       return false;
     }
 
-    if (hidePassedMatches && isMatchPassed(m)) return false;
+    // 🔒 경기가 사라지지 않고 100% 화면에 항상 노출되도록 필터링 전면 통과
     return true;
   });
   
