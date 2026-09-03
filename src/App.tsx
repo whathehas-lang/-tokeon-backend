@@ -814,49 +814,22 @@ export default function App() {
                 {/* LEFT MAIN GRID (8 COLS): 2-COLUMN MATCH CARDS GRID */}
                 <div className="lg:col-span-8 space-y-4">
                   
-                  {/* 🔍 Betman Match Sequence Search Bar & Count Indicator */}
-                  <div className={`flex items-center justify-between gap-3 p-2.5 rounded-xl border text-xs shadow-sm ${
+                  {/* 📊 상단 실시간 경기 수 안내 배지 */}
+                  <div className={`flex items-center justify-between p-2.5 rounded-xl border text-xs shadow-sm ${
                     isLight ? 'bg-white border-slate-200' : 'bg-slate-900 border-amber-500/40'
                   }`}>
-                    <div className="flex items-center gap-2 flex-1">
-                      <span className={`font-black shrink-0 ${isLight ? 'text-amber-600' : 'text-amber-400'}`}>🔍 경기번호 검색:</span>
-                      <input
-                        type="number"
-                        placeholder="예: 7121 (1~9,999번 가능)"
-                        value={searchMatchNo}
-                        onChange={(e) => setSearchMatchNo(e.target.value)}
-                        className={`border rounded-lg px-3 py-1 w-full max-w-[200px] focus:outline-none focus:border-amber-500 ${
-                          isLight ? 'bg-slate-50 border-slate-300 text-slate-950 placeholder-slate-400' : 'bg-slate-950 border-slate-700 text-white placeholder-slate-500'
-                        }`}
-                      />
-                      {searchMatchNo && (
-                        <button
-                          onClick={() => setSearchMatchNo('')}
-                          className={`text-[10px] px-2 py-0.5 rounded ${
-                            isLight ? 'bg-slate-100 text-slate-600 hover:text-slate-900' : 'bg-slate-800 text-slate-400 hover:text-white'
-                          }`}
-                        >
-                          초기화
-                        </button>
-                      )}
+                    <div className="flex items-center gap-2">
+                      <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
+                      <span className={`font-black text-xs ${isLight ? 'text-slate-800' : 'text-slate-200'}`}>
+                        전 세계 5대 스포츠 실시간 경기 목록
+                      </span>
                     </div>
-                    <span className={`text-[10px] font-mono shrink-0 ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>
-                      표출중: {filteredMatches.length}개 / 전체 9,999개
+                    <span className={`text-[11px] font-bold font-mono px-2.5 py-0.5 rounded-full ${
+                      isLight ? 'bg-amber-100 text-amber-900 border border-amber-300' : 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
+                    }`}>
+                      현재 표출 경기: {filteredMatches.length}경기
                     </span>
                   </div>
-
-                  {searchMatchNo && filteredMatches.length === 1 && matches.length === 0 && (
-                    <div className={`p-6 border rounded-2xl text-center space-y-2 ${
-                      isLight ? 'bg-white border-slate-200' : 'bg-slate-900 border-slate-800'
-                    }`}>
-                      <div className="text-amber-600 font-black text-sm">
-                        ⚠️ [베트맨 {searchMatchNo}번] 해당 번호는 이번 회차 발매 대상 경기가 아닙니다.
-                      </div>
-                      <p className={`text-xs ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>
-                        실제 베트맨 공식 대진표와 동일하게 이번 회차에 배정된 번호만 표출됩니다. (미발매 / 결번 처리)
-                      </p>
-                    </div>
-                  )}
 
                   <div className="flex flex-col space-y-4">
                     {filteredMatches.map((match) => (
