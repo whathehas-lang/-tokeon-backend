@@ -218,58 +218,7 @@ export const PCWebCommunityHub = ({
     }`}>
       
       {/* MAIN CONTAINER */}
-      <div className="flex flex-row items-stretch gap-2 sm:gap-3 flex-1 overflow-hidden">
-        
-        {/* 👈 LEFT VERTICAL SIDEBAR PANEL */}
-        <div className={`w-[125px] sm:w-[180px] md:w-64 border rounded-xl p-1.5 sm:p-2.5 flex flex-col space-y-2 shrink-0 h-full overflow-hidden ${
-          isLight ? 'bg-white border-slate-200' : 'bg-slate-900 border-slate-800'
-        }`}>
-          
-          <button
-            onClick={() => setSelectedMatch(globalChatRoom)}
-            className={`w-full py-2 px-2.5 rounded-lg text-xs font-bold transition-all flex items-center justify-between border cursor-pointer ${
-              !selectedCustomRoom && selectedMatch.id === 'global-all-chat'
-                ? 'bg-emerald-600 text-white border-emerald-500 shadow-sm'
-                : isLight ? 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100' : 'bg-slate-950 text-slate-300 border-slate-800 hover:bg-slate-800'
-            }`}
-          >
-            <div className="flex items-center gap-1.5 min-w-0">
-              <Globe className="w-3.5 h-3.5 shrink-0" />
-              <span className="truncate">전체 라이브 톡</span>
-            </div>
-            <span className="text-[9px] bg-emerald-500/20 text-emerald-400 px-1.5 py-0.5 rounded font-mono font-bold shrink-0">
-              LIVE
-            </span>
-          </button>
-
-          <div className="flex-1 overflow-y-auto space-y-1.5 pr-0.5 custom-scrollbar">
-            {matches.slice(0, 30).map((m) => (
-              <button
-                key={m.id}
-                onClick={() => {
-                  setSelectedCustomRoom(null);
-                  setSelectedMatch(m);
-                }}
-                className={`w-full p-2 rounded-lg text-left transition-all border flex flex-col space-y-0.5 cursor-pointer ${
-                  !selectedCustomRoom && selectedMatch.id === m.id
-                    ? isLight ? 'bg-emerald-50 border-emerald-400 text-emerald-950 font-bold' : 'bg-emerald-950/30 border-emerald-600 text-emerald-300 font-bold'
-                    : isLight ? 'bg-white border-slate-200 hover:bg-slate-100 text-slate-700' : 'bg-slate-950 border-slate-850 hover:bg-slate-850 text-slate-300'
-                }`}
-              >
-                <div className="flex items-center justify-between text-[10px] text-slate-400">
-                  <span className="truncate">{m.countryFlag || '🌐'} {m.league}</span>
-                  <span className="font-mono text-slate-400 shrink-0">{m.matchTime}</span>
-                </div>
-                <div className="text-xs truncate flex items-center gap-1">
-                  <span className="font-semibold truncate">{m.homeTeam.name}</span>
-                  <span className="text-slate-400 text-[10px]">vs</span>
-                  <span className="font-semibold truncate">{m.awayTeam.name}</span>
-                </div>
-              </button>
-            ))}
-          </div>
-
-        </div>
+      <div className="flex flex-1 overflow-hidden h-full">
 
         {/* 👉 MAIN TEXT-BASED CHAT AREA */}
         <div className={`flex-1 border rounded-xl p-3 flex flex-col justify-between h-full overflow-hidden ${
@@ -280,10 +229,10 @@ export const PCWebCommunityHub = ({
           <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-2 shrink-0">
             <div className="flex items-center gap-2">
               <span className="text-xs font-bold text-slate-800 dark:text-slate-200">
-                💬 {selectedCustomRoom ? selectedCustomRoom.roomTitle : `${selectedMatch.homeTeam?.name || '홈'} vs ${selectedMatch.awayTeam?.name || '원정'}`}
+                💬 실시간 라이브 채팅방
               </span>
               <span className="text-[11px] text-emerald-500 font-medium">● 라이브</span>
-              <span className="text-[11px] text-slate-400">({onlineCount}명)</span>
+              <span className="text-[11px] text-slate-400">({onlineCount}명 참여 중)</span>
             </div>
             
             <button
