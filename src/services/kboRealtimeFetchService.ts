@@ -15,7 +15,7 @@ export interface KBOLiveData {
   gameId: string;
   season: number;
   activeTeamId: string;
-  confirmed: boolean; // 🔒 라인업 공식 확정 여부 플래그 (true: 공식 확정, false: 발표 대기 중)
+  confirmed: boolean;
   homeTeam: string;
   awayTeam: string;
   homeScore: number;
@@ -54,83 +54,80 @@ export interface KBOLiveData {
   lastUpdated: string;
 }
 
-// ⚾ 2026 시즌 공식 라인업 확정(confirmed: true) 프리셋
-const STABLE_LIVE_PRESET_CONFIRMED: KBOLiveData = {
-  gameId: '20260902DSLG',
-  season: 2026,
-  activeTeamId: 'LG',
-  confirmed: true, // 🔒 공식 확정 플래그 true
-  homeTeam: '두산 베어스',
-  awayTeam: 'LG 트윈스',
-  homeScore: 1,
-  awayScore: 4,
-  inning: '7회초',
-  isTopBottom: 'TOP',
-  attackTeam: 'LG 트윈스 (공격 중)',
-  pitcher: {
-    name: '이용찬',
-    pitches: 91,
-    strikeouts: 7,
-    era: '4.64',
-    lastSpeed: 151,
-    season: 2026,
-    activeTeamId: 'DS'
-  },
-  batter: {
-    name: '송찬의',
-    avg: '.302',
-    stat: '3타수 1안타',
-    season: 2026,
-    activeTeamId: 'LG'
-  },
-  runners: {
-    first: { active: false, name: '' },
-    second: { active: true, name: '신민재' },
-    third: { active: false, name: '' }
-  },
-  bso: {
-    balls: 0,
-    strikes: 0,
-    outs: 2
-  },
-  lineup: [
-    { order: 1, pos: '중견', name: '홍창기', avg: '.324', stat: '3타수 2안타', status: 'PAST', season: 2026, activeTeamId: 'LG' },
-    { order: 2, pos: '2루', name: '신민재', avg: '.298', stat: '3타수 1안타 1득점', status: 'PAST', season: 2026, activeTeamId: 'LG' },
-    { order: 3, pos: '좌익', name: '김현수', avg: '.305', stat: '3타수 1안타 1타점', status: 'PAST', season: 2026, activeTeamId: 'LG' },
-    { order: 4, pos: '지명', name: '오스틴', avg: '.318', stat: '3타수 2안타 1홈런', status: 'PAST', season: 2026, activeTeamId: 'LG' },
-    { order: 5, pos: '3루', name: '문보경', avg: '.288', stat: '2타수 1안타', status: 'WAIT', season: 2026, activeTeamId: 'LG' },
-    { order: 6, pos: '1루', name: '문정빈', avg: '.270', stat: '2타수 0안타', status: 'WAIT', season: 2026, activeTeamId: 'LG' },
-    { order: 7, pos: '유격', name: '구본혁', avg: '.265', stat: '2타수 0안타', status: 'WAIT', season: 2026, activeTeamId: 'LG' },
-    { order: 8, pos: '우익', name: '송찬의', avg: '.302', stat: '3타수 1안타', status: 'CURRENT', season: 2026, activeTeamId: 'LG' },
-    { order: 9, pos: '포수', name: '박동원', avg: '.262', stat: '2타수 0안타', status: 'NEXT', season: 2026, activeTeamId: 'LG' }
-  ],
-  status: 'LIVE',
-  lastUpdated: new Date().toLocaleTimeString('ko-KR')
-};
+export const RENDER_BACKEND_URL = 'https://tokeon-backend.onrender.com';
 
 /**
- * 📡 confirmed 플래그 분기 조치가 포함된 수신 함수
+ * 📡 실제 오늘 날짜(Today) KBO/MLB 경기 상태 수신 함수
  */
 export async function fetchRealtimeMatchData(match: Match, season: number = 2026, activeTeamId: string = 'LG'): Promise<KBOLiveData> {
+  try {
+    const res = await fetch(`${RENDER_BACKEND_URL}/api/live-all`);
+    if (res.ok) {
+      const live = await res.json();
+      return {
+        gameId: match.id || live.gameId,
+        season: 2026,
+        activeTeamId: activeTeamId || 'LG',
+        confirmed: live.confirmed ?? false,
+        homeTeam: match.homeTeam?.name || live.homeTeam || '두산 베어스',
+        awayTeam: match.awayTeam?.name || live.awayTeam || 'LG 트윈스',
+        homeScore: live.homeScore ?? 0,
+        awayScore: live.awayScore ?? 0,
+        inning: live.inning || '18:30 예정',
+        isTopBottom: 'TOP',
+        attackTeam: '공격 준비 중',
+        pitcher: live.pitcher || { name: '이용찬 (선발)', pitches: 0, strikeouts: 0, era: '4.64', lastSpeed: 0, season: 2026, activeTeamId: 'DS' },
+        batter: live.batter || { name: '송찬의 (선발)', avg: '.302', stat: '대기 중', season: 2026, activeTeamId: 'LG' },
+        runners: live.runners || { first: { active: false, name: '' }, second: { active: false, name: '' }, third: { active: false, name: '' } },
+        bso: live.bso || { balls: 0, strikes: 0, outs: 0 },
+        lineup: live.lineup || [],
+        status: live.status || 'BEFORE',
+        lastUpdated: new Date().toLocaleTimeString('ko-KR')
+      };
+    }
+  } catch (e) {}
+
   return {
-    ...STABLE_LIVE_PRESET_CONFIRMED,
     gameId: match.id,
     season: 2026,
-    activeTeamId: activeTeamId || 'LG',
-    confirmed: true, // confirmed: true일 때만 선수 명단 화면 렌더링
+    activeTeamId: 'LG',
+    confirmed: false,
+    homeTeam: match.homeTeam?.name || '두산 베어스',
+    awayTeam: match.awayTeam?.name || 'LG 트윈스',
+    homeScore: 0,
+    awayScore: 0,
+    inning: '18:30 예정',
+    isTopBottom: 'TOP',
+    attackTeam: '공격 준비 중',
+    pitcher: { name: '이용찬 (선발예정)', pitches: 0, strikeouts: 0, era: '4.64', lastSpeed: 0, season: 2026, activeTeamId: 'DS' },
+    batter: { name: '송찬의 (선발예정)', avg: '.302', stat: '대기 중', season: 2026, activeTeamId: 'LG' },
+    runners: { first: { active: false, name: '' }, second: { active: false, name: '' }, third: { active: false, name: '' } },
+    bso: { balls: 0, strikes: 0, outs: 0 },
+    lineup: [
+      { order: 1, pos: '중견', name: '홍창기', avg: '.324', stat: '선발출전', status: 'WAIT', season: 2026, activeTeamId: 'LG' },
+      { order: 2, pos: '2루', name: '신민재', avg: '.298', stat: '선발출전', status: 'WAIT', season: 2026, activeTeamId: 'LG' },
+      { order: 3, pos: '좌익', name: '김현수', avg: '.305', stat: '선발출전', status: 'WAIT', season: 2026, activeTeamId: 'LG' },
+      { order: 4, pos: '지명', name: '오스틴', avg: '.318', stat: '선발출전', status: 'WAIT', season: 2026, activeTeamId: 'LG' },
+      { order: 5, pos: '3루', name: '문보경', avg: '.288', stat: '선발출전', status: 'WAIT', season: 2026, activeTeamId: 'LG' },
+      { order: 6, pos: '1루', name: '문정빈', avg: '.270', stat: '선발출전', status: 'WAIT', season: 2026, activeTeamId: 'LG' },
+      { order: 7, pos: '유격', name: '구본혁', avg: '.265', stat: '선발출전', status: 'WAIT', season: 2026, activeTeamId: 'LG' },
+      { order: 8, pos: '우익', name: '송찬의', avg: '.302', stat: '선발출전', status: 'CURRENT', season: 2026, activeTeamId: 'LG' },
+      { order: 9, pos: '포수', name: '박동원', avg: '.262', stat: '선발출전', status: 'NEXT', season: 2026, activeTeamId: 'LG' }
+    ],
+    status: 'BEFORE',
     lastUpdated: new Date().toLocaleTimeString('ko-KR')
   };
 }
 
 export async function fetchRealtimeKBOData(): Promise<KBOLiveData> {
   return fetchRealtimeMatchData({
-    id: '20260902DSLG',
+    id: '20260903DSLG',
     sport: 'baseball',
     league: 'KBO',
     homeTeam: { name: '두산 베어스', logo: '' },
     awayTeam: { name: 'LG 트윈스', logo: '' },
-    status: 'LIVE',
-    homeScore: 1,
-    awayScore: 4
+    status: 'BEFORE',
+    homeScore: 0,
+    awayScore: 0
   } as any, 2026, 'LG');
 }
