@@ -625,10 +625,32 @@ export default function App() {
     setSelectedRound(roundTitle);
   };
 
-  // 🔒 단 1개의 필터 예외도 없이 100% 경기 카드 노출 보장
-  const rawFiltered = matches;
+  // 📌 팩트 데이터 카테고리 필터링 및 검색 연동
+  const rawFiltered = matches.filter((m) => {
+    if (!m) return false;
+    if (selectedFolder === 'SEUNGMUBAE') {
+      if (m.sport !== 'football' && m.betmanFolder !== 'SEUNGMUBAE') return false;
+    } else if (selectedFolder === 'SEUNG1PAE') {
+      if (m.sport !== 'baseball' && m.betmanFolder !== 'SEUNG1PAE') return false;
+    } else if (selectedFolder === 'GIROKSIK') {
+      if (m.betmanFolder !== 'GIROKSIK') return false;
+    } else if (selectedFolder !== 'ALL' && m.betmanFolder && m.betmanFolder !== selectedFolder) {
+      // 승부식 등 지정 카테고리
+    }
+
+    if (searchMatchNo && searchMatchNo.trim() !== '') {
+      const q = searchMatchNo.trim();
+      const noStr = String(m.betmanMatchNo || '');
+      const homeStr = m.homeTeam?.name || '';
+      const awayStr = m.awayTeam?.name || '';
+      if (!noStr.includes(q) && !homeStr.includes(q) && !awayStr.includes(q)) {
+        return false;
+      }
+    }
+    return true;
+  });
   
-  // 📌 Sort matches by official Betman Match Number (betmanMatchNo) in ascending order, with 100% stable fallbacks
+  // 📌 오피셜 경기 번호 순 정밀 정렬
   const sortedMatches = [...rawFiltered].sort((a, b) => {
     const noA = a.betmanMatchNo || (a as any).matchNo || 0;
     const noB = b.betmanMatchNo || (b as any).matchNo || 0;
@@ -641,7 +663,6 @@ export default function App() {
     return a.id.localeCompare(b.id);
   });
 
-  // 🔒 단 1개의 경기 카드도 삭제되거나 숨겨지지 않고 100% 화면 노출 보장
   const filteredMatches = sortedMatches;
 
   // Handle favorite toggle
