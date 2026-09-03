@@ -890,10 +890,10 @@ export default function App() {
                   )}
                 </div>
 
-                {/* RIGHT SIDEBAR (4 COLS): STICKY FULL-HEIGHT REAL-TIME CHAT PANEL */}
-                <div className="lg:col-span-4 space-y-4 sticky top-20 self-start z-30">
-                  <div className={`p-4 rounded-2xl border space-y-3 shadow-2xl flex flex-col h-[calc(100vh-100px)] ${
-                    isLight ? 'bg-white border-slate-200' : 'bg-slate-900/95 border-amber-500/40'
+                {/* RIGHT SIDEBAR (4 COLS): FIXED FULL-HEIGHT REAL-TIME CHAT PANEL */}
+                <div className="lg:col-span-4 space-y-4">
+                  <div className={`p-4 rounded-2xl border space-y-3 shadow-2xl flex flex-col h-[calc(100vh-120px)] fixed top-24 right-4 lg:right-8 xl:right-12 z-30 w-[320px] xl:w-[380px] backdrop-blur-xl ${
+                    isLight ? 'bg-white/95 border-slate-200' : 'bg-slate-900/95 border-amber-500/40'
                   }`}>
                     <div className={`flex items-center justify-between border-b pb-2.5 shrink-0 ${
                       isLight ? 'border-slate-200' : 'border-slate-800'
