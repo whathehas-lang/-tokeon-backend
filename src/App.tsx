@@ -890,9 +890,9 @@ export default function App() {
                   )}
                 </div>
 
-                {/* RIGHT SIDEBAR (4 COLS): LIVE REAL-TIME CHAT PANEL */}
+                {/* RIGHT SIDEBAR (4 COLS): STICKY FULL-HEIGHT REAL-TIME CHAT PANEL */}
                 <div className="lg:col-span-4 space-y-4 sticky top-20">
-                  <div className={`p-4 rounded-2xl border space-y-3 shadow-lg flex flex-col h-[520px] ${
+                  <div className={`p-4 rounded-2xl border space-y-3 shadow-2xl flex flex-col h-[calc(100vh-100px)] ${
                     isLight ? 'bg-white border-slate-200' : 'bg-slate-900/95 border-amber-500/40'
                   }`}>
                     <div className={`flex items-center justify-between border-b pb-2.5 shrink-0 ${
