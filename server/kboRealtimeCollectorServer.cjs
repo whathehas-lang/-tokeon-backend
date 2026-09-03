@@ -17,12 +17,13 @@ const https = require('https');
 const PORT = process.env.PORT || 4000;
 const API_SPORTS_KEY = '96ae3619c2c6f8f76ec75d64bd95d000';
 
-// 🤖 365일 24시간 무인 자동 날짜 계산기 [오늘, 내일, 모레]
+// 🤖 [72시간 슬라이딩 윈도우] 오늘부터 글피까지 4일 치 날짜 자동 계산
 function getRollingDates() {
   const dates = [];
   const base = new Date();
   
-  for (let offset = 0; offset <= 2; offset++) {
+  // D+0(오늘), D+1(내일), D+2(모레), D+3(글피) => 72시간 풀 윈도우 보장
+  for (let offset = 0; offset <= 3; offset++) {
     const d = new Date(base.getTime() + offset * 24 * 3600 * 1000);
     const year = d.getFullYear();
     const month = String(d.getMonth() + 1).padStart(2, '0');
@@ -169,9 +170,9 @@ async function runAutoIngestionPipeline() {
   console.log(`[365일 무인 수집 완료] 총 ${allMatches.length}경기 시간순 갱신 (${LAST_SYNC_TIME})`);
 }
 
-// 최초 기동 즉시 수집 & 매 10분마다 24시간 무인 자동 롤링 갱신
+// 🔄 최초 기동 즉시 수집 & 정확히 매 3시간마다 72시간 롤링 갱신
 runAutoIngestionPipeline();
-setInterval(runAutoIngestionPipeline, 10 * 60 * 1000);
+setInterval(runAutoIngestionPipeline, 3 * 60 * 60 * 1000);
 
 // 📡 백엔드 HTTP 서버
 const server = http.createServer(async (req, res) => {
@@ -185,18 +186,24 @@ const server = http.createServer(async (req, res) => {
       await runAutoIngestionPipeline();
     }
 
-    // 🔒 [서버 1차 원천 차단] 현재 시각 이후의 시작 전 미래 경기만 필터링 (지난 경기 원천 배제)
+    // 🔒 [72시간 슬라이딩 윈도우 원천 차단] 
+    // 1) 현재 시각(nowSec) 이전 경기 100% 제외
+    // 2) 현재 시각부터 향후 72시간 이내의 미래 경기만 1등부터 시간순 꽉 채워 서빙
     const nowSec = Math.floor(Date.now() / 1000);
+    const windowMaxSec = nowSec + (72 * 3600); // 정확히 72시간 후 시각
+
     const upcomingOnlyMatches = CACHED_MATCHES.filter((m) => {
       if (m.status === 'FINISHED' || m.isStarted) return false;
-      if (m.timestamp && m.timestamp <= nowSec) return false;
+      const ts = m.timestamp;
+      if (!ts || ts <= nowSec) return false;
+      if (ts > windowMaxSec) return false; // 72시간 초과 경기 배제
       return true;
     });
 
     res.writeHead(200);
     res.end(JSON.stringify({
       status: 'OK',
-      pipeline: '365-DAY AUTO-ROLLING ENGINE (MLB, NPB, KBO, EPL, NBA 100% 무인 갱신)',
+      pipeline: '72-HOUR SLIDING ROLLING ENGINE (3시간 주기 자동 갱신 / 72시간 상시 풀 유지)',
       lastSyncTime: LAST_SYNC_TIME,
       totalMatchesCount: upcomingOnlyMatches.length,
       matches: upcomingOnlyMatches
