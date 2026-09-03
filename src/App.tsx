@@ -853,115 +853,97 @@ export default function App() {
             
 
 
-            {/* 🖥️ PC DESKTOP 3-SPLIT LAYOUT (좌: 핸드폰 화면 / 중: 실시간 채팅 / 우: 블로그) */}
-            {viewMode === 'PC_WEB' ? (
-              <div className="flex flex-col lg:flex-row gap-3.5 xl:gap-5 w-full items-stretch h-[calc(100vh-140px)] min-h-[700px]">
-                
-                {/* 📱 1. [LEFT PANE]: 핸드폰 모바일 화면 디바이스 프레임 (너비 약 32%) */}
-                <div className="w-full lg:w-[32%] xl:w-[30%] h-full flex flex-col items-center shrink-0">
-                  <div className="w-full h-full rounded-[36px] border-[6px] border-slate-800 shadow-2xl overflow-hidden bg-slate-950 flex flex-col">
-                    
-                    {/* 스마트폰 상단 스피커 & 카메라 노치 바 */}
-                    <div className="bg-slate-900 px-4 py-2 border-b border-slate-800/80 flex items-center justify-between shrink-0 select-none">
-                      <div className="flex items-center gap-1.5 text-[10px] text-amber-400 font-mono font-bold">
-                        <span>📱 TOKEON APP</span>
-                      </div>
-                      <div className="w-16 h-3.5 bg-black rounded-full border border-slate-800 flex items-center justify-center">
-                        <div className="w-2 h-2 rounded-full bg-slate-800" />
-                      </div>
-                      <div className="flex items-center gap-1 text-[10px] text-emerald-400 font-mono font-bold">
-                        <span>5G ●</span>
-                      </div>
-                    </div>
-
-                    {/* 모바일 화면 내부 실시간 스크롤 경기 피드 */}
-                    <div className="flex-1 overflow-y-auto p-2.5 space-y-3 custom-scrollbar">
-                      <div className="flex items-center justify-between p-2 rounded-xl bg-slate-900 border border-amber-500/30 text-xs">
-                        <div className="flex items-center gap-1.5">
-                          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
-                          <span className="font-black text-[11px] text-slate-200">실시간 매치업</span>
-                        </div>
-                        <span className="text-[10px] font-bold font-mono px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30">
-                          {filteredMatches.length}경기
-                        </span>
-                      </div>
-
-                      {filteredMatches.map((match) => (
-                        <MatchCard
-                          key={match.id}
-                          match={match}
-                          membershipTier={membershipTier}
-                          cardDensity="COMPACT"
-                          markedPicks={markedPicks[match.id] || []}
-                          allMatches={matches}
-                          onSelectMatch={(m) => handleOpenDetailModal(m)}
-                          onOpenChat={handleOpenMatchChat}
-                          onToggleFavorite={handleToggleFavorite}
-                          onTogglePick={handleTogglePick}
-                          theme={theme}
-                        />
-                      ))}
-
-                      {/* ➕ Load More Button */}
-                      {!searchMatchNo && matchLimit < 1000 && (
-                        <div className="pt-1 pb-4 text-center">
-                          <button
-                            onClick={() => setMatchLimit((prev) => prev + 20)}
-                            className="w-full py-2 bg-slate-900 hover:bg-slate-850 border border-amber-500/40 text-amber-300 text-xs font-black rounded-xl shadow transition-all cursor-pointer"
-                          >
-                            ➕ 경기 더보기 (+20)
-                          </button>
-                        </div>
-                      )}
-                    </div>
-
-                    {/* 스마트폰 하단 홈 바 */}
-                    <div className="bg-slate-900 py-1.5 flex justify-center shrink-0 border-t border-slate-800">
-                      <div className="w-28 h-1 bg-slate-700 rounded-full" />
-                    </div>
+            {/* 🖥️ PC DESKTOP (lg 이상): 좌측(실제 모바일 경기 화면) + 중앙(실시간 채팅) + 우측(블로그) 3등분 완벽 분할 */}
+            <div className="hidden lg:flex flex-row gap-3.5 xl:gap-5 w-full items-stretch h-[calc(100vh-140px)] min-h-[700px]">
+              
+              {/* 📱 1. [LEFT PANE 32%]: 실제 핸드폰에서 보이는 경기 화면 그대로 (가짜 껍데기/노치 없이 깔끔한 모바일 뷰) */}
+              <div className="w-[32%] xl:w-[30%] h-full flex flex-col shrink-0 bg-slate-950/95 border-2 border-amber-500/30 rounded-2xl shadow-xl overflow-hidden">
+                {/* 모바일 뷰 상단 상태 헤더 */}
+                <div className="p-3 border-b border-slate-800 bg-slate-900/90 flex items-center justify-between shrink-0">
+                  <div className="flex items-center gap-2">
+                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping" />
+                    <span className="font-black text-xs text-amber-300">실시간 매치업 (모바일 뷰)</span>
                   </div>
+                  <span className="text-[11px] font-mono font-black px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40">
+                    {filteredMatches.length}경기 라이브
+                  </span>
                 </div>
 
-                {/* 💬 2. [CENTER PANE]: FastAPI WebSocket 실시간 채팅 (중앙 38~40% 꽉 채움) */}
-                <div className="w-full lg:w-[38%] xl:w-[40%] h-full flex flex-col min-w-0 flex-1">
-                  <PCWebCommunityHub
-                    matches={matches}
-                    userProfile={userProfile}
-                    membershipTier={membershipTier}
-                    onOpenMatchDetail={(m) => handleOpenDetailModal(m)}
-                  />
-                </div>
+                {/* 실제 모바일 경기 카드 목록 스크롤 영역 */}
+                <div className="flex-1 overflow-y-auto p-3 space-y-3 custom-scrollbar">
+                  {filteredMatches.map((match) => (
+                    <MatchCard
+                      key={match.id}
+                      match={match}
+                      membershipTier={membershipTier}
+                      cardDensity="COMPACT"
+                      markedPicks={markedPicks[match.id] || []}
+                      allMatches={matches}
+                      onSelectMatch={(m) => handleOpenDetailModal(m)}
+                      onOpenChat={handleOpenMatchChat}
+                      onToggleFavorite={handleToggleFavorite}
+                      onTogglePick={handleTogglePick}
+                      theme={theme}
+                    />
+                  ))}
 
-                {/* 📝 3. [RIGHT PANE]: 전문 스포츠 분석 블로그 & 칼럼 (우측 30%) */}
-                <div className="w-full lg:w-[30%] xl:w-[30%] h-full flex flex-col shrink-0 min-w-0">
-                  <SportsBlogSection
-                    matches={matches}
-                    theme={theme}
-                    onSelectMatch={(m) => handleOpenDetailModal(m)}
-                  />
+                  {/* ➕ Load More Button */}
+                  {!searchMatchNo && matchLimit < 1000 && (
+                    <div className="pt-2 pb-6 text-center">
+                      <button
+                        onClick={() => setMatchLimit((prev) => prev + 20)}
+                        className="w-full py-2.5 bg-slate-900 hover:bg-slate-850 border border-amber-500/40 text-amber-300 text-xs font-black rounded-xl shadow transition-all cursor-pointer"
+                      >
+                        ➕ 경기 더보기 (+20개 로딩)
+                      </button>
+                    </div>
+                  )}
                 </div>
-
               </div>
-            ) : (
-              /* MOBILE APP MODE: 1-COLUMN VERTICAL STACK */
-              <div className={`flex flex-col w-full ${cardDensity === 'COMPACT' ? 'space-y-2' : 'space-y-4'}`}>
-                {filteredMatches.map((match) => (
-                  <MatchCard
-                    key={match.id}
-                    match={match}
-                    membershipTier={membershipTier}
-                    cardDensity={cardDensity}
-                    markedPicks={markedPicks[match.id] || []}
-                    allMatches={matches}
-                    onSelectMatch={(m) => handleOpenDetailModal(m)}
-                    onOpenChat={handleOpenMatchChat}
-                    onToggleFavorite={handleToggleFavorite}
-                    onTogglePick={handleTogglePick}
-                    theme={theme}
-                  />
-                ))}
+
+              {/* 💬 2. [CENTER PANE 38~40%]: FastAPI WebSocket 실시간 채팅 */}
+              <div className="w-[38%] xl:w-[40%] h-full flex flex-col min-w-0 flex-1">
+                <PCWebCommunityHub
+                  matches={matches}
+                  userProfile={userProfile}
+                  membershipTier={membershipTier}
+                  onOpenMatchDetail={(m) => handleOpenDetailModal(m)}
+                />
               </div>
-            )}
+
+              {/* 📝 3. [RIGHT PANE 30%]: 전문 스포츠 분석 블로그 & 칼럼 */}
+              <div className="w-[30%] xl:w-[30%] h-full flex flex-col shrink-0 min-w-0">
+                <SportsBlogSection
+                  matches={matches}
+                  theme={theme}
+                  onSelectMatch={(m) => handleOpenDetailModal(m)}
+                />
+              </div>
+
+            </div>
+
+            {/* 📱 MOBILE SCREENS (lg 미만 모바일 기기): 기존 단일 모바일 1열 스택 */}
+            <div className="lg:hidden flex flex-col w-full space-y-3">
+              <div className="flex items-center justify-between p-2.5 rounded-xl bg-slate-900 border border-amber-500/30 text-xs">
+                <span className="font-black text-amber-300">실시간 경기 목록</span>
+                <span className="text-[10px] font-mono font-bold text-slate-300">{filteredMatches.length}경기</span>
+              </div>
+              {filteredMatches.map((match) => (
+                <MatchCard
+                  key={match.id}
+                  match={match}
+                  membershipTier={membershipTier}
+                  cardDensity={cardDensity}
+                  markedPicks={markedPicks[match.id] || []}
+                  allMatches={matches}
+                  onSelectMatch={(m) => handleOpenDetailModal(m)}
+                  onOpenChat={handleOpenMatchChat}
+                  onToggleFavorite={handleToggleFavorite}
+                  onTogglePick={handleTogglePick}
+                  theme={theme}
+                />
+              ))}
+            </div>
           </div>
         )}
 
