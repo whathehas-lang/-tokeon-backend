@@ -4,6 +4,7 @@ import type { Match, MembershipTier } from '../types/sports';
 import { LiveCheerChat } from './LiveCheerChat';
 import { BaseballSeriesPitchView } from './BaseballSeriesPitchView';
 import { CoreWinFactorView } from './CoreWinFactorView';
+import { SportsEntityMappingService } from '../services/mappers/sportsEntityMappingService';
 
 interface MatchDetailModalProps {
   match: Match;
@@ -125,9 +126,9 @@ export const MatchDetailModal = ({
             <div className="flex items-center gap-2 flex-wrap">
               <span className="text-base sm:text-lg">{match.countryFlag || '🌐'}</span>
               <h2 className="text-base sm:text-lg font-black truncate flex items-center gap-2 flex-wrap">
-                <span className="text-emerald-400">🏠 [홈] {match.homeTeam.name}</span>
+                <span className="text-emerald-400">🏠 [홈] {SportsEntityMappingService.resolveTeamEntity(match.homeTeam.name)?.nameKo || match.homeTeam.name}</span>
                 <span className="text-slate-500">vs</span>
-                <span className="text-cyan-400">✈️ [원정] {match.awayTeam.name}</span>
+                <span className="text-cyan-400">✈️ [원정] {SportsEntityMappingService.resolveTeamEntity(match.awayTeam.name)?.nameKo || match.awayTeam.name}</span>
               </h2>
 
               {/* 🎯 실제 경기 상태 및 스코어 */}
