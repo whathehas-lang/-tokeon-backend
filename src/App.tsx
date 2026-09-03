@@ -41,8 +41,17 @@ export default function App() {
     const saved = localStorage.getItem('tokeon_membership_tier');
     return (saved as MembershipTier) || 'FREE';
   });
-  const [refreshToast, setRefreshToast] = useState<string | null>(null);
-  const [isMobileConnectModalOpen, setIsMobileConnectModalOpen] = useState<boolean>(false);
+  const [showAllMatchesMode, setShowAllMatchesMode] = useState<boolean>(() => {
+    return localStorage.getItem('tokeon_show_all_matches_mode') === 'true';
+  });
+
+  const handleToggleShowAllMatches = () => {
+    setShowAllMatchesMode(prev => {
+      const next = !prev;
+      localStorage.setItem('tokeon_show_all_matches_mode', next ? 'true' : 'false');
+      return next;
+    });
+  };
 
   const handleReverifyAll = () => {
     setIsReverifying(true);
@@ -52,8 +61,6 @@ export default function App() {
       setMatches(verifiedMatches);
       setAuditReport(newReport);
       setIsReverifying(false);
-      setRefreshToast(`⚡ 167개 경기 실시간 데이터 최신 갱신 완료!`);
-      setTimeout(() => setRefreshToast(null), 2500);
     }, 400);
   };
 
@@ -673,43 +680,21 @@ export default function App() {
     }`}>
       {/* Top Navbar */}
       <Navbar
-        selectedFolder={selectedFolder}
-        onSelectFolder={handleSelectFolder}
-        selectedRound={selectedRound}
-        onSelectRound={setSelectedRound}
+        matches={matches}
         membershipTier={membershipTier}
-        onChangeMembershipTier={setMembershipTier}
-        viewMode={viewMode}
-        onToggleViewMode={setViewMode}
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
-        isLoggedIn={isLoggedIn}
-        userName={userProfile.name}
-        onOpenLoginModal={() => setIsLoginModalOpen(true)}
-        onLogout={handleLogout}
+        onOpenMobileConnect={() => setIsIntegrityModalOpen(true)}
+        onOpenIntegrityDashboard={() => setIsIntegrityModalOpen(true)}
+        onSelectMatch={setSelectedMatchForDetail}
         theme={theme}
         onToggleTheme={handleToggleTheme}
-        hidePassedMatches={hidePassedMatches}
-        setHidePassedMatches={setHidePassedMatches}
-        cardDensity={cardDensity}
-        setCardDensity={setCardDensity}
-        onRefresh={handleReverifyAll}
-        onOpenMobileConnectModal={() => setIsMobileConnectModalOpen(true)}
-        isRefreshing={isReverifying}
+        showAllMatchesMode={showAllMatchesMode}
+        onToggleShowAllMatches={handleToggleShowAllMatches}
       />
 
       {/* Dynamic View Mode Main Container */}
       <main className={`flex-1 w-full mx-auto px-3 sm:px-6 py-4 space-y-4 ${
         viewMode === 'PC_WEB' ? 'max-w-7xl' : 'max-w-xl md:max-w-3xl lg:max-w-4xl'
       }`}>
-
-        {/* ⚡ FLOATING REFRESH TOAST NOTIFICATION */}
-        {refreshToast && (
-          <div className="fixed top-14 left-1/2 -translate-x-1/2 z-50 px-4 py-2 rounded-full bg-emerald-600 text-white font-black text-xs shadow-2xl flex items-center gap-2 border border-emerald-400 animate-bounce">
-            <span>✨</span>
-            <span>{refreshToast}</span>
-          </div>
-        )}
 
 
 
@@ -1033,12 +1018,7 @@ export default function App() {
           />
         )}
 
-        {/* 📱 모바일 스마트폰 연결 & PWA 홈 화면 앱 설치 모달 */}
-      <MobileConnectModal 
-        isOpen={isMobileConnectModalOpen} 
-        onClose={() => setIsMobileConnectModalOpen(false)} 
-        theme={theme} 
-      />
+
     </main>
 
       {/* 🎟️ 플로팅 실시간 승무패 마킹 슬립 집계 바 (Floating Slip Cart) */}
