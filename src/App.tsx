@@ -604,13 +604,11 @@ export default function App() {
     return isMatchPassedHelper(match, nowTicker);
   };
 
-  const [hidePassedMatches, setHidePassedMatches] = useState<boolean>(() => {
-    return true; // 🔒 기본값 true: 시간이 지난 경기는 100% 무조건 자동 숨김
-  });
+  const [hidePassedMatches] = useState<boolean>(true); // 🔒 무조건 강제 true: 지난 경기는 100% 영구 자동 숨김
 
   useEffect(() => {
-    localStorage.setItem('tokeon_hide_passed_matches', hidePassedMatches ? 'true' : 'false');
-  }, [hidePassedMatches]);
+    localStorage.removeItem('tokeon_hide_passed_matches');
+  }, []);
 
   // 📌 Handle folder selection with automatic round title synchronization
   const handleSelectFolder = (folder: BetmanFolderCategory) => {

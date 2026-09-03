@@ -185,13 +185,21 @@ const server = http.createServer(async (req, res) => {
       await runAutoIngestionPipeline();
     }
 
+    // 🔒 [서버 1차 원천 차단] 현재 시각 이후의 시작 전 미래 경기만 필터링 (지난 경기 원천 배제)
+    const nowSec = Math.floor(Date.now() / 1000);
+    const upcomingOnlyMatches = CACHED_MATCHES.filter((m) => {
+      if (m.status === 'FINISHED' || m.isStarted) return false;
+      if (m.timestamp && m.timestamp <= nowSec) return false;
+      return true;
+    });
+
     res.writeHead(200);
     res.end(JSON.stringify({
       status: 'OK',
       pipeline: '365-DAY AUTO-ROLLING ENGINE (MLB, NPB, KBO, EPL, NBA 100% 무인 갱신)',
       lastSyncTime: LAST_SYNC_TIME,
-      totalMatchesCount: CACHED_MATCHES.length,
-      matches: CACHED_MATCHES
+      totalMatchesCount: upcomingOnlyMatches.length,
+      matches: upcomingOnlyMatches
     }));
   } else {
     res.writeHead(200);
