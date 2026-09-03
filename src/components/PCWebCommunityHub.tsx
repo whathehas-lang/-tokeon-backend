@@ -271,31 +271,21 @@ export const PCWebCommunityHub = ({
 
         </div>
 
-        {/* 👉 RIGHT MAIN CHAT AREA */}
-        <div className={`flex-1 border rounded-xl p-2.5 sm:p-3.5 flex flex-col justify-between h-full overflow-hidden ${
+        {/* 👉 MAIN TEXT-BASED CHAT AREA */}
+        <div className={`flex-1 border rounded-xl p-3 flex flex-col justify-between h-full overflow-hidden ${
           isLight ? 'bg-white border-slate-200' : 'bg-slate-900 border-slate-800'
         }`}>
           
-          {/* Room Header */}
-          <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-2.5 shrink-0">
-            <div className="flex items-center gap-2 min-w-0">
-              <MessageSquare className="w-4 h-4 text-emerald-500 shrink-0" />
-              <div>
-                <div className="flex items-center gap-2 flex-wrap">
-                  <h2 className="text-xs sm:text-sm font-bold truncate text-slate-900 dark:text-slate-100">
-                    {selectedCustomRoom ? selectedCustomRoom.roomTitle : `${selectedMatch.homeTeam?.name || '홈팀'} vs ${selectedMatch.awayTeam?.name || '원정팀'}`}
-                  </h2>
-                  <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-emerald-500/15 text-emerald-500 border border-emerald-500/30 flex items-center gap-1">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                    <span>실시간 연결</span>
-                  </span>
-                  <span className="px-1.5 py-0.5 rounded-md text-[10px] font-mono text-slate-400 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
-                    {onlineCount}명 참여
-                  </span>
-                </div>
-              </div>
+          {/* Simple Header */}
+          <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-2 shrink-0">
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-bold text-slate-800 dark:text-slate-200">
+                💬 {selectedCustomRoom ? selectedCustomRoom.roomTitle : `${selectedMatch.homeTeam?.name || '홈'} vs ${selectedMatch.awayTeam?.name || '원정'}`}
+              </span>
+              <span className="text-[11px] text-emerald-500 font-medium">● 라이브</span>
+              <span className="text-[11px] text-slate-400">({onlineCount}명)</span>
             </div>
-
+            
             <button
               onClick={() => {
                 const nextMap: Record<'sound' | 'browser' | 'none', 'sound' | 'browser' | 'none'> = {
@@ -305,53 +295,44 @@ export const PCWebCommunityHub = ({
                 };
                 setHubNotificationSettings(nextMap[hubNotificationSettings]);
               }}
-              className="px-2.5 py-1 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all cursor-pointer"
+              className="text-[11px] text-slate-400 hover:text-slate-200 transition-colors"
             >
-              {hubNotificationSettings === 'sound' ? '🔊 소리' : hubNotificationSettings === 'browser' ? '🖥️ 브라우저' : '🚫 무음'}
+              {hubNotificationSettings === 'sound' ? '🔊 소리' : hubNotificationSettings === 'browser' ? '🖥️ 알림' : '🚫 무음'}
             </button>
           </div>
 
-          {/* Chat Feed */}
-          <div ref={chatContainerRef} className="flex-1 overflow-y-auto space-y-2.5 py-2.5 pr-1 custom-scrollbar">
+          {/* Text-based Chat Feed (IRC / Twitch style simple text rows) */}
+          <div ref={chatContainerRef} className="flex-1 overflow-y-auto space-y-1.5 py-2 pr-1 font-sans text-xs leading-relaxed custom-scrollbar">
             {currentMatchChats.map((msg) => (
-              <div key={msg.id} className={`p-2.5 rounded-xl border space-y-1 ${
-                isLight ? 'bg-slate-50 border-slate-200' : 'bg-slate-950/70 border-slate-800'
-              }`}>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-1.5">
-                    <span className="text-xs">{msg.senderAvatar}</span>
-                    <span className="font-bold text-xs text-slate-900 dark:text-slate-200">{msg.senderName}</span>
-                    <span className="text-[9px] px-1.5 py-0.2 rounded bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400 font-semibold">
-                      {msg.senderTier}
-                    </span>
-                  </div>
-                  <span className="text-[10px] text-slate-400 font-mono">{msg.timeStr}</span>
-                </div>
-                <p className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed">{msg.text}</p>
+              <div key={msg.id} className="py-0.5 hover:bg-slate-800/20 px-1 rounded transition-colors flex items-baseline gap-1.5 flex-wrap">
+                <span className="text-[10px] text-slate-400 font-mono shrink-0 select-none">[{msg.timeStr}]</span>
+                <span className="font-bold text-emerald-500 shrink-0 select-none">{msg.senderName} :</span>
+                <span className="text-slate-800 dark:text-slate-200 break-all">{msg.text}</span>
               </div>
             ))}
           </div>
 
-          {/* Chat Input */}
+          {/* Simple Text Input */}
           <div className="pt-2 border-t border-slate-200 dark:border-slate-800 flex items-center gap-2 shrink-0">
             <input
               type="text"
-              placeholder="메시지를 입력하세요..."
+              placeholder="메시지를 입력하세요 (Enter)"
               value={inputMsg}
               onChange={(e) => setInputMsg(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleSendMsg()}
-              className={`flex-1 border rounded-xl px-3.5 py-2 text-xs focus:outline-none transition-all ${
-                isLight ? 'bg-slate-50 border-slate-200 text-slate-900 focus:border-emerald-500 placeholder-slate-400' : 'bg-slate-950 border-slate-800 text-slate-100 focus:border-emerald-500 placeholder-slate-500'
+              className={`flex-1 border rounded-lg px-3 py-1.5 text-xs focus:outline-none transition-all ${
+                isLight 
+                  ? 'bg-slate-50 border-slate-300 text-slate-900 focus:border-emerald-500 placeholder-slate-400' 
+                  : 'bg-slate-950 border-slate-700 text-slate-100 focus:border-emerald-500 placeholder-slate-500'
               }`}
             />
             <button
               onClick={handleSendMsg}
-              className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl shadow-sm transition-all shrink-0 cursor-pointer"
+              className="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white font-medium text-xs rounded-lg transition-all shrink-0 cursor-pointer"
             >
-              전송
+              보내기
             </button>
           </div>
-
         </div>
 
       </div>
