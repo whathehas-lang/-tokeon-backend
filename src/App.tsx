@@ -649,15 +649,15 @@ export default function App() {
       }
     }
 
-    // 🔒 2. 카테고리/폴더 필터링
+    // 🔒 2. 카테고리/폴더 필터링 (전 세계 스포츠 ALL 모드일 때는 전 종목 100% 바이패스 출력)
     if (selectedFolder === 'SEUNGMUBAE') {
       if (m.sport !== 'football' && m.betmanFolder !== 'SEUNGMUBAE') return false;
     } else if (selectedFolder === 'SEUNG1PAE') {
       if (m.sport !== 'baseball' && m.betmanFolder !== 'SEUNG1PAE') return false;
     } else if (selectedFolder === 'GIROKSIK') {
       if (m.betmanFolder !== 'GIROKSIK') return false;
-    } else if (selectedFolder !== 'ALL' && m.betmanFolder && m.betmanFolder !== selectedFolder) {
-      // 승부식 등 지정 카테고리
+    } else if (selectedFolder === 'SEUNGBUSHIK') {
+      // 승부식 및 전 세계 스포츠 전체보기 ➔ 100% 바이패스
     }
 
     // 🔒 3. 검색어 필터링
