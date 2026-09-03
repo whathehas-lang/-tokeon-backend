@@ -33,15 +33,14 @@ function getRollingDates() {
   return dates;
 }
 
-// 🎯 종목별/리그별 엔드포인트 정의
+// 🎯 종목별/리그별 엔드포인트 정의 (메이저 프로 리그 전담)
 const TARGET_ENDPOINTS = [
-  // ⚾ 1. 메이저 야구 전담 쿼리
+  // ⚾ 1. 메이저 3대 야구 전담 쿼리 (마이너리그, 멕시칸리그 등 잡야구 100% 원천 배제)
   { sport: 'baseball', host: 'v1.baseball.api-sports.io', endpoint: '/games', leagueId: 1, name: 'MLB 메이저리그', icon: '⚾' },
   { sport: 'baseball', host: 'v1.baseball.api-sports.io', endpoint: '/games', leagueId: 12, name: 'NPB 일본야구', icon: '⚾' },
   { sport: 'baseball', host: 'v1.baseball.api-sports.io', endpoint: '/games', leagueId: 15, name: 'KBO 한국야구', icon: '⚾' },
-  { sport: 'baseball', host: 'v1.baseball.api-sports.io', endpoint: '/games', leagueId: null, name: '글로벌 야구', icon: '⚾' },
   
-  // ⚽ 2. 글로벌 축구
+  // ⚽ 2. 글로벌 축구 (유럽 5대 리그 & 챔스 & K리그 등 주요 대회 수집 후 필터링)
   { sport: 'football', host: 'v3.football.api-sports.io', endpoint: '/fixtures', leagueId: null, name: '글로벌 축구', icon: '⚽' },
 
   // 🏀 3. 글로벌 농구
@@ -54,6 +53,63 @@ const TARGET_ENDPOINTS = [
   // 🏒 5. 글로벌 하키
   { sport: 'hockey', host: 'v1.hockey.api-sports.io', endpoint: '/games', leagueId: null, name: '글로벌 하키', icon: '🏒' }
 ];
+
+// 🏆 [메이저 1부 리그 & 주요 대회 엄선 화이트리스트 필터]
+function isMajorLeagueMatch(m) {
+  const sport = m.sport;
+  const league = (m.league || '').toLowerCase();
+
+  // ⚾ 야구: MLB, NPB, KBO 메이저 3대 리그만 100% 허용
+  if (sport === 'baseball') {
+    return league.includes('mlb') || 
+           league.includes('major league') || 
+           league.includes('kbo') || 
+           league.includes('npb') || 
+           league.includes('professional baseball') ||
+           m.leagueId === 1 || m.leagueId === 12 || m.leagueId === 15;
+  }
+
+  // ⚽ 축구: 유럽 5대 빅리그, 챔피언스리그, 유로파, K리그1, 월드컵/A매치/주요 컵대회만 허용
+  if (sport === 'football') {
+    // ❌ 3류 잡리그 블랙리스트 단어 즉시 차단
+    if (league.includes('second') || league.includes('2nd') || league.includes('3rd') || 
+        league.includes('liga 3') || league.includes('liga 2') || league.includes('division 2') ||
+        league.includes('reserve') || league.includes('u20') || league.includes('u19') || league.includes('u21') ||
+        league.includes('u23') || league.includes('kakkonen') || league.includes('alef') || league.includes('amateur') ||
+        league.includes('youth') || league.includes('junior')) {
+      return false;
+    }
+
+    // ⭕ 메이저 1부 리그 & 주요 대회 화이트리스트
+    return league.includes('premier league') || 
+           league.includes('la liga') || league.includes('primera') ||
+           league.includes('bundesliga') || 
+           league.includes('serie a') || 
+           league.includes('ligue 1') || 
+           league.includes('champions league') || league.includes('europa') || league.includes('conference league') ||
+           league.includes('k league 1') || league.includes('kleague') ||
+           league.includes('eredivisie') || league.includes('world cup') || league.includes('nations league') ||
+           league.includes('fa cup') || league.includes('copa del rey') || league.includes('coppa italia') || league.includes('dfb pokal') ||
+           league.includes('super cup') || league.includes('asian cup') || league.includes('afc champions');
+  }
+
+  // 🏀 농구: NBA, KBL 등
+  if (sport === 'basketball') {
+    return league.includes('nba') || league.includes('kbl') || league.includes('euroleague') || league.includes('wkbl');
+  }
+
+  // 🏐 배구: V-리그 및 주요 리그
+  if (sport === 'volleyball') {
+    return league.includes('v-league') || league.includes('v league') || league.includes('nations league') || league.includes('championship');
+  }
+
+  // 🏒 하키: NHL
+  if (sport === 'hockey') {
+    return league.includes('nhl');
+  }
+
+  return false;
+}
 
 function fetchSingleEndpoint(target, dateStr) {
   return new Promise((resolve) => {
@@ -197,6 +253,7 @@ const server = http.createServer(async (req, res) => {
       const ts = m.timestamp;
       if (!ts || ts <= nowSec) return false;
       if (ts > windowMaxSec) return false; // 72시간 초과 경기 배제
+      if (!isMajorLeagueMatch(m)) return false; // 🚫 잡리그(2부/3부/유스/마이너) 100% 원천 차단!
       return true;
     });
 

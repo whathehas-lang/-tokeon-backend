@@ -652,6 +652,46 @@ export default function App() {
       }
     }
 
+    // 🏆 [명품 메이저 1부 리그 & 주요 대회 엄선 화이트리스트 필터]
+    const sport = m.sport;
+    const league = (m.league || '').toLowerCase();
+
+    // ⚾ 야구: MLB, NPB, KBO 메이저 3대 리그만 100% 허용 (마이너/멕시칸 등 제외)
+    if (sport === 'baseball') {
+      const isMajorBaseball = league.includes('mlb') || 
+                             league.includes('major league') || 
+                             league.includes('kbo') || 
+                             league.includes('npb') || 
+                             league.includes('professional baseball') ||
+                             (m as any).leagueId === 1 || (m as any).leagueId === 12 || (m as any).leagueId === 15;
+      if (!isMajorBaseball) return false;
+    }
+
+    // ⚽ 축구: 유럽 5대 빅리그, 챔스, 유로파, K리그1, 주요 A매치/컵대회만 허용 (잡리그 100% 차단)
+    if (sport === 'football') {
+      // ❌ 잡리그 블랙리스트 단어 즉시 차단
+      if (league.includes('second') || league.includes('2nd') || league.includes('3rd') || 
+          league.includes('liga 3') || league.includes('liga 2') || league.includes('division 2') ||
+          league.includes('reserve') || league.includes('u20') || league.includes('u19') || league.includes('u21') ||
+          league.includes('u23') || league.includes('kakkonen') || league.includes('alef') || league.includes('amateur') ||
+          league.includes('youth') || league.includes('junior')) {
+        return false;
+      }
+
+      // ⭕ 메이저 대회 & 1부 리그만 통과
+      const isMajorFootball = league.includes('premier league') || 
+                             league.includes('la liga') || league.includes('primera') ||
+                             league.includes('bundesliga') || 
+                             league.includes('serie a') || 
+                             league.includes('ligue 1') || 
+                             league.includes('champions league') || league.includes('europa') || league.includes('conference league') ||
+                             league.includes('k league 1') || league.includes('kleague') ||
+                             league.includes('eredivisie') || league.includes('world cup') || league.includes('nations league') ||
+                             league.includes('fa cup') || league.includes('copa del rey') || league.includes('coppa italia') || league.includes('dfb pokal') ||
+                             league.includes('super cup') || league.includes('asian cup') || league.includes('afc champions');
+      if (!isMajorFootball) return false;
+    }
+
     // 🔒 2. 카테고리/종목 필터링 (버튼 클릭 시 해당 종목만 필터링)
     if (selectedFolder === 'SEUNGMUBAE') {
       if (m.sport !== 'football' && m.betmanFolder !== 'SEUNGMUBAE') return false;
