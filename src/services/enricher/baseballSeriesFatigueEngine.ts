@@ -149,6 +149,32 @@ export class BaseballSeriesFatigueEngine {
     "SSG": {
       prev1: { dateStr: "09.01 (공식 휴식일)", opponentName: "공식 휴식일", teamScore: 0, opponentScore: 0, result: "무", starterName: "휴식일", innings: "0.0", pitches: 0, balls: 0, strikes: 0, bullpen: [] },
       prev2: { dateStr: "08.31 (이전 시리즈)", opponentName: "NC", teamScore: 6, opponentScore: 2, result: "승", starterName: "앤더슨", innings: "6.0", pitches: 95, balls: 34, strikes: 61, bullpen: [{ name: "노경은", pitches: 18, role: "VICTORY" }, { name: "조병현", pitches: 15, role: "VICTORY" }] }
+    },
+
+    // 🇯🇵 NPB 일본프로야구 구단
+    "요미우리": {
+      prev1: { dateStr: "09.03 (직전 경기)", opponentName: "야쿠르트", teamScore: 4, opponentScore: 2, result: "승", starterName: "스가노 토모유키", innings: "7.0", pitches: 96, balls: 31, strikes: 65, bullpen: [{ name: "알베르토 발도나도", pitches: 15, role: "VICTORY" }, { name: "다이세이", pitches: 12, role: "VICTORY" }] },
+      prev2: { dateStr: "09.02 (2일전 경기)", opponentName: "야쿠르트", teamScore: 3, opponentScore: 1, result: "승", starterName: "이오리 야마사키", innings: "6.1", pitches: 90, balls: 30, strikes: 60, bullpen: [{ name: "다카나시 유헤이", pitches: 14, role: "VICTORY" }] }
+    },
+    "한신": {
+      prev1: { dateStr: "09.03 (직전 경기)", opponentName: "주니치", teamScore: 3, opponentScore: 1, result: "승", starterName: "무라카미 쇼키", innings: "7.0", pitches: 94, balls: 28, strikes: 66, bullpen: [{ name: "스구루 이와자키", pitches: 14, role: "VICTORY" }] },
+      prev2: { dateStr: "09.02 (2일전 경기)", opponentName: "주니치", teamScore: 2, opponentScore: 4, result: "패", starterName: "사이키 히로토", innings: "6.0", pitches: 92, balls: 32, strikes: 60, bullpen: [{ name: "게라", pitches: 18, role: "PURSUIT" }] }
+    },
+    "소프트뱅크": {
+      prev1: { dateStr: "09.03 (직전 경기)", opponentName: "세이부", teamScore: 5, opponentScore: 2, result: "승", starterName: "아리하라 고헤이", innings: "7.0", pitches: 98, balls: 33, strikes: 65, bullpen: [{ name: "츠모리 유키", pitches: 16, role: "VICTORY" }, { name: "오수나", pitches: 12, role: "VICTORY" }] },
+      prev2: { dateStr: "09.02 (2일전 경기)", opponentName: "세이부", teamScore: 4, opponentScore: 1, result: "승", starterName: "모이넬로", innings: "7.0", pitches: 102, balls: 35, strikes: 67, bullpen: [{ name: "마츠모토 유키", pitches: 14, role: "VICTORY" }] }
+    },
+    "라쿠텐": {
+      prev1: { dateStr: "09.03 (직전 경기)", opponentName: "닛폰햄", teamScore: 3, opponentScore: 2, result: "승", starterName: "하야카와 다카히사", innings: "6.2", pitches: 94, balls: 31, strikes: 63, bullpen: [{ name: "노리모토 다카히로", pitches: 14, role: "VICTORY" }] },
+      prev2: { dateStr: "09.02 (2일전 경기)", opponentName: "닛폰햄", teamScore: 1, opponentScore: 4, result: "패", starterName: "기시 다카유키", innings: "6.0", pitches: 88, balls: 29, strikes: 59, bullpen: [{ name: "사카이 도모히토", pitches: 16, role: "PURSUIT" }] }
+    },
+    "닛폰햄": {
+      prev1: { dateStr: "09.03 (직전 경기)", opponentName: "라쿠텐", teamScore: 2, opponentScore: 3, result: "패", starterName: "이토 히로미", innings: "7.0", pitches: 96, balls: 30, strikes: 66, bullpen: [{ name: "다나카 세이기", pitches: 15, role: "PURSUIT" }] },
+      prev2: { dateStr: "09.02 (2일전 경기)", opponentName: "라쿠텐", teamScore: 4, opponentScore: 1, result: "승", starterName: "가토 다카유키", innings: "6.0", pitches: 89, balls: 28, strikes: 61, bullpen: [{ name: "이케다 다카히데", pitches: 14, role: "VICTORY" }] }
+    },
+    "오릭스": {
+      prev1: { dateStr: "09.03 (직전 경기)", opponentName: "지바롯데", teamScore: 4, opponentScore: 2, result: "승", starterName: "미야기 히로야", innings: "7.0", pitches: 95, balls: 31, strikes: 64, bullpen: [{ name: "마차도", pitches: 14, role: "VICTORY" }] },
+      prev2: { dateStr: "09.02 (2일전 경기)", opponentName: "지바롯데", teamScore: 2, opponentScore: 3, result: "패", starterName: "소타니 류헤이", innings: "5.1", pitches: 86, balls: 32, strikes: 54, bullpen: [{ name: "페르도모", pitches: 16, role: "PURSUIT" }] }
     }
   };
 
