@@ -122,6 +122,7 @@ export default function App() {
   // 📌 1,000+ Sequence Pagination & Search States
   const [searchMatchNo, setSearchMatchNo] = useState<string>('');
   const [matchLimit, setMatchLimit] = useState<number>(999999);
+  const [showPassedSection, setShowPassedSection] = useState<boolean>(false);
 
   // 💬 Sidebar Chat Panel Message states
   const [sidebarMessages, setSidebarMessages] = useState<{ id: string; sender: string; text: string; timeStr: string; tier: string; color: string }[]>(() => {
@@ -1122,6 +1123,65 @@ export default function App() {
           </div>
         </div>
       )}
+
+      {/* 📜 지난 경기 (종료된 경기) 세로 보기 ON/OFF 토글 섹션 */}
+      <div className="w-full max-w-7xl mx-auto px-4 py-6">
+        <div className={`p-4 rounded-2xl border transition-all ${
+          isLight ? 'bg-white border-slate-200' : 'bg-slate-900 border-slate-800'
+        }`}>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-black text-slate-800 dark:text-slate-100 flex items-center gap-1.5">
+                📜 종료된 지난 경기 모아보기
+              </span>
+              <span className="text-xs px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 font-bold">
+                {matches.filter(m => m.status === 'FINISHED').length}경기
+              </span>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => setShowPassedSection(prev => !prev)}
+              className={`px-3.5 py-2 rounded-xl font-black text-xs transition-all border flex items-center gap-1.5 cursor-pointer shadow-sm ${
+                showPassedSection
+                  ? 'bg-rose-500 text-white border-rose-600 shadow-rose-500/30'
+                  : 'bg-emerald-600 text-white border-emerald-700 shadow-emerald-500/30'
+              }`}
+            >
+              <span>{showPassedSection ? '🔴 지난 경기 숨기기 (OFF)' : '🟢 지난 경기 세로 보기 (ON)'}</span>
+            </button>
+          </div>
+
+          {/* 지난 경기 세로 나열 (Vertical Card List) */}
+          {showPassedSection && (
+            <div className="mt-4 pt-4 border-t border-slate-200 dark:border-slate-800 flex flex-col space-y-3 animate-in fade-in slide-in-from-top-2">
+              {matches.filter(m => m.status === 'FINISHED').length === 0 ? (
+                <div className="py-6 text-center text-xs text-slate-400 font-bold">
+                  현재 종료된 지난 경기 데이터가 없습니다.
+                </div>
+              ) : (
+                matches
+                  .filter(m => m.status === 'FINISHED')
+                  .map((match) => (
+                    <MatchCard
+                      key={match.id}
+                      match={match}
+                      membershipTier={membershipTier}
+                      cardDensity="COMPACT"
+                      markedPicks={markedPicks[match.id] || []}
+                      allMatches={matches}
+                      onSelectMatch={(m) => handleOpenDetailModal(m)}
+                      onOpenChat={handleOpenMatchChat}
+                      onToggleFavorite={handleToggleFavorite}
+                      onTogglePick={handleTogglePick}
+                      theme={theme}
+                    />
+                  ))
+              )}
+            </div>
+          )}
+        </div>
+      </div>
 
       {/* Footer */}
       <footer className="border-t border-slate-900 bg-slate-950 py-6 text-center text-xs text-slate-500 space-y-1.5 w-full pb-20">
