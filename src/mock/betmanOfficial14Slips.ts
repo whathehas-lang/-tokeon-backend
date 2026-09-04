@@ -1162,6 +1162,569 @@ export const BETMAN_SEUNG1PAE_65TH_SLIP: Match[] = [
   }
 ];
 
+export const BETMAN_SEUNG5PAE_15TH_SLIP: Match[] = [
+  {
+    id: 's5p-15-1',
+    betmanRound: '농구/야구 승5패 15회차 (betman.co.kr 오피셜 슬립)',
+    betmanFolder: 'SEUNG5PAE',
+    betmanMatchNo: 1,
+    sport: 'basketball',
+    league: 'KBL 프로농구',
+    countryFlag: '🇰🇷',
+    isFavorite: true,
+    status: 'SCHEDULED',
+    matchTime: '09.05(토) 14:00',
+    closingTime: '09.05(토) 13:50',
+    venue: '부산 사직실내체육관',
+    homeTeam: {
+      id: 'kcc',
+      name: '부산 KCC',
+      rank: 3,
+      homeSeasonRecord: '18승 8패',
+      awaySeasonRecord: '14승 12패',
+      recent3Form: 'GREEN',
+      staminaStatus: 'GREEN',
+      minutesPlayed14d: 180
+    },
+    awayTeam: {
+      id: 'db',
+      name: '원주 DB',
+      rank: 1,
+      homeSeasonRecord: '20승 6패',
+      awaySeasonRecord: '17승 9패',
+      recent3Form: 'GREEN',
+      staminaStatus: 'GREEN',
+      minutesPlayed14d: 190
+    },
+    lineupAlertInfo: {
+      isPublished: true,
+      publishedTime: 'KBL 오피셜 라인업 발표',
+      alertText: '🚨 1번 경기 (부산 KCC vs 원주 DB) 개막 빅매치',
+      keyAbsenceNotice: '허웅 3점 핫폼 vs 알바노-로슨 원투펀치'
+    }
+  },
+  {
+    id: 's5p-15-2',
+    betmanRound: '농구/야구 승5패 15회차 (betman.co.kr 오피셜 슬립)',
+    betmanFolder: 'SEUNG5PAE',
+    betmanMatchNo: 2,
+    sport: 'basketball',
+    league: 'KBL 프로농구',
+    countryFlag: '🇰🇷',
+    isFavorite: false,
+    status: 'SCHEDULED',
+    matchTime: '09.05(토) 16:00',
+    closingTime: '09.05(토) 13:50',
+    venue: '잠실학생체육관',
+    homeTeam: {
+      id: 'sk',
+      name: '서울 SK',
+      rank: 2,
+      homeSeasonRecord: '19승 7패',
+      awaySeasonRecord: '15승 11패',
+      recent3Form: 'GREEN',
+      staminaStatus: 'GREEN',
+      minutesPlayed14d: 180
+    },
+    awayTeam: {
+      id: 'kt',
+      name: '수원 KT',
+      rank: 4,
+      homeSeasonRecord: '17승 9패',
+      awaySeasonRecord: '14승 12패',
+      recent3Form: 'YELLOW',
+      staminaStatus: 'GREEN',
+      minutesPlayed14d: 175
+    },
+    lineupAlertInfo: {
+      isPublished: true,
+      publishedTime: 'KBL 공식 발표',
+      alertText: '🚨 2번 경기 (서울 SK vs 수원 KT) 속공 대결',
+      keyAbsenceNotice: '김선형-워니 콤비 vs 배스 골밑 장악'
+    }
+  },
+  {
+    id: 's5p-15-3',
+    betmanRound: '농구/야구 승5패 15회차 (betman.co.kr 오피셜 슬립)',
+    betmanFolder: 'SEUNG5PAE',
+    betmanMatchNo: 3,
+    sport: 'basketball',
+    league: 'KBL 프로농구',
+    countryFlag: '🇰🇷',
+    isFavorite: false,
+    status: 'SCHEDULED',
+    matchTime: '09.05(토) 16:00',
+    closingTime: '09.05(토) 13:50',
+    venue: '창원체육관',
+    homeTeam: {
+      id: 'lg_sakers',
+      name: '창원 LG',
+      rank: 5,
+      homeSeasonRecord: '16승 10패',
+      awaySeasonRecord: '13승 13패',
+      recent3Form: 'YELLOW',
+      staminaStatus: 'GREEN',
+      minutesPlayed14d: 180
+    },
+    awayTeam: {
+      id: 'hyundai_mobis',
+      name: '현대모비스',
+      rank: 6,
+      homeSeasonRecord: '15승 11패',
+      awaySeasonRecord: '12승 14패',
+      recent3Form: 'GREEN',
+      staminaStatus: 'YELLOW',
+      minutesPlayed14d: 190
+    },
+    lineupAlertInfo: {
+      isPublished: true,
+      publishedTime: 'KBL 공식 발표',
+      alertText: '🚨 3번 경기 (창원 LG vs 현대모비스) 수비전',
+      keyAbsenceNotice: '마레이 리바운드 vs 게이지 프림 골밑 대결'
+    }
+  },
+  {
+    id: 's5p-15-4',
+    betmanRound: '농구/야구 승5패 15회차 (betman.co.kr 오피셜 슬립)',
+    betmanFolder: 'SEUNG5PAE',
+    betmanMatchNo: 4,
+    sport: 'basketball',
+    league: 'KBL 프로농구',
+    countryFlag: '🇰🇷',
+    isFavorite: false,
+    status: 'SCHEDULED',
+    matchTime: '09.05(토) 18:00',
+    closingTime: '09.05(토) 13:50',
+    venue: '고양체육관',
+    homeTeam: {
+      id: 'sono',
+      name: '고양 소노',
+      rank: 8,
+      homeSeasonRecord: '12승 14패',
+      awaySeasonRecord: '9승 17패',
+      recent3Form: 'YELLOW',
+      staminaStatus: 'GREEN',
+      minutesPlayed14d: 180
+    },
+    awayTeam: {
+      id: 'kogas',
+      name: '한국가스공사',
+      rank: 7,
+      homeSeasonRecord: '13승 13패',
+      awaySeasonRecord: '10승 16패',
+      recent3Form: 'YELLOW',
+      staminaStatus: 'GREEN',
+      minutesPlayed14d: 180
+    },
+    lineupAlertInfo: {
+      isPublished: true,
+      publishedTime: 'KBL 공식 발표',
+      alertText: '🚨 4번 경기 (고양 소노 vs 한국가스공사)',
+      keyAbsenceNotice: '이정현 3점 슛감 최고조'
+    }
+  },
+  {
+    id: 's5p-15-5',
+    betmanRound: '농구/야구 승5패 15회차 (betman.co.kr 오피셜 슬립)',
+    betmanFolder: 'SEUNG5PAE',
+    betmanMatchNo: 5,
+    sport: 'basketball',
+    league: 'KBL 프로농구',
+    countryFlag: '🇰🇷',
+    isFavorite: false,
+    status: 'SCHEDULED',
+    matchTime: '09.05(토) 18:00',
+    closingTime: '09.05(토) 13:50',
+    venue: '안양 정관장 아레나',
+    homeTeam: {
+      id: 'kgc',
+      name: '안양 정관장',
+      rank: 9,
+      homeSeasonRecord: '11승 15패',
+      awaySeasonRecord: '8승 18패',
+      recent3Form: 'RED',
+      staminaStatus: 'GREEN',
+      minutesPlayed14d: 180
+    },
+    awayTeam: {
+      id: 'samsung_thunders',
+      name: '서울 삼성',
+      rank: 10,
+      homeSeasonRecord: '9승 17패',
+      awaySeasonRecord: '6승 20패',
+      recent3Form: 'RED',
+      staminaStatus: 'YELLOW',
+      minutesPlayed14d: 190
+    },
+    lineupAlertInfo: {
+      isPublished: true,
+      publishedTime: 'KBL 공식 발표',
+      alertText: '🚨 5번 경기 (안양 정관장 vs 서울 삼성)',
+      keyAbsenceNotice: '외곽 지원 화력 집중'
+    }
+  },
+  {
+    id: 's5p-15-6',
+    betmanRound: '농구/야구 승5패 15회차 (betman.co.kr 오피셜 슬립)',
+    betmanFolder: 'SEUNG5PAE',
+    betmanMatchNo: 6,
+    sport: 'basketball',
+    league: 'NBA 미국프로농구',
+    countryFlag: '🇺🇸',
+    isFavorite: true,
+    status: 'SCHEDULED',
+    matchTime: '09.06(일) 08:30',
+    closingTime: '09.05(토) 13:50',
+    venue: 'TD 가든',
+    homeTeam: {
+      id: 'bos',
+      name: '보스턴 셀틱스',
+      rank: 1,
+      homeSeasonRecord: '36승 6패',
+      awaySeasonRecord: '28승 12패',
+      recent3Form: 'GREEN',
+      staminaStatus: 'GREEN',
+      minutesPlayed14d: 220
+    },
+    awayTeam: {
+      id: 'mil',
+      name: '밀워키 벅스',
+      rank: 3,
+      homeSeasonRecord: '31승 11패',
+      awaySeasonRecord: '18승 22패',
+      recent3Form: 'GREEN',
+      staminaStatus: 'GREEN',
+      minutesPlayed14d: 230
+    },
+    lineupAlertInfo: {
+      isPublished: true,
+      publishedTime: 'NBA 공식 발표',
+      alertText: '🚨 6번 경기 (보스턴 vs 밀워키) 동부 콘퍼런스 파이널 전초전',
+      keyAbsenceNotice: '테이텀-브라운 듀오 vs 아데토쿤보-릴라드'
+    }
+  },
+  {
+    id: 's5p-15-7',
+    betmanRound: '농구/야구 승5패 15회차 (betman.co.kr 오피셜 슬립)',
+    betmanFolder: 'SEUNG5PAE',
+    betmanMatchNo: 7,
+    sport: 'basketball',
+    league: 'NBA 미국프로농구',
+    countryFlag: '🇺🇸',
+    isFavorite: false,
+    status: 'SCHEDULED',
+    matchTime: '09.06(일) 09:00',
+    closingTime: '09.05(토) 13:50',
+    venue: '매디슨 스퀘어 가든',
+    homeTeam: {
+      id: 'nyk',
+      name: '뉴욕 닉스',
+      rank: 2,
+      homeSeasonRecord: '27승 14패',
+      awaySeasonRecord: '23승 18패',
+      recent3Form: 'GREEN',
+      staminaStatus: 'GREEN',
+      minutesPlayed14d: 210
+    },
+    awayTeam: {
+      id: 'phi',
+      name: '필라델피아',
+      rank: 5,
+      homeSeasonRecord: '25승 16패',
+      awaySeasonRecord: '22승 19패',
+      recent3Form: 'YELLOW',
+      staminaStatus: 'GREEN',
+      minutesPlayed14d: 210
+    },
+    lineupAlertInfo: {
+      isPublished: true,
+      publishedTime: 'NBA 공식 발표',
+      alertText: '🚨 7번 경기 (뉴욕 닉스 vs 필라델피아)',
+      keyAbsenceNotice: '브런슨 클러치 득점력 가동'
+    }
+  },
+  {
+    id: 's5p-15-8',
+    betmanRound: '농구/야구 승5패 15회차 (betman.co.kr 오피셜 슬립)',
+    betmanFolder: 'SEUNG5PAE',
+    betmanMatchNo: 8,
+    sport: 'basketball',
+    league: 'NBA 미국프로농구',
+    countryFlag: '🇺🇸',
+    isFavorite: false,
+    status: 'SCHEDULED',
+    matchTime: '09.06(일) 09:30',
+    closingTime: '09.05(토) 13:50',
+    venue: '볼 아레나',
+    homeTeam: {
+      id: 'den',
+      name: '덴버 너게츠',
+      rank: 2,
+      homeSeasonRecord: '33승 8패',
+      awaySeasonRecord: '24승 17패',
+      recent3Form: 'GREEN',
+      staminaStatus: 'GREEN',
+      minutesPlayed14d: 230
+    },
+    awayTeam: {
+      id: 'min',
+      name: '미네소타',
+      rank: 3,
+      homeSeasonRecord: '30승 11패',
+      awaySeasonRecord: '26승 15패',
+      recent3Form: 'GREEN',
+      staminaStatus: 'GREEN',
+      minutesPlayed14d: 220
+    },
+    lineupAlertInfo: {
+      isPublished: true,
+      publishedTime: 'NBA 공식 발표',
+      alertText: '🚨 8번 경기 (덴버 vs 미네소타) 서부 골밑 지배권 쟁탈',
+      keyAbsenceNotice: '요키치 트리플더블 vs 에드워즈 폭발력'
+    }
+  },
+  {
+    id: 's5p-15-9',
+    betmanRound: '농구/야구 승5패 15회차 (betman.co.kr 오피셜 슬립)',
+    betmanFolder: 'SEUNG5PAE',
+    betmanMatchNo: 9,
+    sport: 'basketball',
+    league: 'NBA 미국프로농구',
+    countryFlag: '🇺🇸',
+    isFavorite: false,
+    status: 'SCHEDULED',
+    matchTime: '09.06(일) 10:00',
+    closingTime: '09.05(토) 13:50',
+    venue: '아메리칸 에어라인스 센터',
+    homeTeam: {
+      id: 'dal',
+      name: '댈러스 매버릭스',
+      rank: 5,
+      homeSeasonRecord: '26승 15패',
+      awaySeasonRecord: '24승 17패',
+      recent3Form: 'GREEN',
+      staminaStatus: 'GREEN',
+      minutesPlayed14d: 230
+    },
+    awayTeam: {
+      id: 'okc',
+      name: '오클라호마',
+      rank: 1,
+      homeSeasonRecord: '33승 8패',
+      awaySeasonRecord: '24승 17패',
+      recent3Form: 'GREEN',
+      staminaStatus: 'GREEN',
+      minutesPlayed14d: 210
+    },
+    lineupAlertInfo: {
+      isPublished: true,
+      publishedTime: 'NBA 공식 발표',
+      alertText: '🚨 9번 경기 (댈러스 vs 오클라호마) MVP 후보 정면 대결',
+      keyAbsenceNotice: '돈치치-어빙 vs 길저스-알렉산더(SGA)'
+    }
+  },
+  {
+    id: 's5p-15-10',
+    betmanRound: '농구/야구 승5패 15회차 (betman.co.kr 오피셜 슬립)',
+    betmanFolder: 'SEUNG5PAE',
+    betmanMatchNo: 10,
+    sport: 'basketball',
+    league: 'NBA 미국프로농구',
+    countryFlag: '🇺🇸',
+    isFavorite: true,
+    status: 'SCHEDULED',
+    matchTime: '09.06(일) 11:30',
+    closingTime: '09.05(토) 13:50',
+    venue: '크립토닷컴 아레나',
+    homeTeam: {
+      id: 'lal',
+      name: 'LA 레이커스',
+      rank: 7,
+      homeSeasonRecord: '28승 14패',
+      awaySeasonRecord: '19승 21패',
+      recent3Form: 'GREEN',
+      staminaStatus: 'GREEN',
+      minutesPlayed14d: 220
+    },
+    awayTeam: {
+      id: 'gsw',
+      name: '골든스테이트',
+      rank: 8,
+      homeSeasonRecord: '21승 20패',
+      awaySeasonRecord: '25승 16패',
+      recent3Form: 'YELLOW',
+      staminaStatus: 'YELLOW',
+      minutesPlayed14d: 240
+    },
+    lineupAlertInfo: {
+      isPublished: true,
+      publishedTime: 'NBA 공식 발표',
+      alertText: '🚨 10번 경기 (LA 레이커스 vs 골든스테이트) 세기의 라이벌전',
+      keyAbsenceNotice: '르브론 제임스 vs 스테픈 커리 불꽃 3점전'
+    }
+  },
+  {
+    id: 's5p-15-11',
+    betmanRound: '농구/야구 승5패 15회차 (betman.co.kr 오피셜 슬립)',
+    betmanFolder: 'SEUNG5PAE',
+    betmanMatchNo: 11,
+    sport: 'baseball',
+    league: 'KBO 리그',
+    countryFlag: '🇰🇷',
+    isFavorite: true,
+    status: 'SCHEDULED',
+    matchTime: '09.05(토) 17:00',
+    closingTime: '09.05(토) 13:50',
+    venue: '잠실야구장',
+    homeTeam: {
+      id: 'lg',
+      name: 'LG 트윈스',
+      rank: 3,
+      homeSeasonRecord: '32승 2무 24패',
+      awaySeasonRecord: '31승 1무 26패',
+      recent3Form: 'GREEN',
+      staminaStatus: 'GREEN',
+      starterPitcherInfo: { name: '임찬규', era: '3.62', winLoss: '9승 5패' }
+    },
+    awayTeam: {
+      id: 'samsung',
+      name: '삼성 라이온즈',
+      rank: 2,
+      homeSeasonRecord: '34승 1무 22패',
+      awaySeasonRecord: '29승 1무 28패',
+      recent3Form: 'GREEN',
+      staminaStatus: 'GREEN',
+      starterPitcherInfo: { name: '코너', era: '3.35', winLoss: '10승 5패' }
+    },
+    lineupAlertInfo: {
+      isPublished: true,
+      publishedTime: 'KBO 공식 발표',
+      alertText: '🚨 11번 경기 (LG vs 삼성) 5점차 승부 예측',
+      keyAbsenceNotice: '불펜 총력전 예고'
+    }
+  },
+  {
+    id: 's5p-15-12',
+    betmanRound: '농구/야구 승5패 15회차 (betman.co.kr 오피셜 슬립)',
+    betmanFolder: 'SEUNG5PAE',
+    betmanMatchNo: 12,
+    sport: 'baseball',
+    league: 'KBO 리그',
+    countryFlag: '🇰🇷',
+    isFavorite: false,
+    status: 'SCHEDULED',
+    matchTime: '09.05(토) 17:00',
+    closingTime: '09.05(토) 13:50',
+    venue: '사직야구장',
+    homeTeam: {
+      id: 'lotte',
+      name: '롯데 자이언츠',
+      rank: 7,
+      homeSeasonRecord: '28승 2무 28패',
+      awaySeasonRecord: '24승 1무 31패',
+      recent3Form: 'YELLOW',
+      staminaStatus: 'GREEN',
+      starterPitcherInfo: { name: '박세웅', era: '4.10', winLoss: '6승 8패' }
+    },
+    awayTeam: {
+      id: 'hanwha',
+      name: '한화 이글스',
+      rank: 6,
+      homeSeasonRecord: '29승 1무 27패',
+      awaySeasonRecord: '25승 2무 30패',
+      recent3Form: 'YELLOW',
+      staminaStatus: 'YELLOW',
+      starterPitcherInfo: { name: '문동주', era: '3.88', winLoss: '7승 7패' }
+    },
+    lineupAlertInfo: {
+      isPublished: true,
+      publishedTime: 'KBO 공식 발표',
+      alertText: '🚨 12번 경기 (롯데 vs 한화)',
+      keyAbsenceNotice: '토종 영건 선발 맞대결'
+    }
+  },
+  {
+    id: 's5p-15-13',
+    betmanRound: '농구/야구 승5패 15회차 (betman.co.kr 오피셜 슬립)',
+    betmanFolder: 'SEUNG5PAE',
+    betmanMatchNo: 13,
+    sport: 'baseball',
+    league: '메이저리그 (MLB)',
+    countryFlag: '🇺🇸',
+    isFavorite: false,
+    status: 'SCHEDULED',
+    matchTime: '09.06(일) 08:15',
+    closingTime: '09.05(토) 13:50',
+    venue: '양키 스타디움',
+    homeTeam: {
+      id: 'ny_yankees',
+      name: '뉴욕 양키스',
+      rank: 1,
+      homeSeasonRecord: '41승 25패',
+      awaySeasonRecord: '41승 28패',
+      recent3Form: 'GREEN',
+      staminaStatus: 'GREEN',
+      starterPitcherInfo: { name: '게릿 콜', era: '3.15', winLoss: '8승 3패' }
+    },
+    awayTeam: {
+      id: 'cubs',
+      name: '시카고 컵스',
+      rank: 2,
+      homeSeasonRecord: '36승 32패',
+      awaySeasonRecord: '32승 35패',
+      recent3Form: 'YELLOW',
+      staminaStatus: 'GREEN',
+      starterPitcherInfo: { name: '이마나가 쇼타', era: '2.95', winLoss: '11승 3패' }
+    },
+    lineupAlertInfo: {
+      isPublished: true,
+      publishedTime: 'MLB 공식 발표',
+      alertText: '🚨 13번 경기 (뉴욕 양키스 vs 시카고 컵스) 에이스 대격돌!',
+      keyAbsenceNotice: '게릿 콜 vs 이마나가 쇼타 특급 선발 대전'
+    }
+  },
+  {
+    id: 's5p-15-14',
+    betmanRound: '농구/야구 승5패 15회차 (betman.co.kr 오피셜 슬립)',
+    betmanFolder: 'SEUNG5PAE',
+    betmanMatchNo: 14,
+    sport: 'baseball',
+    league: '메이저리그 (MLB)',
+    countryFlag: '🇺🇸',
+    isFavorite: true,
+    status: 'SCHEDULED',
+    matchTime: '09.06(일) 10:10',
+    closingTime: '09.05(토) 13:50',
+    venue: '다저 스타디움',
+    homeTeam: {
+      id: 'la_dodgers',
+      name: 'LA 다저스',
+      rank: 1,
+      homeSeasonRecord: '46승 23패',
+      awaySeasonRecord: '38승 31패',
+      recent3Form: 'GREEN',
+      staminaStatus: 'GREEN',
+      starterPitcherInfo: { name: '플래허티', era: '2.95', winLoss: '10승 5패' }
+    },
+    awayTeam: {
+      id: 'cleveland',
+      name: '클리블랜드 가디언스',
+      rank: 1,
+      homeSeasonRecord: '43승 24패',
+      awaySeasonRecord: '37승 34패',
+      recent3Form: 'GREEN',
+      staminaStatus: 'GREEN',
+      starterPitcherInfo: { name: '바이비', era: '3.50', winLoss: '11승 6패' }
+    },
+    lineupAlertInfo: {
+      isPublished: true,
+      publishedTime: 'MLB 공식 발표',
+      alertText: '🚨 14번 경기 (LA 다저스 vs 클리블랜드)',
+      keyAbsenceNotice: '오타니 홈런포 가동 & 다저스 타선 화력'
+    }
+  }
+];
+
 export function getOfficialBetmanSlip(category: string): Match[] {
   if (category === 'SEUNGMUBAE') {
     return BETMAN_SEUNGMUBAE_50TH_SLIP;
@@ -1170,7 +1733,8 @@ export function getOfficialBetmanSlip(category: string): Match[] {
     return BETMAN_SEUNG1PAE_65TH_SLIP;
   }
   if (category === 'SEUNG5PAE') {
-    return [];
+    return BETMAN_SEUNG5PAE_15TH_SLIP;
   }
   return [];
 }
+

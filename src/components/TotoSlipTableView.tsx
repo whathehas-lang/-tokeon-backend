@@ -57,7 +57,36 @@ export const TOTO_ROUNDS_REGISTRY: Record<string, TotoRoundMeta> = {
     carryOverCount: 0,
     status: '발매중',
   },
+  'SEUNG5PAE-15': {
+    roundId: 'SEUNG5PAE-15',
+    roundTitle: '2026년 15회차 (농구/야구 승5패)',
+    salePeriod: '09.03(목) 08:00 ~ 09.05(토) 13:50',
+    totalVotesCount: 112400,
+    firstPrizeAmount: 480000000,
+    carryOverAmount: 0,
+    carryOverCount: 0,
+    status: '발매중',
+  },
 };
+
+// 15회차 승5패 투표율 데이터 (KBL, NBA, KBO, MLB 5점차 승부)
+export const TOTO_15TH_SEUNG5PAE_ROWS: TotoMatchRowData[] = [
+  { matchNo: 1, homeTeam: '부산KCC', awayTeam: '원주DB', matchTime: '(토)14:00', winRate: 46.2, drawRate: 26.5, loseRate: 27.3 },
+  { matchNo: 2, homeTeam: '서울SK', awayTeam: '수원KT', matchTime: '(토)16:00', winRate: 52.4, drawRate: 25.1, loseRate: 22.5 },
+  { matchNo: 3, homeTeam: '창원LG', awayTeam: '현대모비스', matchTime: '(토)16:00', winRate: 47.8, drawRate: 28.0, loseRate: 24.2 },
+  { matchNo: 4, homeTeam: '고양소노', awayTeam: '한국가스공', matchTime: '(토)18:00', winRate: 43.5, drawRate: 27.2, loseRate: 29.3 },
+  { matchNo: 5, homeTeam: '안양정관', awayTeam: '서울삼성', matchTime: '(토)18:00', winRate: 51.0, drawRate: 26.0, loseRate: 23.0 },
+  { matchNo: 6, homeTeam: '보스셀틱', awayTeam: '밀워벅스', matchTime: '(일)08:30', winRate: 64.2, drawRate: 20.1, loseRate: 15.7 },
+  { matchNo: 7, homeTeam: '뉴욕닉스', awayTeam: '필라델피', matchTime: '(일)09:00', winRate: 55.3, drawRate: 23.4, loseRate: 21.3 },
+  { matchNo: 8, homeTeam: '덴버너게', awayTeam: '미네소타', matchTime: '(일)09:30', winRate: 58.1, drawRate: 22.5, loseRate: 19.4 },
+  { matchNo: 9, homeTeam: '댈러스', awayTeam: '오클라호', matchTime: '(일)10:00', winRate: 48.9, drawRate: 25.3, loseRate: 25.8 },
+  { matchNo: 10, homeTeam: 'LA레이커', awayTeam: '골든스테', matchTime: '(일)11:30', winRate: 53.6, drawRate: 24.2, loseRate: 22.2 },
+  { matchNo: 11, homeTeam: 'LG트윈스', awayTeam: '삼성라이', matchTime: '(토)17:00', winRate: 46.5, drawRate: 26.5, loseRate: 27.0 },
+  { matchNo: 12, homeTeam: '롯데자이', awayTeam: '한화이글', matchTime: '(토)17:00', winRate: 44.2, drawRate: 28.1, loseRate: 27.7 },
+  { matchNo: 13, homeTeam: '뉴욕양키', awayTeam: '시카컵스', matchTime: '(일)08:15', winRate: 59.4, drawRate: 22.0, loseRate: 18.6 },
+  { matchNo: 14, homeTeam: 'LA다저스', awayTeam: '클리블랜', matchTime: '(일)10:10', winRate: 65.1, drawRate: 19.2, loseRate: 15.7 },
+];
+
 
 // 64회차 오피셜 투표율 및 경기 데이터 (유저 첨부 이미지 원본 데이터)
 export const TOTO_64TH_SEUNG1PAE_ROWS: TotoMatchRowData[] = [
@@ -143,8 +172,16 @@ export const TotoSlipTableView: React.FC<TotoSlipTableViewProps> = ({
   const isLight = theme === 'light';
 
   // 현재 선택된 회차 키 관리 (카테고리에 따라 기본값 설정)
-  const defaultRoundKey = category === 'SEUNG1PAE' ? 'SEUNG1PAE-65' : category === 'SEUNGMUBAE' ? 'SEUNGMUBAE-50' : 'SEUNG1PAE-65';
+  const defaultRoundKey = category === 'SEUNG1PAE' ? 'SEUNG1PAE-65' : category === 'SEUNGMUBAE' ? 'SEUNGMUBAE-50' : 'SEUNG5PAE-15';
   const [selectedRoundKey, setSelectedRoundKey] = useState<string>(defaultRoundKey);
+
+  // category가 바뀔 때 회차 키 및 마킹 자동 동기화
+  React.useEffect(() => {
+    const nextKey = category === 'SEUNG1PAE' ? 'SEUNG1PAE-65' : category === 'SEUNGMUBAE' ? 'SEUNGMUBAE-50' : 'SEUNG5PAE-15';
+    setSelectedRoundKey(nextKey);
+    setPicks({});
+    setCalcResults(null);
+  }, [category]);
 
   // 선택된 회차의 메타데이터 가져오기
   const currentMeta = TOTO_ROUNDS_REGISTRY[selectedRoundKey] || TOTO_ROUNDS_REGISTRY[defaultRoundKey];
@@ -183,6 +220,8 @@ export const TotoSlipTableView: React.FC<TotoSlipTableViewProps> = ({
     ? TOTO_64TH_SEUNG1PAE_ROWS
     : selectedRoundKey === 'SEUNGMUBAE-50' || category === 'SEUNGMUBAE'
     ? TOTO_50TH_SEUNGMUBAE_ROWS
+    : selectedRoundKey === 'SEUNG5PAE-15' || category === 'SEUNG5PAE'
+    ? TOTO_15TH_SEUNG5PAE_ROWS
     : TOTO_65TH_SEUNG1PAE_ROWS;
 
   const rows: TotoMatchRowData[] = Array.from({ length: 14 }, (_, idx) => {
@@ -421,7 +460,13 @@ export const TotoSlipTableView: React.FC<TotoSlipTableViewProps> = ({
               }`}
             >
               {Object.values(TOTO_ROUNDS_REGISTRY)
-                .filter((r) => category === 'SEUNG1PAE' ? r.roundId.startsWith('SEUNG1PAE') : category === 'SEUNGMUBAE' ? r.roundId.startsWith('SEUNGMUBAE') : true)
+                .filter((r) => 
+                  category === 'SEUNG1PAE' 
+                    ? r.roundId.startsWith('SEUNG1PAE') 
+                    : category === 'SEUNGMUBAE' 
+                    ? r.roundId.startsWith('SEUNGMUBAE') 
+                    : r.roundId.startsWith('SEUNG5PAE')
+                )
                 .map((r) => (
                   <option key={r.roundId} value={r.roundId}>
                     {r.roundTitle} [{r.status}]

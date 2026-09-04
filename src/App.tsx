@@ -653,27 +653,17 @@ export default function App() {
   const rawFiltered = matches.filter((m) => {
     if (!m) return false;
 
-    // 🔒 1. 시간이 지난 경기 (경기 시작과 동시에 100% 즉시 숨김)
+    // 🔒 1. 시간이 지난 경기 필터링 (명시적 종료 FINISHED 경기만 숨기거나 옵션에 따라 처리)
     if (hidePassedMatches) {
-      if (m.status === 'FINISHED' || m.status === 'LIVE' || (m as any).isStarted) {
+      if (m.status === 'FINISHED') {
         return false;
       }
       
+      // 시작한 지 5시간 이상 지난 확실한 종료 경기만 자동 숨김 (진행 중이거나 금일/내일 예정 경기는 유지)
       const nowSeconds = Math.floor(Date.now() / 1000);
       const matchTimestamp = (m as any).timestamp;
-      
-      // 1) 초 단위 유닉스 타임스탬프 기준: 시작 시각이 현재 시각 이하(과거/현재)면 즉시 100% 숨김
-      if (matchTimestamp && matchTimestamp <= nowSeconds) {
+      if (matchTimestamp && matchTimestamp > 0 && matchTimestamp + 18000 <= nowSeconds) {
         return false;
-      }
-
-      // 2) ISO 문자열 기준: 시작 시각이 현재 시각 이하이면 즉시 100% 숨김
-      const rawTime = (m as any).rawTimeIso || m.matchTime || '';
-      if (rawTime.includes('T')) {
-        const matchDt = new Date(rawTime);
-        if (!isNaN(matchDt.getTime()) && matchDt.getTime() <= Date.now()) {
-          return false;
-        }
       }
     }
 
@@ -1011,9 +1001,9 @@ export default function App() {
                   </span>
                 </div>
 
-                {/* 실제 모바일 경기 카드 목록 스크롤 영역 또는 승1패/승무패 배트맨 슬립 표 */}
-                <div className={`flex-1 overflow-hidden ${selectedFolder === 'SEUNG1PAE' || selectedFolder === 'SEUNGMUBAE' ? 'p-0 flex flex-col' : 'overflow-y-auto p-3 space-y-3 custom-scrollbar'}`}>
-                  {selectedFolder === 'SEUNG1PAE' || selectedFolder === 'SEUNGMUBAE' ? (
+                {/* 실제 모바일 경기 카드 목록 스크롤 영역 또는 승1패/승무패/승5패 배트맨 슬립 표 */}
+                <div className={`flex-1 overflow-hidden ${selectedFolder === 'SEUNG1PAE' || selectedFolder === 'SEUNGMUBAE' || selectedFolder === 'SEUNG5PAE' ? 'p-0 flex flex-col' : 'overflow-y-auto p-3 space-y-3 custom-scrollbar'}`}>
+                  {selectedFolder === 'SEUNG1PAE' || selectedFolder === 'SEUNGMUBAE' || selectedFolder === 'SEUNG5PAE' ? (
                     <TotoSlipTableView
                       category={selectedFolder as any}
                       matches={filteredMatches}
@@ -1098,9 +1088,9 @@ export default function App() {
 
             </div>
 
-            {/* 📱 MOBILE SCREENS (lg 미만 모바일 기기): 기존 단일 모바일 1열 스택 또는 승1패 배트맨 슬립 표 */}
+            {/* 📱 MOBILE SCREENS (lg 미만 모바일 기기): 기존 단일 모바일 1열 스택 또는 승1패/승무패/승5패 배트맨 슬립 표 */}
             <div className="lg:hidden flex flex-col w-full space-y-3">
-              {selectedFolder === 'SEUNG1PAE' || selectedFolder === 'SEUNGMUBAE' ? (
+              {selectedFolder === 'SEUNG1PAE' || selectedFolder === 'SEUNGMUBAE' || selectedFolder === 'SEUNG5PAE' ? (
                 <TotoSlipTableView
                   category={selectedFolder as any}
                   matches={filteredMatches}
