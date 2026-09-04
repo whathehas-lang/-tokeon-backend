@@ -122,13 +122,29 @@ export const PCWebCommunityHub = ({
   const [isWsConnected, setIsWsConnected] = useState<boolean>(false);
   const wsRef = useRef<WebSocket | null>(null);
 
-  // ⚡ FastAPI WebSocket 실시간 양방향 통신 채널 연결
+  // ⚡ 1. Firebase Cloud Firestore 실시간 양방향 동기화 (다른 컴퓨터/스마트폰 간 100% 실시간 공유)
+  useEffect(() => {
+    // Firebase Firestore 실시간 구독
+    const unsubscribeFirebase = firebaseService.subscribeToRoomMessages(activeRoomId, (incomingMessages) => {
+      if (incomingMessages && incomingMessages.length > 0) {
+        setChatMessages(prev => ({
+          ...prev,
+          [activeRoomId]: incomingMessages
+        }));
+      }
+    });
+
+    return () => {
+      unsubscribeFirebase();
+    };
+  }, [activeRoomId]);
+
+  // ⚡ 2. FastAPI WebSocket 양방향 통신 채널 (보조 로컬 고속 브로드캐스트)
   useEffect(() => {
     let ws: WebSocket | null = null;
     try {
       const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
       const wsHost = window.location.hostname || 'localhost';
-      // 로컬 개발 환경 및 서버 환경 포트 8000 자동 감지
       const wsUrl = `${wsProtocol}//${wsHost}:8000/ws/chat/${encodeURIComponent(activeRoomId)}`;
       ws = new WebSocket(wsUrl);
 
@@ -185,7 +201,7 @@ export const PCWebCommunityHub = ({
     scrollToBottom();
   }, [chatMessages, activeRoomId]);
 
-  const handleSendMsg = () => {
+  const handleSendMsg = async () => {
     if (!inputMsg.trim()) return;
 
     const newMsg: ChatMessage = {
@@ -204,12 +220,27 @@ export const PCWebCommunityHub = ({
       [activeRoomId]: [...(prev[activeRoomId] || []), newMsg]
     }));
 
-    // 2. FastAPI WebSocket 양방향 브로드캐스트 전송 (접속한 모든 유저에게 0.01초 만에 배포)
+    setInputMsg('');
+
+    // 2. Firebase Cloud Firestore 실시간 클라우드 전송 (모든 다른 컴퓨터/기기로 즉시 전달)
+    try {
+      await firebaseService.sendRoomMessage(activeRoomId, {
+        senderName: newMsg.senderName,
+        senderTier: newMsg.senderTier,
+        senderAvatar: newMsg.senderAvatar,
+        text: newMsg.text,
+        timeStr: newMsg.timeStr,
+        isVvip: newMsg.isVvip,
+        color: newMsg.isVvip ? 'text-amber-400' : 'text-slate-200'
+      });
+    } catch (err) {
+      console.warn('[PCWebCommunityHub] Firebase send error:', err);
+    }
+
+    // 3. 보조 WebSocket 전송
     if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
       wsRef.current.send(JSON.stringify(newMsg));
     }
-
-    setInputMsg('');
   };
 
   return (
