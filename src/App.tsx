@@ -923,6 +923,22 @@ export default function App() {
 
     </main>
 
+      {/* 📌 초슬림 1줄 미니 푸터 (높이 24px, 공간 차지 최소화) */}
+      <footer className={`h-6 border-t px-3 flex items-center justify-between text-[11px] select-none shrink-0 z-30 ${
+        isLight ? 'bg-slate-100 border-slate-200 text-slate-500' : 'bg-slate-950 border-slate-800 text-slate-400'
+      }`}>
+        <div className="flex items-center gap-2">
+          <span className="font-bold text-slate-700 dark:text-slate-300">토큰 (Tokeon)</span>
+          <span className="text-slate-400 dark:text-slate-500">•</span>
+          <span className="font-mono text-emerald-500">tokeon.co.kr</span>
+        </div>
+        <div className="hidden sm:flex items-center gap-2 text-[10px] text-slate-400 dark:text-slate-500">
+          <span>오피셜 스포츠 팩트 데이터 플랫폼</span>
+          <span>•</span>
+          <span>© 2026 Tokeon Analytics</span>
+        </div>
+      </footer>
+
       {/* 🎟️ 플로팅 실시간 승무패 마킹 슬립 집계 바 (Floating Slip Cart) */}
       {markedMatchCount > 0 && (
         <div className="fixed bottom-5 left-1/2 -translate-x-1/2 z-40 w-11/12 max-w-3xl bg-slate-950/95 border-2 border-amber-500 rounded-2xl p-3.5 sm:p-4 shadow-[0_0_35px_rgba(245,158,11,0.4)] backdrop-blur-lg flex flex-wrap items-center justify-between gap-3 animate-in slide-in-from-bottom-5">
