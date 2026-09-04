@@ -97,7 +97,16 @@ export const UI_TEXT_DICT: Record<string, Record<AppLanguage, string>> = {
   signup: { ko: '무료가입', en: 'Join Free', ja: '無料登録' },
   realtime_chat: { ko: '실시간 채팅방', en: 'Live Chat', ja: 'ライブチャット' },
   sports_blog: { ko: '스포츠 분석 블로그', en: 'Sports Analysis Blog', ja: 'スポーツ分析ブログ' },
-  more_matches: { ko: '경기 더보기', en: 'Load More', ja: 'もっと見る' }
+  more_matches: { ko: '경기 더보기', en: 'Load More', ja: 'もっと見る' },
+  tab_all: { ko: '전체', en: 'All', ja: '全体' },
+  tab_football: { ko: '축구', en: 'Football', ja: 'サッカー' },
+  tab_baseball: { ko: '야구', en: 'Baseball', ja: '野球' },
+  tab_basketball: { ko: '농구', en: 'Basketball', ja: 'バスケ' },
+  tab_volleyball: { ko: '배구', en: 'Volleyball', ja: 'バレー' },
+  tab_hockey: { ko: '하키', en: 'Hockey', ja: 'ホッケー' },
+  tab_seungmubae: { ko: '승무패', en: 'W/D/L (14)', ja: '勝分敗 (14)' },
+  tab_seung1pae: { ko: '승1패', en: 'W/1/L (14)', ja: '勝1敗 (14)' },
+  tab_seung5pae: { ko: '승5패', en: 'W/5/L (14)', ja: '勝5敗 (14)' }
 };
 
 export const getUiText = (key: string, lang: AppLanguage): string => {

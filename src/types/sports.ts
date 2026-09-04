@@ -1,5 +1,5 @@
 export type FormColorStatus = 'GREEN' | 'YELLOW' | 'RED';
-export type BetmanFolderCategory = 'ALL' | 'SEUNG5PAE' | 'SEUNGMUBAE' | 'SEUNGBUSHIK' | 'SEUNGMUPAE' | 'SEUNG1PAE' | 'HANDICAP' | 'UNDER_OVER' | 'GIROKSIK';
+export type BetmanFolderCategory = 'ALL' | 'football' | 'baseball' | 'basketball' | 'volleyball' | 'hockey' | 'SEUNG5PAE' | 'SEUNGMUBAE' | 'SEUNGBUSHIK' | 'SEUNGMUPAE' | 'SEUNG1PAE' | 'HANDICAP' | 'UNDER_OVER' | 'GIROKSIK';
 export type MembershipTier = 'FREE' | 'VIP' | 'VVIP';
 export type ViewMode = 'VERTICAL_LIST' | 'CARD_GRID' | 'APP' | 'PC_WEB';
 

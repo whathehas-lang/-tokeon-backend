@@ -629,8 +629,20 @@ export default function App() {
       ? `축구 승무패 ${meta.G011.defaultRoundTs}회차 (betman.co.kr 오피셜 슬립)`
       : folder === 'SEUNG1PAE'
       ? `야구 승1패 ${meta.G024.defaultRoundTs}회차 (betman.co.kr 오피셜 슬립)`
+      : folder === 'SEUNG5PAE'
+      ? `농구/야구 승5패 15회차 (betman.co.kr 오피셜 슬립)`
       : folder === 'GIROKSIK'
       ? `프로토 기록식 ${meta.G102.defaultRoundTs}회차 (betman.co.kr 오피셜 슬립)`
+      : folder === 'football'
+      ? `축구 실시간 경기 (시간순 정렬)`
+      : folder === 'baseball'
+      ? `야구 실시간 경기 (시간순 정렬)`
+      : folder === 'basketball'
+      ? `농구 실시간 경기 (시간순 정렬)`
+      : folder === 'volleyball'
+      ? `배구 실시간 경기 (시간순 정렬)`
+      : folder === 'hockey'
+      ? `하키 실시간 경기 (시간순 정렬)`
       : `프로토 승부식 ${meta.G101.defaultRoundTs}회차 (betman.co.kr 오피셜 슬립)`;
     setSelectedRound(roundTitle);
   };
@@ -704,10 +716,25 @@ export default function App() {
     }
 
     // 🔒 2. 카테고리/종목 필터링 (버튼 클릭 시 해당 종목만 필터링)
-    if (selectedFolder === 'SEUNGMUBAE') {
-      if (m.sport !== 'football' && m.betmanFolder !== 'SEUNGMUBAE') return false;
+    if (selectedFolder === 'football') {
+      if (m.sport !== 'football') return false;
+    } else if (selectedFolder === 'baseball') {
+      if (m.sport !== 'baseball') return false;
+    } else if (selectedFolder === 'basketball') {
+      if (m.sport !== 'basketball') return false;
+    } else if (selectedFolder === 'volleyball') {
+      if (m.sport !== 'volleyball') return false;
+    } else if (selectedFolder === 'hockey') {
+      if (m.sport !== 'hockey') return false;
+    } else if (selectedFolder === 'SEUNGMUBAE') {
+      // ⚽ 축구 승무패 (배트맨 오피셜 14경기 슬립 또는 승무패 폴더)
+      if (m.betmanFolder !== 'SEUNGMUBAE' && m.sport !== 'football') return false;
     } else if (selectedFolder === 'SEUNG1PAE') {
-      if (m.sport !== 'baseball' && m.betmanFolder !== 'SEUNG1PAE') return false;
+      // ⚾ 야구 승1패 (배트맨 오피셜 14경기 슬립 또는 승1패 폴더)
+      if (m.betmanFolder !== 'SEUNG1PAE' && m.sport !== 'baseball') return false;
+    } else if (selectedFolder === 'SEUNG5PAE') {
+      // 🏀⚾ 농구/야구 승5패
+      if (m.betmanFolder !== 'SEUNG5PAE' && m.sport !== 'basketball' && m.sport !== 'baseball') return false;
     } else if (selectedFolder === 'GIROKSIK') {
       if (m.betmanFolder !== 'GIROKSIK') return false;
     } else if (selectedFolder !== 'ALL' && selectedFolder !== 'SEUNGBUSHIK' && (m.sport as string) !== (selectedFolder as string)) {
@@ -727,7 +754,13 @@ export default function App() {
   });
 
   // ⏰ 4. 100% 무조건 유닉스 타임스탬프(timestamp 숫자) 오름차순 정렬 (시차 꼬임 0%)
-  const filteredMatches = [...rawFiltered].sort((a, b) => {
+  const sortedRaw = [...rawFiltered].sort((a, b) => {
+    // 승무패/승1패/승5패의 경우 오피셜 배트맨 경기번호(1~14번) 우선, 없을 시 시간순
+    if (selectedFolder === 'SEUNGMUBAE' || selectedFolder === 'SEUNG1PAE' || selectedFolder === 'SEUNG5PAE') {
+      const noA = (a as any).betmanMatchNo || 9999;
+      const noB = (b as any).betmanMatchNo || 9999;
+      if (noA !== noB && noA <= 14 && noB <= 14) return noA - noB;
+    }
     const tsA = (a as any).timestamp || 0;
     const tsB = (b as any).timestamp || 0;
     if (tsA !== tsB) return tsA - tsB;
@@ -735,6 +768,14 @@ export default function App() {
     const timeB = b.matchTime || '';
     return timeA.localeCompare(timeB);
   });
+
+  // 🎯 승무패/승1패/승5패 선택 시 배트맨 공식 14경기 슬립으로 정확히 구성
+  const filteredMatches = (selectedFolder === 'SEUNGMUBAE' || selectedFolder === 'SEUNG1PAE' || selectedFolder === 'SEUNG5PAE')
+    ? sortedRaw.slice(0, 14).map((m, idx) => ({
+        ...m,
+        betmanMatchNo: (m as any).betmanMatchNo && (m as any).betmanMatchNo <= 14 ? (m as any).betmanMatchNo : idx + 1
+      }))
+    : sortedRaw;
   
   // 📌 100% 무조건 유닉스 타임스탬프 오름차순 정렬
   const sortedMatches = filteredMatches;
@@ -779,18 +820,74 @@ export default function App() {
         isLight ? 'bg-white border-slate-200 text-slate-700' : 'bg-slate-900 border-slate-800 text-slate-200'
       }`}>
         {/* 좌측: 로고 & 플랫폼 명칭 */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 shrink-0">
           <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-          <span className="font-black tracking-wider text-xs sm:text-sm bg-gradient-to-r from-emerald-500 via-teal-400 to-cyan-500 bg-clip-text text-transparent">
+          <span className="font-black tracking-wider text-xs sm:text-sm bg-gradient-to-r from-emerald-500 via-teal-400 to-cyan-500 bg-clip-text text-transparent cursor-pointer" onClick={() => handleSelectFolder('ALL')}>
             TOKEON
           </span>
-          <span className="hidden sm:inline text-[11px] font-medium text-slate-400">
+          <span className="hidden xl:inline text-[11px] font-medium text-slate-400">
             | {getUiText('logo_sub', appLanguage)}
           </span>
         </div>
 
+        {/* 🏆 중앙: 종목별/토토14경기 퀵 필터 탭 (전체, 축구, 야구, 농구, 배구, 하키 | 승무패, 승1패, 승5패) */}
+        <div className="flex items-center gap-1 overflow-x-auto no-scrollbar py-0.5 mx-2 flex-1 justify-center max-w-2xl">
+          {/* 일반 종목군 */}
+          {[
+            { id: 'ALL', labelKey: 'tab_all' },
+            { id: 'football', labelKey: 'tab_football' },
+            { id: 'baseball', labelKey: 'tab_baseball' },
+            { id: 'basketball', labelKey: 'tab_basketball' },
+            { id: 'volleyball', labelKey: 'tab_volleyball' },
+            { id: 'hockey', labelKey: 'tab_hockey' },
+          ].map(tab => {
+            const isSelected = selectedFolder === tab.id;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => handleSelectFolder(tab.id as any)}
+                className={`px-2 py-0.5 rounded text-[11px] font-bold transition-all shrink-0 cursor-pointer whitespace-nowrap ${
+                  isSelected
+                    ? 'bg-emerald-500 text-white shadow-xs'
+                    : isLight
+                      ? 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                      : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
+                }`}
+              >
+                {getUiText(tab.labelKey, appLanguage)}
+              </button>
+            );
+          })}
+
+          <span className="text-slate-500/60 text-xs px-0.5 select-none">|</span>
+
+          {/* 배트맨 14경기 토토군 */}
+          {[
+            { id: 'SEUNGMUBAE', labelKey: 'tab_seungmubae' },
+            { id: 'SEUNG1PAE', labelKey: 'tab_seung1pae' },
+            { id: 'SEUNG5PAE', labelKey: 'tab_seung5pae' },
+          ].map(tab => {
+            const isSelected = selectedFolder === tab.id;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => handleSelectFolder(tab.id as any)}
+                className={`px-2 py-0.5 rounded text-[11px] font-bold transition-all shrink-0 cursor-pointer whitespace-nowrap ${
+                  isSelected
+                    ? 'bg-amber-500 text-slate-950 font-black shadow-xs'
+                    : isLight
+                      ? 'text-amber-700 hover:text-amber-900 hover:bg-amber-50'
+                      : 'text-amber-400/90 hover:text-amber-300 hover:bg-amber-950/40'
+                }`}
+              >
+                {getUiText(tab.labelKey, appLanguage)}
+              </button>
+            );
+          })}
+        </div>
+
         {/* 우측: [번역 언어 선택기] + [로그인 공간] */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 shrink-0">
           {/* 🌐 언어 선택 탭 (한국어 | English | 日本語) */}
           <div className={`flex items-center gap-1 p-0.5 rounded-md border text-[11px] font-semibold ${
             isLight ? 'bg-slate-100 border-slate-200' : 'bg-slate-800/80 border-slate-700'
