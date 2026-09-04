@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Trophy, Sparkles, MessageSquare, Clock, AlertTriangle, CreditCard, ShieldCheck, Database, CheckCircle2, RefreshCw, X } from 'lucide-react';
+import { Trophy, Sparkles, MessageSquare, Clock, AlertTriangle, CreditCard, ShieldCheck, Database, CheckCircle2, RefreshCw, X, Globe, LogIn, LogOut, User } from 'lucide-react';
 import { Navbar } from './components/Navbar';
+import { type AppLanguage, getUiText } from './utils/languageHelper';
 import { MobileConnectModal } from './components/MobileConnectModal';
 import { MatchCard } from './components/MatchCard';
 import { MatchDetailModal } from './components/MatchDetailModal';
@@ -45,6 +46,15 @@ export default function App() {
   const [showAllMatchesMode, setShowAllMatchesMode] = useState<boolean>(() => {
     return localStorage.getItem('tokeon_show_all_matches_mode') === 'true';
   });
+
+  // 🌐 다국어 지원 언어 상태 ('ko' | 'en' | 'ja')
+  const [appLanguage, setAppLanguage] = useState<AppLanguage>(() => {
+    return (localStorage.getItem('tokeon_app_lang') as AppLanguage) || 'ko';
+  });
+  const handleChangeLanguage = (lang: AppLanguage) => {
+    setAppLanguage(lang);
+    localStorage.setItem('tokeon_app_lang', lang);
+  };
 
   const handleToggleShowAllMatches = () => {
     setShowAllMatchesMode(prev => {
@@ -764,6 +774,101 @@ export default function App() {
       isLight ? 'bg-slate-100/70 text-slate-900 selection:bg-emerald-500 selection:text-white' : 'bg-slate-950 text-slate-100 selection:bg-emerald-500 selection:text-slate-950'
     }`}>
 
+      {/* 🌐 최상단 유틸리티 바 (로그인/계정 공간 & 한국어/English/日本語 언어 번역 바) */}
+      <header className={`h-8 min-h-[32px] px-3.5 border-b flex items-center justify-between text-xs select-none shrink-0 z-30 transition-colors ${
+        isLight ? 'bg-white border-slate-200 text-slate-700' : 'bg-slate-900 border-slate-800 text-slate-200'
+      }`}>
+        {/* 좌측: 로고 & 플랫폼 명칭 */}
+        <div className="flex items-center gap-2">
+          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+          <span className="font-black tracking-wider text-xs sm:text-sm bg-gradient-to-r from-emerald-500 via-teal-400 to-cyan-500 bg-clip-text text-transparent">
+            TOKEON
+          </span>
+          <span className="hidden sm:inline text-[11px] font-medium text-slate-400">
+            | {getUiText('logo_sub', appLanguage)}
+          </span>
+        </div>
+
+        {/* 우측: [번역 언어 선택기] + [로그인 공간] */}
+        <div className="flex items-center gap-3">
+          {/* 🌐 언어 선택 탭 (한국어 | English | 日本語) */}
+          <div className={`flex items-center gap-1 p-0.5 rounded-md border text-[11px] font-semibold ${
+            isLight ? 'bg-slate-100 border-slate-200' : 'bg-slate-800/80 border-slate-700'
+          }`}>
+            <Globe className="w-3 h-3 ml-1 text-slate-400 shrink-0" />
+            <button
+              onClick={() => handleChangeLanguage('ko')}
+              className={`px-1.5 py-0.5 rounded transition-all cursor-pointer ${
+                appLanguage === 'ko'
+                  ? 'bg-emerald-500 text-white font-bold shadow-xs'
+                  : 'text-slate-400 hover:text-slate-200'
+              }`}
+              title="한국어"
+            >
+              한국어
+            </button>
+            <span className="text-slate-500 text-[9px]">|</span>
+            <button
+              onClick={() => handleChangeLanguage('en')}
+              className={`px-1.5 py-0.5 rounded transition-all cursor-pointer ${
+                appLanguage === 'en'
+                  ? 'bg-emerald-500 text-white font-bold shadow-xs'
+                  : 'text-slate-400 hover:text-slate-200'
+              }`}
+              title="English"
+            >
+              English
+            </button>
+            <span className="text-slate-500 text-[9px]">|</span>
+            <button
+              onClick={() => handleChangeLanguage('ja')}
+              className={`px-1.5 py-0.5 rounded transition-all cursor-pointer ${
+                appLanguage === 'ja'
+                  ? 'bg-emerald-500 text-white font-bold shadow-xs'
+                  : 'text-slate-400 hover:text-slate-200'
+              }`}
+              title="日本語"
+            >
+              日本語
+            </button>
+          </div>
+
+          {/* 🔑 로그인 / 사용자 프로필 구역 */}
+          {isLoggedIn ? (
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setActiveTab('profile')}
+                className={`flex items-center gap-1.5 px-2 py-1 rounded-md text-[11px] font-bold border transition-all cursor-pointer ${
+                  isLight
+                    ? 'bg-emerald-50 border-emerald-300 text-emerald-700 hover:bg-emerald-100'
+                    : 'bg-emerald-950/50 border-emerald-700 text-emerald-300 hover:bg-emerald-900/60'
+                }`}
+              >
+                <User className="w-3 h-3" />
+                <span className="max-w-[80px] sm:max-w-[120px] truncate">{userProfile.name}</span>
+                <span className="text-[10px] px-1 py-0.2 rounded bg-emerald-500 text-white font-mono">
+                  {membershipTier}
+                </span>
+              </button>
+              <button
+                onClick={handleLogout}
+                className="p-1 rounded text-slate-400 hover:text-red-400 transition-colors cursor-pointer"
+                title={getUiText('logout', appLanguage)}
+              >
+                <LogOut className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={() => setIsLoginModalOpen(true)}
+              className="flex items-center gap-1 px-2.5 py-1 rounded-md bg-emerald-500 hover:bg-emerald-400 text-white font-bold text-[11px] shadow-xs transition-all cursor-pointer"
+            >
+              <LogIn className="w-3 h-3" />
+              <span>{getUiText('login', appLanguage)}</span>
+            </button>
+          )}
+        </div>
+      </header>
 
       {/* Dynamic View Mode Main Container - 100% full viewport, zero margin */}
       <main className="flex-1 w-full h-full p-0 m-0 flex flex-col overflow-hidden">
@@ -808,6 +913,7 @@ export default function App() {
                       match={match}
                       membershipTier={membershipTier}
                       cardDensity="COMPACT"
+                      lang={appLanguage}
                       markedPicks={markedPicks[match.id] || []}
                       allMatches={matches}
                       onSelectMatch={(m) => handleOpenDetailModal(m)}
@@ -870,6 +976,7 @@ export default function App() {
                   match={match}
                   membershipTier={membershipTier}
                   cardDensity={cardDensity}
+                  lang={appLanguage}
                   markedPicks={markedPicks[match.id] || []}
                   allMatches={matches}
                   onSelectMatch={(m) => handleOpenDetailModal(m)}

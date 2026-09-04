@@ -2,6 +2,7 @@ import React from 'react';
 import { ChevronRight, Star, MessageCircle, BarChart2, Flame } from 'lucide-react';
 import type { Match, MembershipTier } from '../types/sports';
 import { isMatchCompleted, getMatchScore, calculateWinningPicks, getEvaluatedMatchStatus } from '../utils/matchResultHelper';
+import { getLocalizedTeamName, type AppLanguage } from '../utils/languageHelper';
 
 interface MatchCardProps {
   match: Match;
@@ -14,9 +15,10 @@ interface MatchCardProps {
   onToggleFavorite?: (matchId: string) => void;
   onTogglePick?: (matchId: string, pick: string) => void;
   theme?: 'light' | 'dark';
+  lang?: AppLanguage;
 }
 
-export const MatchCardComponent = ({ match, membershipTier = 'VVIP', cardDensity = 'DETAILED', markedPicks = [], allMatches = [], onSelectMatch, onOpenChat, onToggleFavorite, onTogglePick, theme = 'light' }: MatchCardProps) => {
+export const MatchCardComponent = ({ match, membershipTier = 'VVIP', cardDensity = 'DETAILED', markedPicks = [], allMatches = [], onSelectMatch, onOpenChat, onToggleFavorite, onTogglePick, theme = 'light', lang = 'ko' }: MatchCardProps) => {
   const isLight = theme === 'light';
   
   const evaluatedStatus = getEvaluatedMatchStatus(match);
@@ -94,7 +96,7 @@ export const MatchCardComponent = ({ match, membershipTier = 'VVIP', cardDensity
           <div className="flex items-center gap-2 min-w-0 flex-1">
             <span className={`font-bold truncate ${isFinished && homeScore > awayScore ? 'text-emerald-500 font-extrabold' : isLight ? 'text-slate-900' : 'text-slate-100'}`}>
               <span className="text-[10px] text-slate-400 font-semibold mr-1">[홈]</span>
-              {sportIcon} {match.homeTeam.name}
+              {sportIcon} {getLocalizedTeamName(match.homeTeam.name, lang)}
             </span>
             {isFinished ? (
               <span className="font-mono font-bold text-xs px-2 py-0.5 bg-rose-500/10 text-rose-500 rounded border border-rose-500/20 shrink-0">
@@ -105,7 +107,7 @@ export const MatchCardComponent = ({ match, membershipTier = 'VVIP', cardDensity
             )}
             <span className={`font-bold truncate ${isFinished && awayScore > homeScore ? 'text-emerald-500 font-extrabold' : isLight ? 'text-slate-900' : 'text-slate-100'}`}>
               <span className="text-[10px] text-slate-400 font-semibold mr-1">[원정]</span>
-              {match.awayTeam.name} {sportIcon}
+              {getLocalizedTeamName(match.awayTeam.name, lang)} {sportIcon}
             </span>
           </div>
 
@@ -113,7 +115,7 @@ export const MatchCardComponent = ({ match, membershipTier = 'VVIP', cardDensity
             <span className={`text-[10px] font-semibold shrink-0 px-2 py-0.5 rounded border ${
               isLight ? 'bg-white text-slate-700 border-slate-200' : 'bg-slate-900 text-slate-300 border-slate-800'
             }`}>
-              {match.homeTeam.starterPitcherInfo.name} vs {match.awayTeam.starterPitcherInfo.name}
+              선발: {match.homeTeam.starterPitcherInfo.name} vs {match.awayTeam.starterPitcherInfo.name}
             </span>
           ) : null}
         </div>
@@ -181,7 +183,7 @@ export const MatchCardComponent = ({ match, membershipTier = 'VVIP', cardDensity
             <span>🏠 [홈팀]</span>
           </span>
           <span className={`font-black text-sm sm:text-base truncate ${isFinished && homeScore > awayScore ? 'text-emerald-600' : ''}`}>
-            {sportIcon} {match.homeTeam.name}
+            {sportIcon} {getLocalizedTeamName(match.homeTeam.name, lang)}
           </span>
         </div>
         <div className="flex flex-col items-end">
@@ -189,7 +191,7 @@ export const MatchCardComponent = ({ match, membershipTier = 'VVIP', cardDensity
             <span>✈️ [원정팀]</span>
           </span>
           <span className={`font-black text-sm sm:text-base truncate ${isFinished && awayScore > homeScore ? 'text-cyan-600' : ''}`}>
-            {match.awayTeam.name} {sportIcon}
+            {getLocalizedTeamName(match.awayTeam.name, lang)} {sportIcon}
           </span>
         </div>
       </div>
