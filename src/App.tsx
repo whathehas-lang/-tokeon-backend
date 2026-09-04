@@ -1016,11 +1016,6 @@ export default function App() {
                   {selectedFolder === 'SEUNG1PAE' || selectedFolder === 'SEUNGMUBAE' ? (
                     <TotoSlipTableView
                       category={selectedFolder as any}
-                      roundTitle={selectedFolder === 'SEUNG1PAE' ? '2026년 64회차' : '2026년 50회차'}
-                      totalVotesCount={65820}
-                      firstPrizeAmount={270946250}
-                      carryOverAmount={254491250}
-                      carryOverCount={3}
                       matches={filteredMatches}
                       onSelectMatch={(m) => handleOpenDetailModal(m)}
                       theme={theme}
@@ -1108,11 +1103,6 @@ export default function App() {
               {selectedFolder === 'SEUNG1PAE' || selectedFolder === 'SEUNGMUBAE' ? (
                 <TotoSlipTableView
                   category={selectedFolder as any}
-                  roundTitle={selectedFolder === 'SEUNG1PAE' ? '2026년 64회차' : '2026년 50회차'}
-                  totalVotesCount={65820}
-                  firstPrizeAmount={270946250}
-                  carryOverAmount={254491250}
-                  carryOverCount={3}
                   matches={filteredMatches}
                   onSelectMatch={(m) => handleOpenDetailModal(m)}
                   theme={theme}
