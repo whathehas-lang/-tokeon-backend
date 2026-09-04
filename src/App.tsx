@@ -477,6 +477,9 @@ export default function App() {
 
   // 📌 승무패 / 베팅 마킹 상태 관리 (matchId -> string[])
   const [markedPicks, setMarkedPicks] = useState<Record<string, string[]>>({});
+  
+  // 📱 모바일/PC 실시간 상태 필터 ('ALL' | 'LIVE' | 'SCHEDULED' | 'FINISHED')
+  const [statusFilter, setStatusFilter] = useState<'ALL' | 'LIVE' | 'SCHEDULED' | 'FINISHED'>('ALL');
 
   const handleTogglePick = (matchId: string, pick: string) => {
     setMarkedPicks((prev) => {
@@ -766,7 +769,8 @@ export default function App() {
     ? getOfficialBetmanSlip(selectedFolder)
     : [];
 
-  const filteredMatches = (selectedFolder === 'SEUNGMUBAE' || selectedFolder === 'SEUNG1PAE' || selectedFolder === 'SEUNG5PAE')
+  // 🎯 승무패/승1패/승5패 선택 시 배트맨 오피셜 공식 14경기 슬립으로 정확히 구성
+  const baseMatches = (selectedFolder === 'SEUNGMUBAE' || selectedFolder === 'SEUNG1PAE' || selectedFolder === 'SEUNG5PAE')
     ? (officialSlipMatches.length > 0
         ? officialSlipMatches
         : sortedRaw.slice(0, 14).map((m, idx) => ({
@@ -775,6 +779,15 @@ export default function App() {
           }))
       )
     : sortedRaw;
+
+  // 📱 상태 필터 (전체, LIVE, 예정, 종료) 적용
+  const filteredMatches = baseMatches.filter((m) => {
+    if (statusFilter === 'ALL') return true;
+    if (statusFilter === 'LIVE') return m.status === 'LIVE';
+    if (statusFilter === 'FINISHED') return m.status === 'FINISHED';
+    if (statusFilter === 'SCHEDULED') return m.status !== 'LIVE' && m.status !== 'FINISHED';
+    return true;
+  });
   
   // 📌 100% 무조건 유닉스 타임스탬프 오름차순 정렬
   const sortedMatches = filteredMatches;
@@ -991,18 +1004,40 @@ export default function App() {
                   isLight ? 'bg-slate-50 border-slate-200' : 'bg-slate-900/90 border-slate-800'
                 }`}>
                   <div className="flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-emerald-500" />
-                    <span className="font-bold text-xs sm:text-sm text-slate-900 dark:text-slate-100">실시간 경기</span>
+                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                    <span className="font-extrabold text-xs sm:text-sm text-slate-900 dark:text-slate-100">실시간 경기 데이터</span>
                   </div>
-                  <span className={`text-[11px] font-mono font-bold px-2 py-0.5 rounded border ${
-                    isLight ? 'bg-slate-100 text-slate-700 border-slate-200' : 'bg-slate-800 text-slate-300 border-slate-700'
-                  }`}>
-                    {filteredMatches.length}경기
-                  </span>
+
+                  {/* 🔍 경기 상태 필터 (전체 / LIVE / 예정 / 종료) */}
+                  <div className="flex items-center gap-1">
+                    {[
+                      { id: 'ALL', label: '전체' },
+                      { id: 'LIVE', label: '🔴 LIVE' },
+                      { id: 'SCHEDULED', label: '예정' },
+                      { id: 'FINISHED', label: '종료' }
+                    ].map(st => (
+                      <button
+                        key={st.id}
+                        onClick={() => setStatusFilter(st.id as any)}
+                        className={`px-2 py-0.5 rounded text-[11px] font-bold transition-all cursor-pointer ${
+                          statusFilter === st.id
+                            ? 'bg-emerald-500 text-white shadow-xs'
+                            : isLight ? 'bg-slate-200 text-slate-700 hover:bg-slate-300' : 'bg-slate-800 text-slate-400 hover:text-slate-200'
+                        }`}
+                      >
+                        {st.label}
+                      </button>
+                    ))}
+                    <span className={`text-[11px] font-mono font-bold px-2 py-0.5 rounded border ml-1 ${
+                      isLight ? 'bg-slate-100 text-slate-700 border-slate-200' : 'bg-slate-800 text-slate-300 border-slate-700'
+                    }`}>
+                      {filteredMatches.length}경기
+                    </span>
+                  </div>
                 </div>
 
                 {/* 실제 모바일 경기 카드 목록 스크롤 영역 또는 승1패/승무패/승5패 배트맨 슬립 표 */}
-                <div className={`flex-1 overflow-hidden ${selectedFolder === 'SEUNG1PAE' || selectedFolder === 'SEUNGMUBAE' || selectedFolder === 'SEUNG5PAE' ? 'p-0 flex flex-col' : 'overflow-y-auto p-3 space-y-3 custom-scrollbar'}`}>
+                <div className={`flex-1 overflow-hidden ${selectedFolder === 'SEUNG1PAE' || selectedFolder === 'SEUNGMUBAE' || selectedFolder === 'SEUNG5PAE' ? 'p-0 flex flex-col' : 'overflow-y-auto p-3 space-y-2.5 custom-scrollbar'}`}>
                   {selectedFolder === 'SEUNG1PAE' || selectedFolder === 'SEUNGMUBAE' || selectedFolder === 'SEUNG5PAE' ? (
                     <TotoSlipTableView
                       category={selectedFolder as any}
@@ -1020,12 +1055,12 @@ export default function App() {
                         <p className="text-sm font-bold text-slate-200">
                           {selectedFolder === 'SEUNG5PAE' 
                             ? '현재 발매 중인 승5패 대상경기가 없습니다'
-                            : '현재 진행 중인 대상경기가 없습니다'}
+                            : '선택한 조건의 대상경기가 없습니다'}
                         </p>
                         <p className="text-xs text-slate-400">
                           {selectedFolder === 'SEUNG5PAE'
                             ? '다음 공식 회차 공지 및 발매 시작 시 자동으로 실시간 업데이트됩니다.'
-                            : '상단 탭에서 다른 종목을 선택해 주세요.'}
+                            : '상단 탭이나 상태 필터를 전체로 변경해 보세요.'}
                         </p>
                       </div>
                     </div>
@@ -1088,67 +1123,91 @@ export default function App() {
 
             </div>
 
-            {/* 📱 MOBILE SCREENS (lg 미만 모바일 기기): 기존 단일 모바일 1열 스택 또는 승1패/승무패/승5패 배트맨 슬립 표 */}
-            <div className="lg:hidden flex flex-col w-full space-y-3">
-              {selectedFolder === 'SEUNG1PAE' || selectedFolder === 'SEUNGMUBAE' || selectedFolder === 'SEUNG5PAE' ? (
-                <TotoSlipTableView
-                  category={selectedFolder as any}
-                  matches={filteredMatches}
-                  onSelectMatch={(m) => handleOpenDetailModal(m)}
-                  theme={theme}
-                  lang={appLanguage}
-                />
-              ) : (
-                <>
-                  <div className="flex items-center justify-between p-2.5 rounded-xl bg-slate-900 border border-amber-500/30 text-xs">
-                    <span className="font-black text-amber-300">실시간 경기 목록</span>
-                    <span className="text-[10px] font-mono font-bold text-slate-300">{filteredMatches.length}경기</span>
-                  </div>
-                  {filteredMatches.length === 0 ? (
-                    <div className="flex flex-col items-center justify-center py-16 text-center space-y-2 bg-slate-900/50 rounded-xl border border-slate-800 p-4">
-                      <div className="w-10 h-10 rounded-full bg-amber-500/10 flex items-center justify-center text-amber-400 text-lg font-bold">
-                        ⏱️
-                      </div>
-                      <p className="text-xs font-bold text-slate-200">
-                        {selectedFolder === 'SEUNG5PAE' 
-                          ? '현재 발매 중인 승5패 대상경기가 없습니다'
-                          : '현재 진행 중인 대상경기가 없습니다'}
-                      </p>
-                      <p className="text-[11px] text-slate-400">
-                        {selectedFolder === 'SEUNG5PAE'
-                          ? '다음 공식 회차 공지 및 발매 시 자동 업데이트됩니다.'
-                          : '다른 종목 탭을 선택해 주세요.'}
-                      </p>
+            {/* 📱 MOBILE SCREENS (lg 미만 모바일 기기): 스마트폰 최적화 전경기 뷰 */}
+            <div className="lg:hidden flex-1 flex flex-col h-full overflow-hidden">
+              {/* 모바일 퀵 상태 필터 바 */}
+              <div className={`px-3 py-2 border-b flex items-center justify-between shrink-0 ${
+                isLight ? 'bg-white border-slate-200' : 'bg-slate-900 border-slate-800'
+              }`}>
+                <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar">
+                  {[
+                    { id: 'ALL', label: '전체' },
+                    { id: 'LIVE', label: '🔴 LIVE' },
+                    { id: 'SCHEDULED', label: '예정' },
+                    { id: 'FINISHED', label: '종료' }
+                  ].map(st => (
+                    <button
+                      key={st.id}
+                      onClick={() => setStatusFilter(st.id as any)}
+                      className={`px-2.5 py-1 rounded-full text-xs font-bold transition-all shrink-0 cursor-pointer ${
+                        statusFilter === st.id
+                          ? 'bg-emerald-500 text-white shadow-xs'
+                          : isLight ? 'bg-slate-100 text-slate-600' : 'bg-slate-800 text-slate-400'
+                      }`}
+                    >
+                      {st.label}
+                    </button>
+                  ))}
+                </div>
+                <span className={`text-[11px] font-mono font-bold px-2 py-0.5 rounded border shrink-0 ${
+                  isLight ? 'bg-slate-100 text-slate-700 border-slate-200' : 'bg-slate-800 text-slate-300 border-slate-700'
+                }`}>
+                  {filteredMatches.length}경기
+                </span>
+              </div>
+
+              {/* 모바일 메인 스크롤 뷰 */}
+              <div className="flex-1 overflow-y-auto p-3 space-y-2.5 custom-scrollbar pb-16">
+                {selectedFolder === 'SEUNG1PAE' || selectedFolder === 'SEUNGMUBAE' || selectedFolder === 'SEUNG5PAE' ? (
+                  <TotoSlipTableView
+                    category={selectedFolder as any}
+                    matches={filteredMatches}
+                    onSelectMatch={(m) => handleOpenDetailModal(m)}
+                    theme={theme}
+                    lang={appLanguage}
+                  />
+                ) : filteredMatches.length === 0 ? (
+                  <div className="flex flex-col items-center justify-center py-16 text-center space-y-2 bg-slate-900/50 rounded-2xl border border-slate-800 p-6 my-4">
+                    <div className="w-12 h-12 rounded-full bg-amber-500/10 flex items-center justify-center text-amber-400 text-xl font-bold">
+                      ⏱️
                     </div>
-                  ) : (
-                    filteredMatches.map((match) => (
-                      <MatchCard
-                        key={match.id}
-                        match={match}
-                        membershipTier={membershipTier}
-                        cardDensity={cardDensity}
-                        lang={appLanguage}
-                        markedPicks={markedPicks[match.id] || []}
-                        allMatches={matches}
-                        onSelectMatch={(m) => handleOpenDetailModal(m)}
-                        onOpenChat={handleOpenMatchChat}
-                        onToggleFavorite={handleToggleFavorite}
-                        onTogglePick={handleTogglePick}
-                        theme={theme}
-                      />
-                    ))
-                  )}
-                </>
-              )}
+                    <p className="text-sm font-bold text-slate-200">
+                      {selectedFolder === 'SEUNG5PAE' 
+                        ? '현재 발매 중인 승5패 대상경기가 없습니다'
+                        : '선택한 조건의 대상경기가 없습니다'}
+                    </p>
+                    <p className="text-xs text-slate-400">
+                      {selectedFolder === 'SEUNG5PAE'
+                        ? '다음 공식 회차 공지 및 발매 시 자동 업데이트됩니다.'
+                        : '상태 필터를 전체로 변경하거나 다른 종목을 선택해 주세요.'}
+                    </p>
+                  </div>
+                ) : (
+                  filteredMatches.map((match) => (
+                    <MatchCard
+                      key={match.id}
+                      match={match}
+                      membershipTier={membershipTier}
+                      cardDensity={cardDensity}
+                      lang={appLanguage}
+                      markedPicks={markedPicks[match.id] || []}
+                      allMatches={matches}
+                      onSelectMatch={(m) => handleOpenDetailModal(m)}
+                      onOpenChat={handleOpenMatchChat}
+                      onToggleFavorite={handleToggleFavorite}
+                      onTogglePick={handleTogglePick}
+                      theme={theme}
+                    />
+                  ))
+                )}
+              </div>
             </div>
           </div>
         )}
 
         {/* 💻 PC WEB EXCLUSIVE CHAT ROOM TAB */}
         {activeTab === 'community' && (
-          <div className="space-y-4 relative">
-            
-            {/* 1. PC Web Community Hub Live Chat Room */}
+          <div className="h-full flex flex-col p-3 overflow-hidden">
             <PCWebCommunityHub
               matches={matches}
               userProfile={userProfile}
@@ -1156,33 +1215,56 @@ export default function App() {
               onOpenMatchDetail={(m) => handleOpenDetailModal(m)}
               theme={theme}
             />
-
-            {/* 2. [배너 입점 문의 📲] 바 */}
-            <div className="flex items-center justify-between bg-gradient-to-r from-slate-900 via-amber-950/60 to-slate-900 px-4 py-3.5 rounded-2xl border-2 border-amber-500/50 shadow-xl">
-              <div className="flex items-center gap-2 min-w-0">
-                <Sparkles className="w-4 h-4 text-yellow-400 animate-spin shrink-0" />
-                <span className="text-xs sm:text-sm font-black text-amber-300 truncate">
-                  📢 [토큰 (Tokeon) 공식 프리미엄 배너 광고 입점 문의 구역]
-                </span>
-              </div>
-              <button className="px-4 py-2 bg-gradient-to-r from-amber-400 to-yellow-500 hover:from-amber-300 hover:to-yellow-400 text-slate-950 font-black text-xs rounded-xl shadow-lg transition-all flex items-center gap-1.5 shrink-0 cursor-pointer border border-yellow-200">
-                <span>배너 입점 문의 📲</span>
-              </button>
-            </div>
-
           </div>
         )}
 
         {/* PROFILE TAB */}
         {activeTab === 'profile' && (
-          <UserProfileModal
-            userProfile={userProfile}
-            onLogout={handleLogout}
-          />
+          <div className="h-full flex flex-col overflow-y-auto p-4">
+            <UserProfileModal
+              userProfile={userProfile}
+              onLogout={handleLogout}
+            />
+          </div>
         )}
 
-
     </main>
+
+      {/* 📱 모바일 전용 하단 고정 내비게이션 바 (경기 / 실시간 톡 / 커뮤니티 / MY) */}
+      <nav className={`lg:hidden h-14 border-t px-4 flex items-center justify-around shrink-0 z-40 select-none shadow-lg transition-colors ${
+        isLight ? 'bg-white border-slate-200' : 'bg-slate-950 border-slate-800'
+      }`}>
+        <button
+          onClick={() => setActiveTab('home')}
+          className={`flex flex-col items-center justify-center gap-0.5 flex-1 cursor-pointer ${
+            activeTab === 'home' ? 'text-emerald-500 font-extrabold' : isLight ? 'text-slate-500' : 'text-slate-400'
+          }`}
+        >
+          <Trophy className="w-5 h-5" />
+          <span className="text-[10px]">전경기</span>
+        </button>
+
+        <button
+          onClick={() => setActiveTab('community')}
+          className={`flex flex-col items-center justify-center gap-0.5 flex-1 cursor-pointer relative ${
+            activeTab === 'community' ? 'text-emerald-500 font-extrabold' : isLight ? 'text-slate-500' : 'text-slate-400'
+          }`}
+        >
+          <MessageSquare className="w-5 h-5" />
+          <span className="text-[10px]">라이브 톡</span>
+          <span className="absolute top-1 right-6 w-2 h-2 rounded-full bg-emerald-500" />
+        </button>
+
+        <button
+          onClick={() => setActiveTab('profile')}
+          className={`flex flex-col items-center justify-center gap-0.5 flex-1 cursor-pointer ${
+            activeTab === 'profile' ? 'text-emerald-500 font-extrabold' : isLight ? 'text-slate-500' : 'text-slate-400'
+          }`}
+        >
+          <User className="w-5 h-5" />
+          <span className="text-[10px]">MY 프로필</span>
+        </button>
+      </nav>
 
       {/* 📌 초슬림 1줄 미니 푸터 (높이 24px, 공간 차지 최소화) */}
       <footer className={`h-6 border-t px-3 flex items-center justify-between text-[11px] select-none shrink-0 z-30 ${

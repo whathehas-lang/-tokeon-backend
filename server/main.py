@@ -220,3 +220,18 @@ def get_matches(sport: str, date: str = "2026-09-04"):
 async def broadcast_live_matches_api(payload: dict):
     await manager.broadcast_matches_update(payload)
     return {"status": "broadcast_sent", "subscribers": len(manager.match_subscribers)}
+
+# 4. 앱 프론트엔드 연동용 전체 라이브 매치 엔드포인트 (/api/live-all)
+@app.get("/api/live-all")
+def get_live_all():
+    """
+    Render 배포 백엔드 및 로컬 프론트엔드 호환 라이브 전체 데이터 엔드포인트
+    """
+    try:
+        r = requests.get("https://tokeon-backend.onrender.com/api/live-all", timeout=5)
+        if r.ok:
+            return r.json()
+    except Exception:
+        pass
+    return {"matches": []}
+

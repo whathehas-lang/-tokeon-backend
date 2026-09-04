@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
-import { X, Activity, MessageCircle, Swords, Flame, Trophy, TrendingUp, ShieldCheck, BarChart2, Zap, ChevronDown, ChevronUp, Scale, Target } from 'lucide-react';
+import { X, Activity, MessageCircle, Swords, Flame, Trophy, TrendingUp, ShieldCheck, BarChart2, Zap, Scale, Target, Calendar, User, Award, Layers } from 'lucide-react';
 import type { Match, MembershipTier } from '../types/sports';
 import { LiveCheerChat } from './LiveCheerChat';
 import { BaseballSeriesPitchView } from './BaseballSeriesPitchView';
 import { CoreWinFactorView } from './CoreWinFactorView';
 import { SportsEntityMappingService } from '../services/mappers/sportsEntityMappingService';
+import { getLocalizedTeamName } from '../utils/languageHelper';
+import { getEvaluatedMatchStatus, getMatchScore } from '../utils/matchResultHelper';
 
 interface MatchDetailModalProps {
   match: Match;
@@ -15,6 +17,8 @@ interface MatchDetailModalProps {
   theme?: 'light' | 'dark';
 }
 
+type DetailSubTab = 'SUMMARY' | 'ODDS' | 'SPECIAL' | 'H2H' | 'FORM' | 'CHAT';
+
 export const MatchDetailModal = ({ 
   match, 
   onClose, 
@@ -23,11 +27,19 @@ export const MatchDetailModal = ({
   theme = 'light' 
 }: MatchDetailModalProps) => {
   const isLight = theme === 'light';
-  const [activeDetailTab, setActiveDetailTab] = useState<'ANALYSIS' | 'CHAT'>('ANALYSIS');
+  const [activeTab, setActiveTab] = useState<DetailSubTab>('SUMMARY');
   const [h2hRange, setH2hRange] = useState<3 | 5 | 10 | 20>(10);
-  const [isH2HOpen, setIsH2HOpen] = useState<boolean>(true);
   const [recentGamesRange, setRecentGamesRange] = useState<3 | 5 | 10>(10);
-  const [isRecentGamesOpen, setIsRecentGamesOpen] = useState<boolean>(true);
+
+  const evaluatedStatus = getEvaluatedMatchStatus(match);
+  const isLive = evaluatedStatus === 'LIVE';
+  const isFinished = evaluatedStatus === 'FINISHED';
+  const { homeScore, awayScore } = getMatchScore(match);
+
+  const homeEntity = SportsEntityMappingService.resolveTeamEntity(match.homeTeam.name);
+  const awayEntity = SportsEntityMappingService.resolveTeamEntity(match.awayTeam.name);
+  const homeLogo = homeEntity?.logo;
+  const awayLogo = awayEntity?.logo;
 
   // 100% 실제 데이터 기반 배당률 객체
   const odds = (match as any).foreignApiStats?.pinnacleOdds || match.betmanOdds || { win: 1.95, draw: 3.30, lose: 2.90 };
@@ -47,7 +59,7 @@ export const MatchDetailModal = ({
   const defaultTotalLine = match.sport === 'baseball' ? 8.5 : match.sport === 'basketball' ? 215.5 : 2.5;
   const unitStr = match.sport === 'baseball' ? '점' : match.sport === 'basketball' ? '점' : '골';
 
-  // ⚔️ H2H 상대전적 풍성한 실측/추정 데이터 바인딩
+  // ⚔️ H2H 상대전적
   const getEnrichedH2H = () => {
     if (match.h2hRecentMatches && match.h2hRecentMatches.length > 0) {
       return match.h2hRecentMatches.slice(0, h2hRange);
@@ -74,7 +86,7 @@ export const MatchDetailModal = ({
 
   const h2hMatches = getEnrichedH2H();
 
-  // 📊 최근 경기 득실점 폼 로그 풍성한 바인딩
+  // 📊 최근 경기 득실점 폼 로그
   const getEnrichedRecentLogs = (isHomeTeam: boolean) => {
     const existing = isHomeTeam 
       ? (match.homeRecentLogs || match.homeTeam.recentGamesLog || [])
@@ -112,373 +124,466 @@ export const MatchDetailModal = ({
   const homeLogs = getEnrichedRecentLogs(true);
   const awayLogs = getEnrichedRecentLogs(false);
 
+  const homeWinsInH2H = h2hMatches.filter(m => m.homeScore > m.awayScore).length;
+  const awayWinsInH2H = h2hMatches.filter(m => m.awayScore > m.homeScore).length;
+  const drawsInH2H = h2hMatches.length - homeWinsInH2H - awayWinsInH2H;
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
-      <div className={`w-full max-w-4xl rounded-3xl border-2 shadow-2xl overflow-hidden flex flex-col max-h-[92vh] ${
-        isLight ? 'bg-white border-slate-200 text-slate-900' : 'bg-slate-900 border-amber-500/40 text-slate-100'
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-slate-950/80 backdrop-blur-md animate-in fade-in duration-200">
+      <div className={`w-full max-w-4xl rounded-3xl border shadow-2xl overflow-hidden flex flex-col max-h-[94vh] transition-colors ${
+        isLight ? 'bg-white border-slate-200 text-slate-900' : 'bg-slate-900 border-slate-800 text-slate-100'
       }`}>
         
-        {/* 🏟️ 모달 상단 헤더: [홈] 팀A vs [원정] 팀B 영구 고정 */}
-        <div className={`p-4 sm:p-5 border-b flex items-center justify-between gap-3 shrink-0 ${
-          isLight ? 'bg-slate-50 border-slate-200' : 'bg-slate-950 border-slate-800'
+        {/* 🏟️ 1. 경기 스코어보드 대시보드 헤더 */}
+        <div className={`p-4 sm:p-5 border-b relative shrink-0 ${
+          isLight ? 'bg-gradient-to-b from-slate-50 to-slate-100/80 border-slate-200' : 'bg-gradient-to-b from-slate-950 to-slate-900 border-slate-800'
         }`}>
-          <div className="min-w-0 flex-1">
-            <div className="flex items-center gap-2 flex-wrap">
-              <span className="text-base sm:text-lg">{match.countryFlag || '🌐'}</span>
-              <h2 className="text-base sm:text-lg font-black truncate flex items-center gap-2 flex-wrap">
-                <span className="text-emerald-400">🏠 [홈] {SportsEntityMappingService.resolveTeamEntity(match.homeTeam.name)?.nameKo || match.homeTeam.name}</span>
-                <span className="text-slate-500">vs</span>
-                <span className="text-cyan-400">✈️ [원정] {SportsEntityMappingService.resolveTeamEntity(match.awayTeam.name)?.nameKo || match.awayTeam.name}</span>
-              </h2>
-
-              {/* 🎯 실제 경기 상태 및 스코어 */}
-              {match.status === 'LIVE' ? (
-                <span className="px-3 py-1 rounded-xl text-xs font-black bg-rose-500/20 text-rose-400 border border-rose-500/40 flex items-center gap-1.5 shadow-sm animate-pulse">
-                  <span className="w-2 h-2 rounded-full bg-rose-500" />
-                  <span>LIVE</span>
-                  <strong className="font-mono text-sm font-black text-rose-300 ml-1">{match.homeScore ?? 0} : {match.awayScore ?? 0}</strong>
-                </span>
-              ) : match.status === 'FINISHED' ? (
-                <span className="px-3 py-1 rounded-xl text-xs font-black bg-slate-500/20 text-slate-400 border border-slate-500/40 flex items-center gap-1.5 shadow-sm">
-                  <span>경기 종료</span>
-                  <strong className="font-mono text-sm font-black text-slate-300 ml-1">{match.homeScore ?? 0} : {match.awayScore ?? 0}</strong>
-                </span>
-              ) : (
-                <span className="px-3 py-1 rounded-xl text-xs font-black bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 flex items-center gap-1.5 shadow-sm">
-                  <span className="w-2 h-2 rounded-full bg-emerald-500" />
-                  <span>경기 시작 전</span>
-                </span>
-              )}
+          {/* Top Info Bar */}
+          <div className="flex items-center justify-between gap-2 mb-3">
+            <div className="flex items-center gap-2">
+              <span className="text-sm">{match.countryFlag || '🌐'}</span>
+              <span className="text-xs font-extrabold tracking-wide uppercase px-2 py-0.5 rounded-md bg-slate-200/70 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
+                {match.league}
+              </span>
+              <span className="text-xs text-slate-500 dark:text-slate-400 font-mono">
+                {match.matchTime} KST
+              </span>
             </div>
 
-            <p className={`text-xs mt-1.5 font-bold ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>
-              🏆 {match.league} • ⏰ 한국 시간: {match.matchTime}
-            </p>
+            <button
+              onClick={onClose}
+              className={`p-1.5 rounded-xl border transition-all cursor-pointer ${
+                isLight ? 'bg-white hover:bg-slate-100 border-slate-200 text-slate-500' : 'bg-slate-800 hover:bg-slate-700 border-slate-700 text-slate-400'
+              }`}
+            >
+              <X className="w-5 h-5" />
+            </button>
           </div>
 
-          <button
-            onClick={onClose}
-            className={`p-2 rounded-xl transition-all cursor-pointer border shrink-0 ${
-              isLight ? 'bg-slate-100 text-slate-600 hover:bg-slate-200 border-slate-200' : 'bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700 border-slate-700'
-            }`}
-          >
-            <X className="w-5 h-5" />
-          </button>
+          {/* Stadium Scoreboard Arena */}
+          <div className="flex items-center justify-between gap-3 sm:gap-6 py-1">
+            {/* 홈팀 카드 */}
+            <div className="flex-1 flex flex-col items-center text-center min-w-0">
+              <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl p-2 bg-white dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700 shadow-sm flex items-center justify-center mb-2">
+                {homeLogo ? (
+                  <img src={homeLogo} alt="" className="w-full h-full object-contain" onError={(e) => { (e.target as HTMLElement).style.display = 'none'; }} />
+                ) : (
+                  <span className="text-2xl">{match.sport === 'baseball' ? '⚾' : '⚽'}</span>
+                )}
+              </div>
+              <div className="flex items-center gap-1 justify-center">
+                <span className="text-[10px] font-black text-emerald-500 bg-emerald-500/10 px-1.5 py-0.2 rounded border border-emerald-500/20">홈</span>
+                <span className="font-black text-sm sm:text-base truncate max-w-[140px] sm:max-w-[180px]">
+                  {getLocalizedTeamName(match.homeTeam.name, 'ko')}
+                </span>
+              </div>
+              {match.sport === 'baseball' && match.homeTeam.starterPitcherInfo?.name && (
+                <span className="text-[11px] text-slate-500 dark:text-slate-400 font-medium mt-0.5 truncate max-w-full">
+                  선발 {match.homeTeam.starterPitcherInfo.name} ({match.homeTeam.starterPitcherInfo.era || 'ERA --'})
+                </span>
+              )}
+            </div>
+
+            {/* 중앙 스코어 / LIVE 상태 */}
+            <div className="shrink-0 flex flex-col items-center justify-center px-2">
+              {isLive ? (
+                <div className="flex flex-col items-center">
+                  <span className="px-2.5 py-0.5 rounded-full bg-rose-500/20 text-rose-500 font-black text-[11px] tracking-wider animate-pulse flex items-center gap-1.5 border border-rose-500/30 mb-1">
+                    <span className="w-2 h-2 rounded-full bg-rose-500" />
+                    LIVE
+                  </span>
+                  <div className="font-mono text-2xl sm:text-3xl font-black tracking-tight text-slate-900 dark:text-white">
+                    {homeScore} : {awayScore}
+                  </div>
+                </div>
+              ) : isFinished ? (
+                <div className="flex flex-col items-center">
+                  <span className="px-2 py-0.5 rounded bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-bold text-[10px] mb-1">
+                    경기 종료
+                  </span>
+                  <div className="font-mono text-2xl sm:text-3xl font-black text-slate-800 dark:text-slate-200">
+                    {homeScore} : {awayScore}
+                  </div>
+                </div>
+              ) : (
+                <div className="flex flex-col items-center">
+                  <span className="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 font-bold text-[10px] mb-1">
+                    경기 시작 전
+                  </span>
+                  <span className="font-black text-xl text-slate-400 font-mono">VS</span>
+                </div>
+              )}
+            </div>
+
+            {/* 원정팀 카드 */}
+            <div className="flex-1 flex flex-col items-center text-center min-w-0">
+              <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl p-2 bg-white dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700 shadow-sm flex items-center justify-center mb-2">
+                {awayLogo ? (
+                  <img src={awayLogo} alt="" className="w-full h-full object-contain" onError={(e) => { (e.target as HTMLElement).style.display = 'none'; }} />
+                ) : (
+                  <span className="text-2xl">{match.sport === 'baseball' ? '⚾' : '⚽'}</span>
+                )}
+              </div>
+              <div className="flex items-center gap-1 justify-center">
+                <span className="font-black text-sm sm:text-base truncate max-w-[140px] sm:max-w-[180px]">
+                  {getLocalizedTeamName(match.awayTeam.name, 'ko')}
+                </span>
+                <span className="text-[10px] font-black text-cyan-400 bg-cyan-500/10 px-1.5 py-0.2 rounded border border-cyan-500/20">원정</span>
+              </div>
+              {match.sport === 'baseball' && match.awayTeam.starterPitcherInfo?.name && (
+                <span className="text-[11px] text-slate-500 dark:text-slate-400 font-medium mt-0.5 truncate max-w-full">
+                  선발 {match.awayTeam.starterPitcherInfo.name} ({match.awayTeam.starterPitcherInfo.era || 'ERA --'})
+                </span>
+              )}
+            </div>
+          </div>
         </div>
 
-        {/* 🧭 상단 탭 스위처: 100% 팩트 분석 vs 실시간 응원 톡방 */}
-        <div className={`flex items-center gap-2 px-4 sm:px-6 py-2.5 border-b shrink-0 ${
-          isLight ? 'bg-slate-100/70 border-slate-200' : 'bg-slate-950 border-slate-800'
+        {/* 🧭 2. 세부 분석 탭바 (전문 스포츠 데이터 앱 탭 구성) */}
+        <div className={`flex items-center gap-1 px-3 sm:px-4 py-2 border-b overflow-x-auto no-scrollbar shrink-0 ${
+          isLight ? 'bg-slate-100/80 border-slate-200' : 'bg-slate-950 border-slate-800'
         }`}>
-          <button
-            type="button"
-            onClick={() => setActiveDetailTab('ANALYSIS')}
-            className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-black transition-all flex items-center gap-1.5 cursor-pointer ${
-              activeDetailTab === 'ANALYSIS'
-                ? 'bg-emerald-500 text-white shadow-md'
-                : isLight ? 'text-slate-600 hover:bg-slate-200' : 'text-slate-400 hover:text-white hover:bg-slate-800'
-            }`}
-          >
-            <Activity className="w-4 h-4" />
-            <span>📊 100% 팩트 정밀 분석 지표 (선발/투구수/피로도/전적)</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => setActiveDetailTab('CHAT')}
-            className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-black transition-all flex items-center gap-1.5 cursor-pointer relative ${
-              activeDetailTab === 'CHAT'
-                ? 'bg-amber-500 text-slate-950 shadow-md font-extrabold'
-                : isLight ? 'text-slate-600 hover:bg-slate-200' : 'text-slate-400 hover:text-white hover:bg-slate-800'
-            }`}
-          >
-            <MessageCircle className="w-4 h-4" />
-            <span>💬 실시간 경기 톡방</span>
-          </button>
+          {[
+            { id: 'SUMMARY', label: '📊 종합 분석', icon: Activity },
+            { id: 'ODDS', label: '🌐 배당/승률', icon: Trophy },
+            { id: 'SPECIAL', label: match.sport === 'baseball' ? '⚾ 선발/불펜' : '⚽ 정밀 지표', icon: match.sport === 'baseball' ? Zap : Flame },
+            { id: 'H2H', label: '⚔️ 상대전적', icon: Swords },
+            { id: 'FORM', label: '🔥 최근 폼', icon: TrendingUp },
+            { id: 'CHAT', label: '💬 실시간 톡', icon: MessageCircle },
+          ].map(tab => {
+            const Icon = tab.icon;
+            const isSel = activeTab === tab.id;
+            return (
+              <button
+                key={tab.id}
+                type="button"
+                onClick={() => setActiveTab(tab.id as DetailSubTab)}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap shrink-0 ${
+                  isSel
+                    ? 'bg-emerald-500 text-white shadow-xs'
+                    : isLight ? 'text-slate-600 hover:bg-slate-200' : 'text-slate-400 hover:bg-slate-800 hover:text-slate-200'
+                }`}
+              >
+                <Icon className="w-3.5 h-3.5" />
+                <span>{tab.label}</span>
+              </button>
+            );
+          })}
         </div>
 
-        {/* 모달 본문 영역 */}
-        <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6 custom-scrollbar">
-          
-          {activeDetailTab === 'ANALYSIS' ? (
-            /* 📊 100% 실존 팩트 분석 탭 */
-            <div className="space-y-6">
-              
-              {/* ⚾ 1. [야구 전용] 3연전 시리즈(1·2·3차전) 선발 볼수 & 불펜 투구수/볼수 피로도 분석 */}
-              {match.sport === 'baseball' && (
-                <div className="space-y-3">
-                  <h3 className="text-sm sm:text-base font-black text-amber-400 flex items-center gap-2">
-                    <Zap className="w-5 h-5 text-amber-400" />
-                    <span>⚾ 시리즈 1차전·2차전·3차전 선발 볼수 & 불펜 투구수/볼수 피로도 분석</span>
-                  </h3>
-                  <BaseballSeriesPitchView
-                    tracker={match.baseballSeriesPitchTracker || {
-                      seriesName: `${match.homeTeam.name} vs ${match.awayTeam.name} 3연전`,
-                      seriesRoundType: 'GAME_1',
-                      seriesRoundLabel: '⚾ 3연전 1차전',
-                      currentGameIndex: 1,
-                      totalGamesInSeries: 3,
-                      homeSeriesBullpenPitchesTotal: 42,
-                      awaySeriesBullpenPitchesTotal: 48,
-                      bullpenOverloadSummaryText: '시리즈 기준 선발 이닝 소화 및 불펜 휴식 상태 분석',
-                      games: []
-                    }}
-                    homeTeam={match.homeTeam}
-                    awayTeam={match.awayTeam}
-                    membershipTier={membershipTier}
-                    onOpenPaywall={onOpenPaywall}
-                    theme={theme}
-                  />
-                </div>
-              )}
+        {/* 📋 3. 탭별 상세 본문 영역 */}
+        <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-5 custom-scrollbar">
 
-              {/* ⚽ 2. [축구 전용] 5대 핵심 승패 지표 (xG 기대득점 / 빅찬스 / 박스안슈팅 / 필드틸트) */}
-              {match.sport === 'football' && (
-                <div className="space-y-3">
-                  <h3 className="text-sm sm:text-base font-black text-emerald-400 flex items-center gap-2">
-                    <Flame className="w-5 h-5 text-emerald-400 animate-pulse" />
-                    <span>⚽ [5대 핵심 승패 지표] xG 기대득점 · 빅찬스 · 박스 안 슈팅 · 필드 틸트</span>
-                  </h3>
-                  <CoreWinFactorView
-                    metrics={match.soccerWinFactorMetrics as any}
-                    homeName={match.homeTeam.name}
-                    awayName={match.awayTeam.name}
-                    membershipTier={membershipTier}
-                    onOpenPaywall={onOpenPaywall}
-                    theme={theme}
-                  />
+          {/* TAB 1: 종합 분석 (SUMMARY) */}
+          {activeTab === 'SUMMARY' && (
+            <div className="space-y-4">
+              {/* 예측 결론 카드 */}
+              <div className={`p-4 rounded-2xl border flex items-center justify-between gap-3 ${
+                isLight ? 'bg-emerald-50/70 border-emerald-200 text-emerald-950' : 'bg-emerald-950/30 border-emerald-800/60 text-emerald-200'
+              }`}>
+                <div className="flex items-center gap-2.5">
+                  <Award className="w-5 h-5 text-emerald-500 shrink-0" />
+                  <div>
+                    <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 block">오피셜 팩트 분석 우세 판정</span>
+                    <strong className="text-sm sm:text-base font-black">{predictedWinner}</strong>
+                  </div>
                 </div>
-              )}
+                <div className="text-right shrink-0">
+                  <span className="text-[10px] text-slate-500 dark:text-slate-400 block">시장 예상 확률</span>
+                  <span className="font-mono text-xs sm:text-sm font-black text-emerald-500">홈 {probHome}% vs 원정 {probAway}%</span>
+                </div>
+              </div>
 
-              {/* 3. 🌐 해외 오피셜 실시간 배당률 (피나클 배당 팩트) */}
-              <div className={`p-4 sm:p-5 rounded-2xl border space-y-4 shadow-lg ${
+              {/* 승리 확률 시각화 바 */}
+              <div className={`p-4 rounded-2xl border space-y-2.5 ${
                 isLight ? 'bg-slate-50 border-slate-200' : 'bg-slate-950 border-slate-800'
               }`}>
-                <div className="flex items-center justify-between border-b pb-2.5 border-slate-200 dark:border-slate-800">
-                  <span className="text-xs sm:text-sm font-black text-amber-500 flex items-center gap-1.5">
+                <div className="flex items-center justify-between text-xs font-bold">
+                  <span className="text-emerald-500">[홈] {probHome}%</span>
+                  <span className="text-slate-400 text-[10px]">해외 배당 역산 시장 승리 확률</span>
+                  <span className="text-cyan-400">[원정] {probAway}%</span>
+                </div>
+                <div className="h-3 w-full bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden flex border border-slate-300 dark:border-slate-700">
+                  <div className="bg-emerald-500 h-full transition-all duration-500" style={{ width: `${probHome}%` }} />
+                  {probDraw > 0 && <div className="bg-amber-500 h-full transition-all duration-500" style={{ width: `${probDraw}%` }} />}
+                  <div className="bg-cyan-500 h-full transition-all duration-500" style={{ width: `${probAway}%` }} />
+                </div>
+                <div className="flex items-center justify-between text-[10px] text-slate-400">
+                  <span>{match.homeTeam.name}</span>
+                  {probDraw > 0 && <span>무승부 {probDraw}%</span>}
+                  <span>{match.awayTeam.name}</span>
+                </div>
+              </div>
+
+              {/* 퀵 지표 2분할 (기준점 & 최근 맞대결 요약) */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className={`p-4 rounded-2xl border space-y-1.5 ${
+                  isLight ? 'bg-slate-50 border-slate-200' : 'bg-slate-950 border-slate-800'
+                }`}>
+                  <div className="flex items-center justify-between text-xs font-bold text-slate-500">
+                    <span>언오버(Total Line) 기준점</span>
+                    <BarChart2 className="w-4 h-4 text-cyan-400" />
+                  </div>
+                  <div className="font-mono text-xl font-black text-amber-500">
+                    {defaultTotalLine} {unitStr}
+                  </div>
+                  <p className="text-[11px] text-slate-400">
+                    {match.sport === 'baseball' ? '선발 이닝 소화력 및 불펜 피로도 반영 기준점' : '정규 90분 공수 득실 팩트 기준점'}
+                  </p>
+                </div>
+
+                <div className={`p-4 rounded-2xl border space-y-1.5 ${
+                  isLight ? 'bg-slate-50 border-slate-200' : 'bg-slate-950 border-slate-800'
+                }`}>
+                  <div className="flex items-center justify-between text-xs font-bold text-slate-500">
+                    <span>맞대결 상대전적 (최근 {h2hMatches.length}경기)</span>
+                    <Swords className="w-4 h-4 text-amber-400" />
+                  </div>
+                  <div className="font-mono text-xl font-black text-emerald-500">
+                    {homeWinsInH2H}승 {drawsInH2H > 0 ? `${drawsInH2H}무 ` : ''}{awayWinsInH2H}패
+                  </div>
+                  <p className="text-[11px] text-slate-400">
+                    홈팀 기준 {homeWinsInH2H > awayWinsInH2H ? '상대전적 우세 흐름' : '치열한 공방전'}
+                  </p>
+                </div>
+              </div>
+
+              {/* 신뢰 보증 배지 */}
+              <div className="p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-xl flex items-center gap-2 text-xs text-emerald-500 font-bold">
+                <ShieldCheck className="w-4 h-4 shrink-0" />
+                <span>토큰(Tokeon)은 전 세계 공식 스포츠 기구 및 공인 배당 팩트만을 집계하여 제공합니다.</span>
+              </div>
+            </div>
+          )}
+
+          {/* TAB 2: 배당률 / 승률 (ODDS) */}
+          {activeTab === 'ODDS' && (
+            <div className="space-y-4">
+              <div className={`p-4 rounded-2xl border space-y-3 ${
+                isLight ? 'bg-slate-50 border-slate-200' : 'bg-slate-950 border-slate-800'
+              }`}>
+                <div className="flex items-center justify-between border-b pb-2 border-slate-200 dark:border-slate-800 text-xs font-black">
+                  <span className="text-amber-500 flex items-center gap-1.5">
                     <Trophy className="w-4 h-4" />
-                    <span>🌐 해외 오피셜 승무패 배당률 (실제 피나클 배당 팩트)</span>
+                    <span>해외 오피셜 실시간 승무패 배당률</span>
                   </span>
-                  <span className="text-[10px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded font-black">
-                    100% 오피셜 데이터
+                  <span className="text-[10px] bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded font-mono">
+                    100% FACT
                   </span>
                 </div>
 
-                {/* 배당률 3개 카드 */}
-                <div className={`grid ${match.sport === 'baseball' || match.sport === 'basketball' ? 'grid-cols-2' : 'grid-cols-3'} gap-2 sm:gap-3 text-center pt-1`}>
-                  {/* [홈팀] 승 배당 */}
-                  <div className={`p-3 rounded-xl border flex flex-col items-center justify-center ${
-                    isLight ? 'bg-white border-slate-200' : 'bg-slate-900 border-slate-800'
-                  }`}>
-                    <span className="text-[11px] text-emerald-400 font-bold block">🏠 [홈] {match.homeTeam.name} 승</span>
-                    <strong className="font-mono text-base sm:text-lg font-black text-emerald-400 mt-1">
-                      {odds.win ? odds.win.toFixed(2) : '1.95'}
+                <div className={`grid ${match.sport === 'baseball' || match.sport === 'basketball' ? 'grid-cols-2' : 'grid-cols-3'} gap-2 text-center`}>
+                  <div className={`p-3 rounded-xl border ${isLight ? 'bg-white border-slate-200' : 'bg-slate-900 border-slate-800'}`}>
+                    <span className="text-xs font-bold text-emerald-500 block">🏠 [홈] {match.homeTeam.name}</span>
+                    <strong className="font-mono text-xl font-black text-emerald-500 block my-1">
+                      {odds.win ? Number(odds.win).toFixed(2) : '1.95'}
                     </strong>
-                    <span className="text-[10px] text-slate-400 mt-0.5 font-bold">승리확률 {probHome}%</span>
+                    <span className="text-[10px] text-slate-400">승률 {probHome}%</span>
                   </div>
 
-                  {/* 무승부 (축구만) */}
                   {match.sport !== 'baseball' && match.sport !== 'basketball' && (
-                    <div className={`p-3 rounded-xl border flex flex-col items-center justify-center ${
+                    <div className={`p-3 rounded-xl border ${isLight ? 'bg-white border-slate-200' : 'bg-slate-900 border-slate-800'}`}>
+                      <span className="text-xs font-bold text-amber-500 block">무승부 (Draw)</span>
+                      <strong className="font-mono text-xl font-black text-amber-500 block my-1">
+                        {odds.draw ? Number(odds.draw).toFixed(2) : '3.30'}
+                      </strong>
+                      <span className="text-[10px] text-slate-400">무승부 {probDraw}%</span>
+                    </div>
+                  )}
+
+                  <div className={`p-3 rounded-xl border ${isLight ? 'bg-white border-slate-200' : 'bg-slate-900 border-slate-800'}`}>
+                    <span className="text-xs font-bold text-cyan-400 block">✈️ [원정] {match.awayTeam.name}</span>
+                    <strong className="font-mono text-xl font-black text-cyan-400 block my-1">
+                      {odds.lose ? Number(odds.lose).toFixed(2) : '2.90'}
+                    </strong>
+                    <span className="text-[10px] text-slate-400">승률 {probAway}%</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* 언오버 분석 */}
+              <div className={`p-4 rounded-2xl border space-y-3 ${
+                isLight ? 'bg-slate-50 border-slate-200' : 'bg-slate-950 border-slate-800'
+              }`}>
+                <span className="text-xs font-black text-cyan-400 flex items-center gap-1.5">
+                  <BarChart2 className="w-4 h-4" />
+                  <span>오피셜 언더/오버 (Under/Over) 기준점</span>
+                </span>
+                <div className="grid grid-cols-2 gap-3 text-center">
+                  <div className={`p-3 rounded-xl border ${isLight ? 'bg-white border-slate-200' : 'bg-slate-900 border-slate-800'}`}>
+                    <span className="text-[10px] text-slate-400 font-bold block">기준점</span>
+                    <strong className="text-lg font-black text-amber-400">{defaultTotalLine} {unitStr}</strong>
+                  </div>
+                  <div className={`p-3 rounded-xl border ${isLight ? 'bg-white border-slate-200' : 'bg-slate-900 border-slate-800'}`}>
+                    <span className="text-[10px] text-slate-400 font-bold block">경기 유형</span>
+                    <strong className="text-xs font-black text-emerald-400 truncate block mt-1">
+                      {match.sport === 'baseball' ? '선발 대진 및 마운드 뎁스' : '정규 포제션 공방전'}
+                    </strong>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* TAB 3: 종목별 전문 정밀 지표 (야구 선발/불펜 또는 축구 xG 지표) */}
+          {activeTab === 'SPECIAL' && (
+            <div className="space-y-4">
+              {match.sport === 'baseball' ? (
+                <BaseballSeriesPitchView
+                  tracker={match.baseballSeriesPitchTracker || {
+                    seriesName: `${match.homeTeam.name} vs ${match.awayTeam.name} 3연전`,
+                    seriesRoundType: 'GAME_1',
+                    seriesRoundLabel: '⚾ 3연전 1차전',
+                    currentGameIndex: 1,
+                    totalGamesInSeries: 3,
+                    homeSeriesBullpenPitchesTotal: 42,
+                    awaySeriesBullpenPitchesTotal: 48,
+                    bullpenOverloadSummaryText: '시리즈 기준 선발 이닝 소화 및 불펜 휴식 상태 분석',
+                    games: []
+                  }}
+                  homeTeam={match.homeTeam}
+                  awayTeam={match.awayTeam}
+                  membershipTier={membershipTier}
+                  onOpenPaywall={onOpenPaywall}
+                  theme={theme}
+                />
+              ) : (
+                <CoreWinFactorView
+                  metrics={match.soccerWinFactorMetrics as any}
+                  homeName={match.homeTeam.name}
+                  awayName={match.awayTeam.name}
+                  membershipTier={membershipTier}
+                  onOpenPaywall={onOpenPaywall}
+                  theme={theme}
+                />
+              )}
+            </div>
+          )}
+
+          {/* TAB 4: 상대 전적 (H2H) */}
+          {activeTab === 'H2H' && (
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-xs sm:text-sm font-black text-amber-400 flex items-center gap-1.5">
+                  <Swords className="w-4 h-4" />
+                  <span>맞대결 전적 기록 ({h2hRange}경기)</span>
+                </span>
+                <div className="flex items-center gap-1 bg-slate-950 p-1 rounded-xl border border-slate-800">
+                  {[3, 5, 10, 20].map((num) => (
+                    <button
+                      key={num}
+                      onClick={() => setH2hRange(num as any)}
+                      className={`px-2 py-0.5 rounded text-[10px] font-black transition-all cursor-pointer ${
+                        h2hRange === num ? 'bg-amber-500 text-slate-950' : 'text-slate-400 hover:text-white'
+                      }`}
+                    >
+                      {num}경기
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className={`rounded-2xl border overflow-hidden p-3 space-y-2 ${
+                isLight ? 'bg-slate-50 border-slate-200' : 'bg-slate-950 border-slate-800'
+              }`}>
+                {h2hMatches.length > 0 ? (
+                  h2hMatches.map((h2h, idx) => (
+                    <div key={idx} className={`flex items-center justify-between p-2.5 rounded-xl border text-xs ${
                       isLight ? 'bg-white border-slate-200' : 'bg-slate-900 border-slate-800'
                     }`}>
-                      <span className="text-[11px] text-amber-400 font-bold block">무승부 (Draw)</span>
-                      <strong className="font-mono text-base sm:text-lg font-black text-amber-400 mt-1">
-                        {odds.draw ? odds.draw.toFixed(2) : '3.30'}
-                      </strong>
-                      <span className="text-[10px] text-slate-400 mt-0.5 font-bold">무승부 {probDraw}%</span>
+                      <span className="text-slate-400 font-mono text-[11px]">{h2h.dateStr}</span>
+                      <div className="font-bold flex items-center gap-2">
+                        <span className="text-emerald-500">[홈] {h2h.matchHomeTeam || match.homeTeam.name}</span>
+                        <span className="font-mono font-black text-amber-400 px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800">
+                          {h2h.homeScore} : {h2h.awayScore}
+                        </span>
+                        <span className="text-cyan-400">[원정] {h2h.matchAwayTeam || match.awayTeam.name}</span>
+                      </div>
                     </div>
-                  )}
-
-                  {/* [원정팀] 승 배당 */}
-                  <div className={`p-3 rounded-xl border flex flex-col items-center justify-center ${
-                    isLight ? 'bg-white border-slate-200' : 'bg-slate-900 border-slate-800'
-                  }`}>
-                    <span className="text-[11px] text-cyan-400 font-bold block">✈️ [원정] {match.awayTeam.name} 승</span>
-                    <strong className="font-mono text-base sm:text-lg font-black text-cyan-400 mt-1">
-                      {odds.lose ? odds.lose.toFixed(2) : '2.90'}
-                    </strong>
-                    <span className="text-[10px] text-slate-400 mt-0.5 font-bold">승리확률 {probAway}%</span>
-                  </div>
-                </div>
-
-                {/* 📊 시각적 승리 확률 게이지 바 */}
-                <div className="space-y-1.5 pt-1">
-                  <div className="flex items-center justify-between text-[11px] font-bold">
-                    <span className="text-emerald-400 font-black">[홈] {probHome}%</span>
-                    <span className="text-slate-400 text-[10px]">해외 배당 역산 시장 예측 확률</span>
-                    <span className="text-cyan-400 font-black">[원정] {probAway}%</span>
-                  </div>
-                  <div className="h-3 w-full bg-slate-800 rounded-full overflow-hidden flex border border-slate-700">
-                    <div className="bg-emerald-500 h-full transition-all duration-500" style={{ width: `${probHome}%` }} />
-                    {probDraw > 0 && <div className="bg-amber-500 h-full transition-all duration-500" style={{ width: `${probDraw}%` }} />}
-                    <div className="bg-cyan-500 h-full transition-all duration-500" style={{ width: `${probAway}%` }} />
-                  </div>
-                </div>
-
-                {/* 배당률 기반 승부 예측 결론 */}
-                <div className="p-3 bg-slate-900 rounded-xl border border-slate-800 flex items-center justify-between text-xs">
-                  <span className="text-slate-400 font-bold flex items-center gap-1.5">
-                    <TrendingUp className="w-4 h-4 text-amber-400" />
-                    <span>시장 배당 기반 우세 판정:</span>
-                  </span>
-                  <strong className="text-amber-300 font-black text-sm">{predictedWinner}</strong>
-                </div>
+                  ))
+                ) : (
+                  <p className="text-xs text-slate-500 text-center py-4">공식 맞대결 기록 집계 중입니다.</p>
+                )}
               </div>
-
-              {/* 4. 📈 언오버(Under/Over) 기준점 & 득실점 팩트 수치 지표 */}
-              <div className={`p-4 sm:p-5 rounded-2xl border space-y-3 shadow-lg ${
-                isLight ? 'bg-slate-50 border-slate-200' : 'bg-slate-950 border-slate-800'
-              }`}>
-                <div className="flex items-center justify-between border-b pb-2.5 border-slate-200 dark:border-slate-800">
-                  <span className="text-xs sm:text-sm font-black text-cyan-400 flex items-center gap-1.5">
-                    <BarChart2 className="w-4 h-4" />
-                    <span>📈 언오버(Total Line) & 예상 득점 수치 분석</span>
-                  </span>
-                  <span className="text-[10px] bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 px-2 py-0.5 rounded font-black">
-                    기준점 {defaultTotalLine}{unitStr}
-                  </span>
-                </div>
-
-                <div className="grid grid-cols-2 gap-3 text-center pt-1">
-                  <div className="bg-slate-900 p-3 rounded-xl border border-slate-800 space-y-1">
-                    <span className="text-[10px] text-slate-400 block font-bold">오피셜 기준점</span>
-                    <strong className="text-base font-black text-amber-400 block">{defaultTotalLine} {unitStr}</strong>
-                    <span className="text-[10px] text-slate-400">다득점/저득점 분기점</span>
-                  </div>
-                  <div className="bg-slate-900 p-3 rounded-xl border border-slate-800 space-y-1">
-                    <span className="text-[10px] text-slate-400 block font-bold">경기 템포 & 전술</span>
-                    <strong className="text-xs font-black text-emerald-400 block truncate mt-1">
-                      {match.sport === 'baseball' ? '선발 대진 및 불펜 뎁스 전개' : match.sport === 'basketball' ? '정규 포제션 공방전' : '공수 밸런스 점유율 경합'}
-                    </strong>
-                    <span className="text-[10px] text-slate-400">100% 정규 경기 기준</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* 5. ⚔️ 과거 맞대결 상대전적 (H2H) 아코디언 박스 */}
-              <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <h3 className="text-sm sm:text-base font-black text-amber-400 flex items-center gap-2">
-                    <Swords className="w-5 h-5 text-amber-400" />
-                    <span>⚔️ 과거 맞대결 상대전적 (실존 기록)</span>
-                  </h3>
-                  <div className="flex items-center gap-1 bg-slate-950 p-1 rounded-xl border border-slate-800">
-                    {[3, 5, 10, 20].map((num) => (
-                      <button
-                        key={num}
-                        onClick={() => setH2hRange(num as any)}
-                        className={`px-2 py-0.5 rounded text-[10px] font-black transition-all ${
-                          h2hRange === num ? 'bg-amber-500 text-slate-950' : 'text-slate-400 hover:text-white'
-                        }`}
-                      >
-                        {num}경기
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="bg-slate-950 rounded-2xl border border-amber-500/40 overflow-hidden shadow-xl p-4">
-                  {h2hMatches.length > 0 ? (
-                    <div className="space-y-2">
-                      {h2hMatches.map((h2h, idx) => (
-                        <div key={idx} className="flex items-center justify-between p-2.5 rounded-xl bg-slate-900 border border-slate-800 text-xs">
-                          <span className="text-slate-400 font-mono text-[11px]">{h2h.dateStr}</span>
-                          <div className="font-bold text-slate-200">
-                            <span className="text-emerald-400">[홈] {h2h.matchHomeTeam || match.homeTeam.name}</span>
-                            <span className="mx-2 font-mono font-black text-amber-400">{h2h.homeScore} : {h2h.awayScore}</span>
-                            <span className="text-cyan-400">[원정] {h2h.matchAwayTeam || match.awayTeam.name}</span>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <div className="p-4 rounded-xl bg-slate-900 border border-slate-800 text-center space-y-1">
-                      <p className="text-xs font-bold text-slate-300">공식 맞대결 기록 집계 중</p>
-                      <p className="text-[10px] text-slate-500">
-                        [홈] {match.homeTeam.name} vs [원정] {match.awayTeam.name} 두 팀 간의 올 시즌 첫 맞대결이거나 공식 집계 대기 중입니다.
-                      </p>
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/* 6. 📊 최근 경기 결과 & 득실점 스코어 (홈/원정 폼 로그) */}
-              <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <h3 className="text-sm sm:text-base font-black text-amber-400 flex items-center gap-2">
-                    <Flame className="w-5 h-5 text-amber-400" />
-                    <span>📊 최근 경기 결과 & 득실점 스코어</span>
-                  </h3>
-                  <div className="flex items-center gap-1 bg-slate-950 p-1 rounded-xl border border-slate-800">
-                    {[3, 5, 10].map((num) => (
-                      <button
-                        key={num}
-                        onClick={() => setRecentGamesRange(num as any)}
-                        className={`px-2 py-0.5 rounded text-[10px] font-black transition-all ${
-                          recentGamesRange === num ? 'bg-amber-500 text-slate-950' : 'text-slate-400 hover:text-white'
-                        }`}
-                      >
-                        {num}경기
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  {/* [홈팀] 최근 로그 */}
-                  <div className="bg-slate-950 p-3.5 rounded-2xl border border-emerald-500/30 space-y-2">
-                    <span className="text-emerald-400 font-black text-xs block pb-1 border-b border-slate-800">
-                      🏠 [홈] {match.homeTeam.name} 최근 경기
-                    </span>
-                    {homeLogs.length > 0 ? (
-                      homeLogs.map((g, idx) => (
-                        <div key={idx} className="flex items-center justify-between p-2 rounded-lg bg-slate-900 border border-slate-800 text-[11px]">
-                          <span className="text-slate-400 font-mono">{g.dateStr}</span>
-                          <span className="font-bold text-slate-200 truncate max-w-[100px]">{g.opponentName}</span>
-                          <span className="font-mono font-black text-amber-300">{g.teamScore}:{g.opponentScore}</span>
-                          <span className={`px-1.5 py-0.2 rounded text-[10px] font-black ${g.resultStr === '승' ? 'bg-emerald-500/20 text-emerald-300' : 'bg-rose-500/20 text-rose-300'}`}>
-                            {g.resultStr}
-                          </span>
-                        </div>
-                      ))
-                    ) : (
-                      <p className="text-xs text-slate-500 text-center py-2">최근 경기 기록 집계 중</p>
-                    )}
-                  </div>
-
-                  {/* [원정팀] 최근 로그 */}
-                  <div className="bg-slate-950 p-3.5 rounded-2xl border border-cyan-500/30 space-y-2">
-                    <span className="text-cyan-400 font-black text-xs block pb-1 border-b border-slate-800">
-                      ✈️ [원정] {match.awayTeam.name} 최근 경기
-                    </span>
-                    {awayLogs.length > 0 ? (
-                      awayLogs.map((g, idx) => (
-                        <div key={idx} className="flex items-center justify-between p-2 rounded-lg bg-slate-900 border border-slate-800 text-[11px]">
-                          <span className="text-slate-400 font-mono">{g.dateStr}</span>
-                          <span className="font-bold text-slate-200 truncate max-w-[100px]">{g.opponentName}</span>
-                          <span className="font-mono font-black text-amber-300">{g.teamScore}:{g.opponentScore}</span>
-                          <span className={`px-1.5 py-0.2 rounded text-[10px] font-black ${g.resultStr === '승' ? 'bg-emerald-500/20 text-emerald-300' : 'bg-rose-500/20 text-rose-300'}`}>
-                            {g.resultStr}
-                          </span>
-                        </div>
-                      ))
-                    ) : (
-                      <p className="text-xs text-slate-500 text-center py-2">최근 경기 기록 집계 중</p>
-                    )}
-                  </div>
-                </div>
-              </div>
-
-              {/* 7. 🛡️ 토큰 신뢰 보증 안내 배지 */}
-              <div className="p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-xl flex items-center gap-2 text-xs text-emerald-400 font-bold">
-                <ShieldCheck className="w-4 h-4 shrink-0" />
-                <span>토큰(Tokeon)은 전 세계 공식 오피셜 데이터와 실제 배당률을 바탕으로 100% 정직한 팩트 수치만을 제공합니다.</span>
-              </div>
-
             </div>
-          ) : (
-            /* 💬 실시간 경기 응원 톡방 탭 */
-            <div className="h-[520px] rounded-2xl overflow-hidden border border-slate-800 shadow-2xl">
+          )}
+
+          {/* TAB 5: 최근 폼 & 경기 로그 (FORM) */}
+          {activeTab === 'FORM' && (
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-xs sm:text-sm font-black text-amber-400 flex items-center gap-1.5">
+                  <Flame className="w-4 h-4" />
+                  <span>최근 경기 결과 & 득실점</span>
+                </span>
+                <div className="flex items-center gap-1 bg-slate-950 p-1 rounded-xl border border-slate-800">
+                  {[3, 5, 10].map((num) => (
+                    <button
+                      key={num}
+                      onClick={() => setRecentGamesRange(num as any)}
+                      className={`px-2 py-0.5 rounded text-[10px] font-black transition-all cursor-pointer ${
+                        recentGamesRange === num ? 'bg-amber-500 text-slate-950' : 'text-slate-400 hover:text-white'
+                      }`}
+                    >
+                      {num}경기
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                {/* 홈팀 최근 경기 */}
+                <div className={`p-3.5 rounded-2xl border space-y-2 ${
+                  isLight ? 'bg-slate-50 border-slate-200' : 'bg-slate-950 border-slate-800'
+                }`}>
+                  <span className="text-emerald-500 font-black text-xs block pb-1 border-b border-slate-200 dark:border-slate-800">
+                    🏠 [홈] {match.homeTeam.name}
+                  </span>
+                  {homeLogs.map((g, idx) => (
+                    <div key={idx} className={`flex items-center justify-between p-2 rounded-xl border text-[11px] ${
+                      isLight ? 'bg-white border-slate-200' : 'bg-slate-900 border-slate-800'
+                    }`}>
+                      <span className="text-slate-400 font-mono">{g.dateStr}</span>
+                      <span className="font-bold truncate max-w-[90px]">{g.opponentName}</span>
+                      <span className="font-mono font-black text-amber-400">{g.teamScore}:{g.opponentScore}</span>
+                      <span className={`px-1.5 py-0.2 rounded text-[10px] font-black ${
+                        g.resultStr === '승' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-rose-500/20 text-rose-400'
+                      }`}>
+                        {g.resultStr}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+
+                {/* 원정팀 최근 경기 */}
+                <div className={`p-3.5 rounded-2xl border space-y-2 ${
+                  isLight ? 'bg-slate-50 border-slate-200' : 'bg-slate-950 border-slate-800'
+                }`}>
+                  <span className="text-cyan-400 font-black text-xs block pb-1 border-b border-slate-200 dark:border-slate-800">
+                    ✈️ [원정] {match.awayTeam.name}
+                  </span>
+                  {awayLogs.map((g, idx) => (
+                    <div key={idx} className={`flex items-center justify-between p-2 rounded-xl border text-[11px] ${
+                      isLight ? 'bg-white border-slate-200' : 'bg-slate-900 border-slate-800'
+                    }`}>
+                      <span className="text-slate-400 font-mono">{g.dateStr}</span>
+                      <span className="font-bold truncate max-w-[90px]">{g.opponentName}</span>
+                      <span className="font-mono font-black text-amber-400">{g.teamScore}:{g.opponentScore}</span>
+                      <span className={`px-1.5 py-0.2 rounded text-[10px] font-black ${
+                        g.resultStr === '승' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-rose-500/20 text-rose-400'
+                      }`}>
+                        {g.resultStr}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* TAB 6: 실시간 경기 톡방 (CHAT) */}
+          {activeTab === 'CHAT' && (
+            <div className="h-[520px] rounded-2xl overflow-hidden border border-slate-800 shadow-xl">
               <LiveCheerChat
                 match={match}
                 membershipTier={membershipTier}
@@ -488,7 +593,6 @@ export const MatchDetailModal = ({
           )}
 
         </div>
-
       </div>
     </div>
   );
