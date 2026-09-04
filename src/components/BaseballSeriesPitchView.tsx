@@ -352,8 +352,8 @@ export const BaseballSeriesPitchView = ({
                           )}
                         </div>
                         <span className="text-white flex items-center gap-1 shrink-0">
-                          <span className="px-1 py-0.2 rounded text-[9px] bg-amber-500/20 text-amber-300 border border-amber-500/40">선발</span>
-                          {game.homeStarterName} ({game.homeStarterPitches}구 / S:{game.homeStarterStrikes} B:{game.homeStarterBalls})
+                          <span className="px-1.5 py-0.5 rounded text-[9px] bg-slate-800 text-slate-300 border border-slate-700 font-bold">당시 선발</span>
+                          <strong className="text-amber-300 font-black">{game.homeStarterName}</strong> ({game.homeStarterPitches}구 / S:{game.homeStarterStrikes} B:{game.homeStarterBalls})
                         </span>
                       </div>
 
@@ -382,8 +382,8 @@ export const BaseballSeriesPitchView = ({
                           )}
                         </div>
                         <span className="text-white flex items-center gap-1 shrink-0">
-                          <span className="px-1 py-0.2 rounded text-[9px] bg-amber-500/20 text-amber-300 border border-amber-500/40">선발</span>
-                          {game.awayStarterName} ({game.awayStarterPitches}구 / S:{game.awayStarterStrikes} B:{game.awayStarterBalls})
+                          <span className="px-1.5 py-0.5 rounded text-[9px] bg-slate-800 text-slate-300 border border-slate-700 font-bold">당시 선발</span>
+                          <strong className="text-amber-300 font-black">{game.awayStarterName}</strong> ({game.awayStarterPitches}구 / S:{game.awayStarterStrikes} B:{game.awayStarterBalls})
                         </span>
                       </div>
 
@@ -410,12 +410,16 @@ export const BaseballSeriesPitchView = ({
             <div className="flex items-center justify-between border-b border-slate-800 pb-3">
               <div className="flex items-center gap-2">
                 <Flame className="w-5 h-5 text-amber-400 animate-pulse" />
-                <h4 className="font-black text-amber-300 text-xs sm:text-base">
-                  👑 [당일 경기 선발투수 방어율(ERA) 정밀 비교 & 폼 추세 분석]
+                <h4 className="font-black text-amber-300 text-xs sm:text-base flex items-center gap-2 flex-wrap">
+                  <span>👑 [오늘 본경기 선발투수]</span>
+                  <span className="text-white text-sm sm:text-base font-extrabold underline decoration-amber-400">
+                    {todayMatchup.homeStarterName || homeStarter.name || '미정'} vs {todayMatchup.awayStarterName || awayStarter.name || '미정'}
+                  </span>
+                  <span className="text-xs text-amber-400 font-normal">(방어율 ERA 정밀 비교)</span>
                 </h4>
               </div>
               <span className="bg-amber-400 text-slate-950 text-[10px] sm:text-xs font-black px-2.5 py-0.5 rounded shadow">
-                시즌 vs 최근 폼 추세
+                오늘 매치업
               </span>
             </div>
 
@@ -423,9 +427,12 @@ export const BaseballSeriesPitchView = ({
               {/* 홈팀 선발투수 카드 */}
               <div className="bg-slate-950/90 p-4 rounded-xl border border-emerald-500/40 space-y-3 shadow-md">
                 <div className="flex items-center justify-between border-b border-slate-800 pb-2">
-                  <div className="flex items-center gap-2">
-                    <span className="font-black text-emerald-400 text-sm">[홈] {homeTeam.name}</span>
-                    <span className="text-white font-black text-sm">{todayMatchup.homeStarterName}</span>
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="font-black text-emerald-400 text-sm">[오늘 홈 선발]</span>
+                    <span className="text-emerald-300 font-bold text-xs">{homeTeam.name}</span>
+                    <span className="text-white font-black text-base px-2 py-0.5 rounded bg-emerald-500/20 border border-emerald-500/40">
+                      {todayMatchup.homeStarterName || homeStarter.name || '선발 미정'}
+                    </span>
                   </div>
                   <span className={`text-[10px] font-black px-2 py-0.5 rounded shadow ${
                     todayMatchup.homeStarterFormTrend === 'UP'
@@ -485,9 +492,12 @@ export const BaseballSeriesPitchView = ({
               {/* 원정팀 선발투수 카드 */}
               <div className="bg-slate-950/90 p-4 rounded-xl border border-cyan-500/40 space-y-3 shadow-md">
                 <div className="flex items-center justify-between border-b border-slate-800 pb-2">
-                  <div className="flex items-center gap-2">
-                    <span className="font-black text-cyan-400 text-sm">[원정] {awayTeam.name}</span>
-                    <span className="text-white font-black text-sm">{todayMatchup.awayStarterName}</span>
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="font-black text-cyan-400 text-sm">[오늘 원정 선발]</span>
+                    <span className="text-cyan-300 font-bold text-xs">{awayTeam.name}</span>
+                    <span className="text-white font-black text-base px-2 py-0.5 rounded bg-cyan-500/20 border border-cyan-500/40">
+                      {todayMatchup.awayStarterName || awayStarter.name || '선발 미정'}
+                    </span>
                   </div>
                   <span className={`text-[10px] font-black px-2 py-0.5 rounded shadow ${
                     todayMatchup.awayStarterFormTrend === 'UP'
