@@ -131,8 +131,8 @@ export const SportsBlogSection: React.FC<SportsBlogSectionProps> = ({
   };
 
   return (
-    <div className={`flex flex-col h-full rounded-2xl border shadow-xl overflow-hidden ${
-      isLight ? 'bg-white border-slate-200 text-slate-900' : 'bg-slate-900 border-slate-800 text-slate-100'
+    <div className={`flex flex-col h-full rounded-none overflow-hidden ${
+      isLight ? 'bg-white text-slate-900' : 'bg-slate-900 text-slate-100'
     }`}>
       {/* 🏷️ 블로그 헤더 */}
       <div className={`p-3.5 sm:p-4 border-b shrink-0 flex items-center justify-between ${

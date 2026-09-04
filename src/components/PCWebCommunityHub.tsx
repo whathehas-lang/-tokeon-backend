@@ -213,19 +213,11 @@ export const PCWebCommunityHub = ({
   };
 
   return (
-    <div className={`w-full rounded-2xl border shadow-xl overflow-hidden p-2 sm:p-3 h-full flex flex-col ${
-      isLight ? 'bg-slate-50 border-slate-200 text-slate-900' : 'bg-slate-950 border-slate-800 text-slate-100'
+    <div className={`w-full h-full rounded-none border-r flex flex-col justify-between overflow-hidden p-3 ${
+      isLight ? 'bg-white border-slate-200 text-slate-900' : 'bg-slate-900 border-slate-800 text-slate-100'
     }`}>
       
-      {/* MAIN CONTAINER */}
-      <div className="flex flex-1 overflow-hidden h-full">
-
-        {/* 👉 MAIN TEXT-BASED CHAT AREA */}
-        <div className={`flex-1 border rounded-xl p-3 flex flex-col justify-between h-full overflow-hidden ${
-          isLight ? 'bg-white border-slate-200' : 'bg-slate-900 border-slate-800'
-        }`}>
-          
-          {/* Simple Header */}
+      {/* Simple Header */}
           <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-2 shrink-0">
             <div className="flex items-center gap-2">
               <span className="text-xs font-bold text-slate-800 dark:text-slate-200">
@@ -282,9 +274,6 @@ export const PCWebCommunityHub = ({
               보내기
             </button>
           </div>
-        </div>
-
-      </div>
 
     </div>
   );

@@ -760,24 +760,13 @@ export default function App() {
   };
 
   return (
-    <div className={`min-h-screen flex flex-col font-sans transition-colors duration-200 w-full max-w-full overflow-x-hidden ${
+    <div className={`h-screen w-screen flex flex-col font-sans transition-colors duration-200 overflow-hidden ${
       isLight ? 'bg-slate-100/70 text-slate-900 selection:bg-emerald-500 selection:text-white' : 'bg-slate-950 text-slate-100 selection:bg-emerald-500 selection:text-slate-950'
     }`}>
-      {/* Top Navbar */}
-      <Navbar
-        matches={matches}
-        membershipTier={membershipTier}
-        onOpenMobileConnect={() => setIsIntegrityModalOpen(true)}
-        onOpenIntegrityDashboard={() => setIsIntegrityModalOpen(true)}
-        onSelectMatch={setSelectedMatchForDetail}
-        theme={theme}
-        onToggleTheme={handleToggleTheme}
-        showAllMatchesMode={showAllMatchesMode}
-        onToggleShowAllMatches={handleToggleShowAllMatches}
-      />
 
-      {/* Dynamic View Mode Main Container - Full width and height */}
-      <main className="flex-1 w-full p-2 flex flex-col overflow-hidden">
+
+      {/* Dynamic View Mode Main Container - 100% full viewport, zero margin */}
+      <main className="flex-1 w-full h-full p-0 m-0 flex flex-col overflow-hidden">
 
 
 
@@ -790,10 +779,10 @@ export default function App() {
 
 
             {/* 🖥️ PC DESKTOP (lg 이상): 좌측(실제 모바일 경기 화면) + 중앙(실시간 채팅) + 우측(블로그) 3등분 완벽 분할 */}
-            <div className="hidden lg:flex flex-row gap-2.5 w-full items-stretch h-[calc(100vh-16px)] flex-1 overflow-hidden">
+            <div className="hidden lg:flex flex-row gap-0 w-full items-stretch h-full flex-1 overflow-hidden">
               
-              {/* 📱 1. [LEFT PANE 32%]: 실제 핸드폰에서 보이는 경기 화면 그대로 (가짜 껍데기/노치 없이 깔끔한 모바일 뷰) */}
-              <div className={`flex-1 h-full flex flex-col min-w-0 rounded-xl border shadow-md overflow-hidden ${
+              {/* 📱 1. [LEFT PANE 28%]: 실제 핸드폰 경기 화면 */}
+              <div className={`w-[28%] xl:w-[27%] h-full flex flex-col min-w-0 rounded-none border-r overflow-hidden ${
                 isLight ? 'bg-white border-slate-200' : 'bg-slate-900 border-slate-800'
               }`}>
                 {/* 좌측 경기 목록 헤더 */}
