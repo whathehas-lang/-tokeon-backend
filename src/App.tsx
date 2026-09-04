@@ -30,6 +30,7 @@ import { H2HRecentFormEngine } from './services/enricher/h2hRecentFormEngine';
 import { BetmanHourlySyncScheduler } from './services/scheduler/betmanHourlySyncScheduler';
 import { authService } from './services/auth/authService';
 import { getOfficialBetmanSlip } from './mock/betmanOfficial14Slips';
+import { TotoSlipTableView } from './components/TotoSlipTableView';
 
 export default function App() {
   const dynamicMeta = getDynamicBetmanGamesMetadata();
@@ -1010,9 +1011,22 @@ export default function App() {
                   </span>
                 </div>
 
-                {/* 실제 모바일 경기 카드 목록 스크롤 영역 */}
+                {/* 실제 모바일 경기 카드 목록 스크롤 영역 또는 승1패/승무패 배트맨 슬립 표 */}
                 <div className="flex-1 overflow-y-auto p-3 space-y-3 custom-scrollbar">
-                  {filteredMatches.length === 0 ? (
+                  {selectedFolder === 'SEUNG1PAE' || selectedFolder === 'SEUNGMUBAE' ? (
+                    <TotoSlipTableView
+                      category={selectedFolder as any}
+                      roundTitle={selectedFolder === 'SEUNG1PAE' ? '2026년 64회차' : '2026년 50회차'}
+                      totalVotesCount={65820}
+                      firstPrizeAmount={270946250}
+                      carryOverAmount={254491250}
+                      carryOverCount={3}
+                      matches={filteredMatches}
+                      onSelectMatch={(m) => handleOpenDetailModal(m)}
+                      theme={theme}
+                      lang={appLanguage}
+                    />
+                  ) : filteredMatches.length === 0 ? (
                     <div className="flex flex-col items-center justify-center py-20 text-center space-y-3">
                       <div className="w-12 h-12 rounded-full bg-amber-500/10 flex items-center justify-center text-amber-400 text-xl font-bold">
                         ⏱️
@@ -1089,45 +1103,62 @@ export default function App() {
 
             </div>
 
-            {/* 📱 MOBILE SCREENS (lg 미만 모바일 기기): 기존 단일 모바일 1열 스택 */}
+            {/* 📱 MOBILE SCREENS (lg 미만 모바일 기기): 기존 단일 모바일 1열 스택 또는 승1패 배트맨 슬립 표 */}
             <div className="lg:hidden flex flex-col w-full space-y-3">
-              <div className="flex items-center justify-between p-2.5 rounded-xl bg-slate-900 border border-amber-500/30 text-xs">
-                <span className="font-black text-amber-300">실시간 경기 목록</span>
-                <span className="text-[10px] font-mono font-bold text-slate-300">{filteredMatches.length}경기</span>
-              </div>
-              {filteredMatches.length === 0 ? (
-                <div className="flex flex-col items-center justify-center py-16 text-center space-y-2 bg-slate-900/50 rounded-xl border border-slate-800 p-4">
-                  <div className="w-10 h-10 rounded-full bg-amber-500/10 flex items-center justify-center text-amber-400 text-lg font-bold">
-                    ⏱️
-                  </div>
-                  <p className="text-xs font-bold text-slate-200">
-                    {selectedFolder === 'SEUNG5PAE' 
-                      ? '현재 발매 중인 승5패 대상경기가 없습니다'
-                      : '현재 진행 중인 대상경기가 없습니다'}
-                  </p>
-                  <p className="text-[11px] text-slate-400">
-                    {selectedFolder === 'SEUNG5PAE'
-                      ? '다음 공식 회차 공지 및 발매 시 자동 업데이트됩니다.'
-                      : '다른 종목 탭을 선택해 주세요.'}
-                  </p>
-                </div>
+              {selectedFolder === 'SEUNG1PAE' || selectedFolder === 'SEUNGMUBAE' ? (
+                <TotoSlipTableView
+                  category={selectedFolder as any}
+                  roundTitle={selectedFolder === 'SEUNG1PAE' ? '2026년 64회차' : '2026년 50회차'}
+                  totalVotesCount={65820}
+                  firstPrizeAmount={270946250}
+                  carryOverAmount={254491250}
+                  carryOverCount={3}
+                  matches={filteredMatches}
+                  onSelectMatch={(m) => handleOpenDetailModal(m)}
+                  theme={theme}
+                  lang={appLanguage}
+                />
               ) : (
-                filteredMatches.map((match) => (
-                  <MatchCard
-                    key={match.id}
-                    match={match}
-                    membershipTier={membershipTier}
-                    cardDensity={cardDensity}
-                    lang={appLanguage}
-                    markedPicks={markedPicks[match.id] || []}
-                    allMatches={matches}
-                    onSelectMatch={(m) => handleOpenDetailModal(m)}
-                    onOpenChat={handleOpenMatchChat}
-                    onToggleFavorite={handleToggleFavorite}
-                    onTogglePick={handleTogglePick}
-                    theme={theme}
-                  />
-                ))
+                <>
+                  <div className="flex items-center justify-between p-2.5 rounded-xl bg-slate-900 border border-amber-500/30 text-xs">
+                    <span className="font-black text-amber-300">실시간 경기 목록</span>
+                    <span className="text-[10px] font-mono font-bold text-slate-300">{filteredMatches.length}경기</span>
+                  </div>
+                  {filteredMatches.length === 0 ? (
+                    <div className="flex flex-col items-center justify-center py-16 text-center space-y-2 bg-slate-900/50 rounded-xl border border-slate-800 p-4">
+                      <div className="w-10 h-10 rounded-full bg-amber-500/10 flex items-center justify-center text-amber-400 text-lg font-bold">
+                        ⏱️
+                      </div>
+                      <p className="text-xs font-bold text-slate-200">
+                        {selectedFolder === 'SEUNG5PAE' 
+                          ? '현재 발매 중인 승5패 대상경기가 없습니다'
+                          : '현재 진행 중인 대상경기가 없습니다'}
+                      </p>
+                      <p className="text-[11px] text-slate-400">
+                        {selectedFolder === 'SEUNG5PAE'
+                          ? '다음 공식 회차 공지 및 발매 시 자동 업데이트됩니다.'
+                          : '다른 종목 탭을 선택해 주세요.'}
+                      </p>
+                    </div>
+                  ) : (
+                    filteredMatches.map((match) => (
+                      <MatchCard
+                        key={match.id}
+                        match={match}
+                        membershipTier={membershipTier}
+                        cardDensity={cardDensity}
+                        lang={appLanguage}
+                        markedPicks={markedPicks[match.id] || []}
+                        allMatches={matches}
+                        onSelectMatch={(m) => handleOpenDetailModal(m)}
+                        onOpenChat={handleOpenMatchChat}
+                        onToggleFavorite={handleToggleFavorite}
+                        onTogglePick={handleTogglePick}
+                        theme={theme}
+                      />
+                    ))
+                  )}
+                </>
               )}
             </div>
           </div>
