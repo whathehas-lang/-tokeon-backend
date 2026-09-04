@@ -12,15 +12,18 @@ export type LiveScoreUpdateCallback = (matchId: string, homeScore: number, awayS
  * MLB 공식 실시간 Stats API + API-Sports 이원화 실시간 동기화
  */
 export class LiveMatchPollingScheduler {
-  private static timerId: NodeJS.Timeout | null = null;
+  private static mlbTimerId: NodeJS.Timeout | null = null;
+  private static apiBaseballTimerId: NodeJS.Timeout | null = null;
   private static isRunning: boolean = false;
   private static activeLiveGameIds: Set<string> = new Set();
   private static currentMatches: Match[] = [];
   private static updateCallbacks: Set<LiveScoreUpdateCallback> = new Set();
 
-  // 15초 ~ 30초 적응형 간격 설정
-  private static readonly LIVE_POLL_INTERVAL_MS = 15 * 1000; // 15초
-  private static readonly IDLE_POLL_INTERVAL_MS = 60 * 1000; // 진행 중 경기 없을 때 1분 대기
+  // ⚡ 사용자 지정 주기:
+  // 1. 🇺🇸 메이저리그(MLB): 공식 Stats API 무료 제공 ➔ 3초 주기 초고속 실시간 폴링
+  // 2. 🇰🇷🇯🇵 한국야구(KBO) & 일본야구(NPB): API-Baseball ➔ 15초 정밀 라이브 동기화
+  private static readonly MLB_POLL_INTERVAL_MS = 3 * 1000; // 3초
+  private static readonly API_BASEBALL_POLL_INTERVAL_MS = 15 * 1000; // 15초
 
   /**
    * 스코어 업데이트 리스너 등록
@@ -46,60 +49,149 @@ export class LiveMatchPollingScheduler {
   }
 
   /**
-   * 폴링 스케줄러 시작
+   * 폴링 스케줄러 시작 (MLB 3초 전용 루프 + API-Baseball 15초 루프 동시 가동)
    */
   public static start() {
     if (this.isRunning) return;
     this.isRunning = true;
-    console.log(`[LiveMatchPollingScheduler] Started adaptive polling (Interval: ${this.LIVE_POLL_INTERVAL_MS / 1000}s)`);
-    this.pollLoop();
+    console.log(`[LiveMatchPollingScheduler] 🚀 Started Real-time Polling: MLB (Stats API, 3s) & KBO/NPB (API-Baseball, 15s)`);
+    this.pollMlbLoop();
+    this.pollApiBaseballLoop();
   }
 
   /**
    * 폴링 스케줄러 중지
    */
   public static stop() {
-    if (this.timerId) {
-      clearTimeout(this.timerId as any);
-      this.timerId = null;
+    if (this.mlbTimerId) {
+      clearTimeout(this.mlbTimerId as any);
+      this.mlbTimerId = null;
+    }
+    if (this.apiBaseballTimerId) {
+      clearTimeout(this.apiBaseballTimerId as any);
+      this.apiBaseballTimerId = null;
     }
     this.isRunning = false;
     console.log('[LiveMatchPollingScheduler] Stopped polling');
   }
 
   /**
-   * 주기적 실행 루프 (live=all + MLB Stats API)
+   * ⚡ 1. [메이저리그 공식 사이트 API 3초 주기 초고속 루프]
    */
-  private static async pollLoop() {
+  private static async pollMlbLoop() {
     if (!this.isRunning) return;
 
     try {
-      await this.fetchAndProcessLiveAll();
+      await this.fetchAndProcessMlbLive();
     } catch (err) {
-      console.warn('[LiveMatchPollingScheduler] Polling request error:', err);
+      // Keep silent to avoid console spam
     } finally {
       if (this.isRunning) {
-        this.timerId = setTimeout(() => this.pollLoop(), this.LIVE_POLL_INTERVAL_MS);
+        this.mlbTimerId = setTimeout(() => this.pollMlbLoop(), this.MLB_POLL_INTERVAL_MS);
       }
     }
   }
 
   /**
-   * MLB 공식 Stats API + API-Sports 이원화 실시간 파싱 및 UI 콜백 처리
+   * ⚡ 2. [KBO 한국야구 & NPB 일본야구 API-Baseball 15초 주기 실시간 루프]
    */
-  private static async fetchAndProcessLiveAll() {
-    try {
-      // 1. ⚾ MLB 공식 Stats API 실시간 전수 동기화 (한-미 시차 보정)
-      const mlbLiveGames = await MlbLiveGameSyncService.fetchActiveLiveGames();
-      
-      if (mlbLiveGames.length > 0 && this.currentMatches.length > 0) {
-        for (const mlbGame of mlbLiveGames) {
-          const gHome = SportsEntityMappingService.normalize(mlbGame.homeTeamName);
-          const gAway = SportsEntityMappingService.normalize(mlbGame.awayTeamName);
+  private static async pollApiBaseballLoop() {
+    if (!this.isRunning) return;
 
-          // 현재 베트맨 경기 목록 중 일치하는 경기 탐색
+    try {
+      await this.fetchAndProcessApiBaseballLive();
+    } catch (err) {
+      // Keep silent
+    } finally {
+      if (this.isRunning) {
+        this.apiBaseballTimerId = setTimeout(() => this.pollApiBaseballLoop(), this.API_BASEBALL_POLL_INTERVAL_MS);
+      }
+    }
+  }
+
+  /**
+   * 🇺🇸 MLB 공식 Stats API (statsapi.mlb.com) 실시간 파싱 및 UI 콜백 처리 (3초 주기)
+   */
+  private static async fetchAndProcessMlbLive() {
+    try {
+      const mlbLiveGames = await MlbLiveGameSyncService.fetchActiveLiveGames();
+      if (mlbLiveGames.length === 0 || this.currentMatches.length === 0) return;
+
+      for (const mlbGame of mlbLiveGames) {
+        const gHome = SportsEntityMappingService.normalize(mlbGame.homeTeamName);
+        const gAway = SportsEntityMappingService.normalize(mlbGame.awayTeamName);
+
+        const targetMatches = this.currentMatches.filter(m => {
+          if (m.sport !== 'baseball') return false;
+          const leagueUpper = (m.league || '').toUpperCase();
+          if (!leagueUpper.includes('MLB') && !leagueUpper.includes('메이저리그')) return false;
+
+          const mHome = SportsEntityMappingService.normalize(m.homeTeam.name);
+          const mAway = SportsEntityMappingService.normalize(m.awayTeam.name);
+          return (gHome.includes(mHome) || mHome.includes(gHome)) &&
+                 (gAway.includes(mAway) || mAway.includes(gAway));
+        });
+
+        for (const match of targetMatches) {
+          this.updateCallbacks.forEach(cb => {
+            try {
+              cb(
+                match.id,
+                mlbGame.homeScore,
+                mlbGame.awayScore,
+                mlbGame.isLive ? mlbGame.currentInningText : mlbGame.statusDetailed,
+                mlbGame.isFinal
+              );
+            } catch (e) {
+              console.error('[LiveMatchPollingScheduler] MLB callback trigger error:', e);
+            }
+          });
+        }
+      }
+    } catch (e) {
+      // silent
+    }
+  }
+
+  /**
+   * 🇰🇷🇯🇵 API-Baseball (api-sports.io) KBO & NPB 실시간 경기 전수 동기화
+   */
+  private static async fetchAndProcessApiBaseballLive() {
+    try {
+      // 1. API-Baseball 당일 경기 일괄 조회 (/games?date=YYYY-MM-DD)
+      const now = new Date();
+      const todayStr = now.toISOString().slice(0, 10);
+      
+      const res = await sportsApiClient.get<ApiBaseballGame[]>('/games', {
+        date: todayStr
+      }, 'baseball');
+
+      if (res && Array.isArray(res.response) && res.response.length > 0) {
+        for (const rawGame of res.response) {
+          const game = rawGame as ApiBaseballGame;
+          if (!game || !game.id || !game.teams) continue;
+
+          // KBO(5) 또는 NPB(2) 리그만 추출
+          const leagueId = game.league?.id;
+          const isKboOrNpb = leagueId === 5 || leagueId === 2 || 
+                             game.country?.name === 'South-Korea' || game.country?.name === 'Japan';
+          if (!isKboOrNpb) continue;
+
+          const processed = BaseballLiveApiService.processLiveGameResponse(game);
+          const rawHome = game.teams.home?.name || '';
+          const rawAway = game.teams.away?.name || '';
+
+          const gHome = SportsEntityMappingService.normalize(rawHome);
+          const gAway = SportsEntityMappingService.normalize(rawAway);
+
+          // 현재 베트맨 목록 중 일치하는 KBO / NPB 경기 탐색
           const targetMatches = this.currentMatches.filter(m => {
             if (m.sport !== 'baseball') return false;
+            const leagueUpper = (m.league || '').toUpperCase();
+            const isTargetLeague = leagueUpper.includes('KBO') || leagueUpper.includes('NPB') || 
+                                   leagueUpper.includes('한국') || leagueUpper.includes('일본');
+            if (!isTargetLeague) return false;
+
             const mHome = SportsEntityMappingService.normalize(m.homeTeam.name);
             const mAway = SportsEntityMappingService.normalize(m.awayTeam.name);
             return (gHome.includes(mHome) || mHome.includes(gHome)) &&
@@ -111,50 +203,20 @@ export class LiveMatchPollingScheduler {
               try {
                 cb(
                   match.id,
-                  mlbGame.homeScore,
-                  mlbGame.awayScore,
-                  mlbGame.isLive ? mlbGame.currentInningText : mlbGame.statusDetailed,
-                  mlbGame.isFinal
-                );
-              } catch (e) {
-                console.error('[LiveMatchPollingScheduler] Callback trigger error:', e);
-              }
-            });
-          }
-        }
-      }
-
-      // 2. 🛡️ API-Sports 야구 실시간 진행 중 경기 보조 조회 (/games?live=all)
-      try {
-        const res = await sportsApiClient.get<ApiBaseballGame[]>('/games', {
-          live: 'all'
-        }, 'baseball');
-
-        if (res && Array.isArray(res.response) && res.response.length > 0) {
-          for (const rawGame of res.response) {
-            const game = rawGame as any;
-            if (!game || !game.id) continue;
-            const processed = BaseballLiveApiService.processLiveGameResponse(game);
-            this.updateCallbacks.forEach(cb => {
-              try {
-                cb(
-                  String(processed.gameId),
                   processed.homeScore,
                   processed.awayScore,
                   processed.statusLabel,
                   processed.isCompleted
                 );
               } catch (e) {
-                console.error('[LiveMatchPollingScheduler] Callback trigger error:', e);
+                console.error('[LiveMatchPollingScheduler] API-Baseball callback error:', e);
               }
             });
           }
         }
-      } catch (err) {
-        // Fallback silently
       }
 
-      // 3. ⚽ API-Sports 축구 실시간 진행 중 경기 동기화 (/fixtures?live=all)
+      // 2. ⚽ API-Sports 축구 진행 중 경기 동기화 (/fixtures?live=all)
       try {
         const fbRes = await sportsApiClient.get<any[]>('/fixtures', {
           live: 'all'
@@ -198,7 +260,7 @@ export class LiveMatchPollingScheduler {
         // Fallback silently
       }
     } catch (error) {
-      console.warn('[LiveMatchPollingScheduler] Failed to fetch live matches. Preserving existing states:', error);
+      // Fallback silently
     }
   }
 }

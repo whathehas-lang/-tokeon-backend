@@ -14,7 +14,7 @@ export class SportsApiClient {
     // 브라우저에서는 CORS 차단 방지를 위해 Vite 프록시(/api/...) 사용
     this.footballBaseUrl = isBrowser ? '/api/football' : (env.VITE_FOOTBALL_API_URL || 'https://v3.football.api-sports.io');
     this.baseballBaseUrl = isBrowser ? '/api/baseball' : (env.VITE_BASEBALL_API_URL || 'https://v1.baseball.api-sports.io');
-    this.apiKey = env.VITE_SPORTS_API_KEY || '02cbc5113771eefb4A3F6D14606C2af9';
+    this.apiKey = env.VITE_API_BASEBALL_KEY || env.VITE_API_SPORTS_KEY || env.VITE_SPORTS_API_KEY || '96ae3619c2c6f8f76ec75d64bd95d000';
     this.useMockData = env.VITE_USE_MOCK_DATA === 'true';
   }
 
