@@ -31,6 +31,7 @@ import { BetmanHourlySyncScheduler } from './services/scheduler/betmanHourlySync
 import { authService } from './services/auth/authService';
 import { getOfficialBetmanSlip } from './mock/betmanOfficial14Slips';
 import { TotoSlipTableView } from './components/TotoSlipTableView';
+import { baseballStarterPollingService } from './services/scheduler/baseballStarterPollingService';
 
 export default function App() {
   const dynamicMeta = getDynamicBetmanGamesMetadata();
@@ -85,6 +86,9 @@ export default function App() {
         // 🚀 실시간 라이브 스코어 스케줄러 즉시 동기화 및 15초 폴링 가동
         LiveMatchPollingScheduler.syncActiveMatches(freshMatches);
         
+        // ⚾ 야구 1순위 공식 선발/라인업 확인 및 10분 주기 미정 자동 폴링 가동
+        baseballStarterPollingService.syncMatches(freshMatches);
+        
         // 🛡️ 상대전적 H2H 배치 수집은 실시간 스코어와 100% 분리되어 백그라운드 지연 실행 (UI/실시간 간섭 0%)
         setTimeout(() => {
           H2HBatchPrefetchService.runDailyBatchPrefetch(freshMatches).then(() => {
@@ -92,6 +96,11 @@ export default function App() {
           }).catch(() => {});
         }, 1000);
       }
+    });
+
+    // ⚾ 야구 선발/라인업 자동 갱신 시 실시간 리액티브 UI 반영
+    const unsubscribeStarters = baseballStarterPollingService.subscribe((updatedMatches) => {
+      setMatches(updatedMatches);
     });
 
     const unsubscribeDb = verifiedMatchDatabase.subscribe(() => {
@@ -251,15 +260,18 @@ export default function App() {
       unsubscribeWebhook();
       unsubscribeKbo();
       unsubscribeHourly();
+      unsubscribeStarters();
       KboLiveSubPipelineService.stop();
       BetmanHourlySyncScheduler.stop();
+      baseballStarterPollingService.stopPolling();
     };
   }, []);
 
-  // ⚡ 경기 목록 갱신 시 라이브 폴링 스케줄러 동기화
+  // ⚡ 경기 목록 갱신 시 라이브 폴링 & 야구 선발 폴링 스케줄러 동기화
   useEffect(() => {
     if (matches.length > 0) {
       LiveMatchPollingScheduler.syncActiveMatches(matches);
+      baseballStarterPollingService.syncMatches(matches);
     }
   }, [matches]);
 

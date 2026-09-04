@@ -409,18 +409,18 @@ export const LineupTacticsView = ({ match, theme = 'light' }: LineupTacticsViewP
               <span className="flex items-center gap-1.5 text-amber-300">
                 {isPitcherConfirmed ? (
                   <>
-                    <span className="bg-amber-400 text-slate-950 px-2 py-0.5 rounded font-black text-[10px]">🟡 [예고선발]</span>
-                    <span>⚾ [{activeTeam.name}] [예고] {sp.name} ({sp.val})</span>
+                    <span className="bg-amber-400 text-slate-950 px-2 py-0.5 rounded font-black text-[10px]">🟢 [공식 예고선발]</span>
+                    <span>⚾ [{activeTeam.name}] [확정] {sp.name} ({sp.val})</span>
                   </>
                 ) : (
                   <>
                     <span className="bg-amber-400 text-slate-950 px-2 py-0.5 rounded font-black text-[10px] animate-pulse">🟡 선발 미정</span>
-                    <span className="text-slate-300">⚾ [{activeTeam.name}] 공식 선발투수 예고 발표 대기 중</span>
+                    <span className="text-slate-300">⚾ [{activeTeam.name}] 공식 선발투수 발표 대기 (10분 주기 자동 동기화 ⏳)</span>
                   </>
                 )}
               </span>
               <span className="text-[10px] text-slate-400 hidden sm:block">
-                {isPitcherConfirmed ? 'KBO/MLB 공식 예고 공시 완료' : '공식 예고 시 실시간 자동 확정 공지'}
+                {isPitcherConfirmed ? '공식 사이트 검증 완료 • 실시간 타순 연동' : '10분마다 공식 사이트 확인 후 자동 갱신'}
               </span>
             </div>
 
