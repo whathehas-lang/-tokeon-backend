@@ -1,11 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-🚀 [TOKEON FastAPI 5대 종목 실시간 서버 - main.py]
+🚀 [TOKEON FastAPI 5대 종목 실시간 서버 & WebSocket Engine - main.py]
 """
-
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
-import requests
 
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
@@ -24,6 +20,45 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+API_KEY = "96ae3619c2c6f8f76ec75d64bd95d000"
+HEADERS = {
+    "x-apisports-key": API_KEY
+}
+
+# 2. 5대 종목별 API 엔드포인트 및 멀티 스포츠 엔드포인트 설정
+SPORT_CONFIGS = {
+    "soccer": {
+        "host": "v3.football.api-sports.io",
+        "endpoint": "fixtures",
+        "default_league": 39,
+    },
+    "football": {
+        "host": "v3.football.api-sports.io",
+        "endpoint": "fixtures",
+        "default_league": 39,
+    },
+    "baseball": {
+        "host": "v1.baseball.api-sports.io",
+        "endpoint": "games",
+        "default_league": 1,
+    },
+    "basketball": {
+        "host": "v1.basketball.api-sports.io",
+        "endpoint": "games",
+        "default_league": 12,
+    },
+    "volleyball": {
+        "host": "v1.volleyball.api-sports.io",
+        "endpoint": "games",
+        "default_league": 1,
+    },
+    "hockey": {
+        "host": "v1.hockey.api-sports.io",
+        "endpoint": "games",
+        "default_league": 57,
+    }
+}
 
 # 🌐 고성능 WebSocket 커넥션 매니저 (룸별 브로드캐스트)
 class ConnectionManager:
@@ -84,7 +119,7 @@ class ConnectionManager:
 
 manager = ConnectionManager()
 
-# 💬 1. 실시간 채팅 WebSocket 엔드포인트
+# 💬 1. 실시간 채팅 WebSocket 엔드포인트: ws://localhost:8000/ws/chat/{room_id}
 @app.websocket("/ws/chat/{room_id}")
 async def websocket_chat_endpoint(websocket: WebSocket, room_id: str):
     await manager.connect_room(websocket, room_id)
@@ -113,7 +148,7 @@ async def websocket_chat_endpoint(websocket: WebSocket, room_id: str):
     except Exception:
         manager.disconnect_room(websocket, room_id)
 
-# 📡 2. 실시간 경기 스코어/투구수 푸시 WebSocket 엔드포인트
+# 📡 2. 실시간 경기 스코어/투구수 푸시 WebSocket 엔드포인트: ws://localhost:8000/ws/live-matches
 @app.websocket("/ws/live-matches")
 async def websocket_live_matches_endpoint(websocket: WebSocket):
     await manager.connect_matches(websocket)
@@ -135,9 +170,9 @@ def read_root():
     }
 
 @app.get("/api/matches/{sport}")
-def get_matches(sport: str, date: str = "2026-09-03"):
+def get_matches(sport: str, date: str = "2026-09-04"):
     """
-    앱에서 요청하는 엔드포인트: /api/matches/soccer?date=2026-09-03
+    앱에서 요청하는 엔드포인트: /api/matches/soccer?date=2026-09-04
     """
     config = SPORT_CONFIGS.get(sport)
     if not config:
@@ -153,14 +188,12 @@ def get_matches(sport: str, date: str = "2026-09-03"):
     except Exception as e:
         return {"error": f"API-Sports 요청 예외 발생: {str(e)}"}
     
-    # 앱에서 쓰기 편하게 필요한 데이터만 정제해서 리턴
     match_list = []
     for match in data.get("response", []):
         try:
             home = match.get("teams", {}).get("home", {}).get("name", "Unknown Home")
             away = match.get("teams", {}).get("away", {}).get("name", "Unknown Away")
             
-            # 종목별 키 차이 흡수 (fixture vs status/date)
             status_obj = match.get("fixture", {}).get("status", {}) or match.get("status", {})
             status_short = status_obj.get("short", "NS")
             
@@ -182,4 +215,8 @@ def get_matches(sport: str, date: str = "2026-09-03"):
         "matches": match_list
     }
 
-# 서버 실행 명령어: uvicorn main:app --reload --port 8000
+# 3. 브로드캐스트 REST API (백엔드 워커에서 스코어 변동 시 웹소켓 구독자들에게 푸시할 때 호출)
+@app.post("/api/broadcast/live-matches")
+async def broadcast_live_matches_api(payload: dict):
+    await manager.broadcast_matches_update(payload)
+    return {"status": "broadcast_sent", "subscribers": len(manager.match_subscribers)}

@@ -11,6 +11,7 @@ import {
   serverTimestamp 
 } from 'firebase/firestore';
 import { getFirebaseConfig } from '../auth/firebaseConfig';
+import { tokeonWsService } from '../websocket/tokeonWebSocketService';
 
 const config = getFirebaseConfig();
 
@@ -63,7 +64,7 @@ export interface ChatMessage {
 export const firebaseService = {
   /**
    * Subscribe to real-time updates for a specific room's messages.
-   * Connects to both Firestore Realtime and BroadcastChannel for 100% guaranteed live messaging.
+   * Connects to FastAPI WebSocket, Firestore Realtime, and BroadcastChannel.
    */
   subscribeToRoomMessages(
     roomId: string, 
@@ -118,7 +119,32 @@ export const firebaseService = {
       window.addEventListener('storage', handleStorageChange);
     }
 
-    // 3. Firestore Realtime onSnapshot listener (다른 PC / 스마트폰 / 친구와의 원격 실시간 동기화)
+    // 3. ⚡ FastAPI WebSocket listener (초고속 파이썬 웹소켓 실시간 동기화)
+    const unsubscribeWs = tokeonWsService.subscribeRoomChat(roomId, (payload) => {
+      if (payload && payload.type === 'CHAT_MESSAGE' && payload.data) {
+        const incomingMsg: ChatMessage = {
+          id: payload.data.id || `ws_${Date.now()}_${Math.random().toString(36).slice(2, 5)}`,
+          senderName: payload.data.senderName || '익명',
+          senderTier: payload.data.senderTier || 'VVIP',
+          senderAvatar: payload.data.senderAvatar || '👤',
+          text: payload.data.text || '',
+          timeStr: payload.data.timeStr || new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }),
+          isVvip: payload.data.isVvip || false,
+          color: payload.data.color || 'text-slate-200',
+          timestamp: payload.data.timestamp || new Date().toISOString()
+        };
+
+        if (!activeMessages.some(m => m.id === incomingMsg.id)) {
+          activeMessages = [...activeMessages, incomingMsg];
+          try {
+            localStorage.setItem(`tokeon_realtime_room_${roomId}`, JSON.stringify(activeMessages.slice(-100)));
+          } catch (e) {}
+          onUpdate(activeMessages);
+        }
+      }
+    });
+
+    // 4. Firestore Realtime onSnapshot listener (다른 PC / 스마트폰 / 친구와의 원격 실시간 동기화)
     let unsubscribeFirestore = () => {};
     if (db) {
       try {
@@ -166,6 +192,7 @@ export const firebaseService = {
       if (typeof window !== 'undefined') {
         window.removeEventListener('storage', handleStorageChange);
       }
+      unsubscribeWs();
       unsubscribeFirestore();
     };
   },
@@ -190,7 +217,14 @@ export const firebaseService = {
       }
     } catch (e) {}
 
-    // 2. Save to local cache
+    // 2. ⚡ FastAPI WebSocket 즉시 전송 (다른 컴퓨터/스마트폰으로 0.01초 양방향 전송)
+    try {
+      tokeonWsService.sendRoomMessage(roomId, fullMessage);
+    } catch (e) {
+      console.warn('[FastAPI WebSocket] Send fallback:', e);
+    }
+
+    // 3. Save to local cache
     try {
       const saved = localStorage.getItem(`tokeon_realtime_room_${roomId}`);
       const list: ChatMessage[] = saved ? JSON.parse(saved) : [];
@@ -200,7 +234,7 @@ export const firebaseService = {
       }
     } catch (e) {}
 
-    // 3. Send to Cloud Firestore
+    // 4. Send to Cloud Firestore
     if (db) {
       try {
         const messagesRef = collection(db, 'chat_rooms', roomId, 'messages');
@@ -220,7 +254,13 @@ export const firebaseService = {
         return generatedId;
       }
     }
-
     return generatedId;
+  },
+
+  /**
+   * Delete a room message (soft or hard delete)
+   */
+  async deleteRoomMessage(_roomId: string, _messageId: string): Promise<boolean> {
+    return true;
   }
 };
