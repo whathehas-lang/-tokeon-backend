@@ -39,14 +39,14 @@ export function getDynamicBetmanGamesMetadata(): Record<string, BetmanGameTypeIn
       gmId: 'G011',
       name: '축구 승무패',
       category: 'SEUNGMUBAE',
-      defaultRoundTs: '260049',
+      defaultRoundTs: '260050',
       roundsList: ['260049', '260050', '260051']
     },
     G024: {
       gmId: 'G024',
       name: '야구 승1패',
       category: 'SEUNG1PAE',
-      defaultRoundTs: '260064',
+      defaultRoundTs: '260065',
       roundsList: ['260064', '260065', '260066']
     },
     G102: {
