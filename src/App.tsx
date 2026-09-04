@@ -836,8 +836,8 @@ export default function App() {
                 </div>
               </div>
 
-              {/* 💬 2. [CENTER PANE 38~40%]: FastAPI WebSocket 실시간 채팅 */}
-              <div className="flex-1 h-full flex flex-col min-w-0">
+              {/* 💬 2. [CENTER PANE 46%]: 실시간 텍스트 채팅방 (와이드) */}
+              <div className="w-[46%] h-full flex flex-col min-w-0">
                 <PCWebCommunityHub
                   matches={matches}
                   userProfile={userProfile}
@@ -847,8 +847,8 @@ export default function App() {
                 />
               </div>
 
-              {/* 📝 3. [RIGHT PANE 30%]: 전문 스포츠 분석 블로그 & 칼럼 */}
-              <div className="flex-1 h-full flex flex-col min-w-0">
+              {/* 📝 3. [RIGHT PANE 27%]: 스포츠 분석 블로그 */}
+              <div className="w-[27%] h-full flex flex-col min-w-0">
                 <SportsBlogSection
                   matches={matches}
                   theme={theme}
@@ -990,8 +990,8 @@ export default function App() {
         </div>
       )}
 
-      {/* 📜 지난 경기 (종료된 경기) 세로 보기 ON/OFF 토글 섹션 */}
-      <div className="w-full max-w-7xl mx-auto px-4 py-6">
+      {/* 📜 지난 경기 (종료된 경기) 세로 보기 ON/OFF 토글 섹션 (모바일 전용) */}
+      <div className="lg:hidden w-full max-w-7xl mx-auto px-4 py-6">
         <div className={`p-4 rounded-2xl border transition-all ${
           isLight ? 'bg-white border-slate-200' : 'bg-slate-900 border-slate-800'
         }`}>
@@ -1049,8 +1049,8 @@ export default function App() {
         </div>
       </div>
 
-      {/* Footer */}
-      <footer className="border-t border-slate-900 bg-slate-950 py-6 text-center text-xs text-slate-500 space-y-1.5 w-full pb-20">
+      {/* Footer (모바일 전용) */}
+      <footer className="lg:hidden border-t border-slate-900 bg-slate-950 py-6 text-center text-xs text-slate-500 space-y-1.5 w-full pb-20">
         <div className="flex justify-center items-center gap-2">
           <Trophy className="w-4 h-4 text-emerald-400" />
           <span className="font-bold text-slate-400">토큰 (Tokeon) • tokeon.co.kr</span>
