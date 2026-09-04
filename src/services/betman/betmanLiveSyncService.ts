@@ -3,10 +3,39 @@
  */
 
 import type { Match } from '../../types/sports';
+import cachedSeedMatches from '../../mock/cachedLiveMatches.json';
+import { verifiedMatchDatabase } from '../db/verifiedMatchDatabase';
 
 export const RENDER_BACKEND_URL = 'https://tokeon-backend.onrender.com';
 
-let lastKnownLiveMatches: Match[] = [];
+// 🚀 초기 메모리 상태를 localStorage 캐시 또는 번들된 최신 시드(118+ 경기)로 즉시 하이드레이션
+function getInitialMatches(): Match[] {
+  try {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      const saved = localStorage.getItem('tokeon_cached_live_matches');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          return parsed;
+        }
+      }
+    }
+  } catch (e) {
+    console.warn('[BetmanLiveSyncService] localStorage cache read error:', e);
+  }
+  return (cachedSeedMatches as unknown as Match[]) || [];
+}
+
+let lastKnownLiveMatches: Match[] = getInitialMatches();
+
+// 초기 시드가 존재하면 verifiedMatchDatabase에도 즉시 등록하여 일관성 유지
+if (lastKnownLiveMatches.length > 0) {
+  try {
+    verifiedMatchDatabase.ingestAndVerifyMatches(lastKnownLiveMatches);
+  } catch (e) {
+    // ignore
+  }
+}
 
 export class BetmanLiveSyncService {
   private static instance: BetmanLiveSyncService;
@@ -19,6 +48,9 @@ export class BetmanLiveSyncService {
   }
 
   public static getAllLiveMatches(_arg1?: any, _arg2?: any): Match[] {
+    if (lastKnownLiveMatches.length === 0) {
+      lastKnownLiveMatches = getInitialMatches();
+    }
     return lastKnownLiveMatches;
   }
 
@@ -29,11 +61,19 @@ export class BetmanLiveSyncService {
         const data = await res.json();
         if (data && Array.isArray(data.matches) && data.matches.length > 0) {
           lastKnownLiveMatches = data.matches;
+          try {
+            if (typeof window !== 'undefined' && window.localStorage) {
+              localStorage.setItem('tokeon_cached_live_matches', JSON.stringify(data.matches));
+            }
+            verifiedMatchDatabase.ingestAndVerifyMatches(data.matches);
+          } catch (storageErr) {
+            console.warn('[BetmanLiveSyncService] Storage cache write error:', storageErr);
+          }
           return data.matches;
         }
       }
     } catch (e) {
-      console.warn('[렌더 백엔드 수신 지연]', e);
+      console.warn('[렌더 백엔드 수신 지연 - 캐시 데이터 유지]', e);
     }
     return lastKnownLiveMatches;
   }
@@ -43,8 +83,9 @@ export class BetmanLiveSyncService {
   }
 
   public getMatches(_arg1?: any, _arg2?: any): Match[] {
-    return lastKnownLiveMatches;
+    return BetmanLiveSyncService.getAllLiveMatches();
   }
 }
 
 export const betmanLiveSyncService = BetmanLiveSyncService.getInstance();
+
