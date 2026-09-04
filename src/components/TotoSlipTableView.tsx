@@ -392,20 +392,20 @@ export const TotoSlipTableView: React.FC<TotoSlipTableViewProps> = ({
   const drawColHeader = category === 'SEUNG1PAE' ? '1' : category === 'SEUNG5PAE' ? '5' : '무';
 
   return (
-    <div className={`w-full flex flex-col font-sans select-none text-xs ${
+    <div className={`w-full h-full flex flex-col font-sans select-none text-[11px] overflow-hidden ${
       isLight ? 'bg-white text-slate-900' : 'bg-slate-950 text-slate-100'
     }`}>
-      {/* 🏷️ 1. 회차 헤더 요약 바 (유저 첨부 이미지와 완벽 일치 및 회차 변경 지원) */}
-      <div className={`p-3.5 border-b space-y-2 ${
-        isLight ? 'bg-slate-50/80 border-slate-200' : 'bg-slate-900/80 border-slate-800'
+      {/* 🏷️ 1. 초슬림 상단 회차 요약 바 (한 줄/압축 그리드로 높이 최소화) */}
+      <div className={`px-3 py-1.5 border-b shrink-0 flex items-center justify-between gap-2 ${
+        isLight ? 'bg-slate-50 border-slate-200' : 'bg-slate-900/90 border-slate-800'
       }`}>
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-1.5 font-black text-sm text-amber-500">
+        <div className="flex items-center gap-2 flex-wrap min-w-0">
+          <div className="flex items-center gap-1 font-black text-xs text-amber-500 whitespace-nowrap">
             <span>◇</span>
             <span>{category === 'SEUNG1PAE' ? '야구 승1패' : category === 'SEUNGMUBAE' ? '축구 승무패' : '농구 승5패'}</span>
           </div>
 
-          {/* 🔄 회차 선택 셀렉터 (65회차, 64회차 예시, 50회차 축구 등 자유 전환) */}
+          {/* 🔄 회차 선택 드롭다운 */}
           <div className="relative">
             <select
               value={selectedRoundKey}
@@ -414,10 +414,10 @@ export const TotoSlipTableView: React.FC<TotoSlipTableViewProps> = ({
                 setPicks({});
                 setCalcResults(null);
               }}
-              className={`py-1 pl-2.5 pr-7 rounded-md border text-xs font-bold appearance-none cursor-pointer outline-none transition-colors ${
+              className={`py-0.5 pl-2 pr-6 rounded border text-[11px] font-bold appearance-none cursor-pointer outline-none ${
                 isLight
                   ? 'bg-white border-slate-300 text-slate-800'
-                  : 'bg-slate-900 border-slate-700 text-slate-200 hover:border-slate-500'
+                  : 'bg-slate-800 border-slate-700 text-slate-200'
               }`}
             >
               {Object.values(TOTO_ROUNDS_REGISTRY)
@@ -428,90 +428,75 @@ export const TotoSlipTableView: React.FC<TotoSlipTableViewProps> = ({
                   </option>
                 ))}
             </select>
-            <ChevronDown className="w-3.5 h-3.5 text-slate-400 absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" />
+            <ChevronDown className="w-3 h-3 text-slate-400 absolute right-1.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+          </div>
+
+          {/* 판매기간 / 총투표수 / 1등금액 한 줄 요약 칩 */}
+          <div className="hidden sm:flex items-center gap-2 text-[10px] text-slate-400">
+            <span>📅 {displaySalePeriod}</span>
+            <span>|</span>
+            <span>투표수: <strong className="text-slate-200 font-mono">{displayTotalVotes.toLocaleString()}</strong></span>
+            <span>|</span>
+            <span>1등: <strong className="text-blue-400 font-mono">{displayFirstPrize.toLocaleString()}원</strong></span>
+            {displayCarryOver > 0 && (
+              <span className="text-amber-400 font-mono">[{displayCarryOver.toLocaleString()}원 이월]</span>
+            )}
           </div>
         </div>
 
-        {/* 판매기간 / 총투표수 / 1등총금액 정보 그리드 (동적 출력) */}
-        <div className="grid grid-cols-[85px_1fr] gap-y-1 text-[11px] leading-relaxed">
-          <span className="text-slate-400 flex items-center gap-1">
-            <span>◇</span> 판매기간
-          </span>
-          <span className="font-mono text-slate-300">{displaySalePeriod}</span>
+        {/* 🛠️ 유틸리티: 단위/초기화/자동 */}
+        <div className="flex items-center gap-1.5 shrink-0">
+          <select
+            value={betUnit}
+            onChange={(e) => setBetUnit(Number(e.target.value))}
+            className="px-1.5 py-0.5 rounded border border-slate-700 bg-slate-800 text-[10px] font-bold text-slate-200 outline-none"
+          >
+            <option value={100}>100원</option>
+            <option value={500}>500원</option>
+            <option value={1000}>1,000원</option>
+            <option value={2000}>2,000원</option>
+            <option value={5000}>5,000원</option>
+            <option value={10000}>10,000원</option>
+          </select>
 
-          <span className="text-slate-400 flex items-center gap-1">
-            <span>◇</span> 총투표수
-          </span>
-          <span className="font-mono font-bold text-slate-200">{displayTotalVotes.toLocaleString()}</span>
+          <button
+            onClick={handleReset}
+            title="마킹 전체 초기화"
+            className="p-1 rounded border border-slate-700 bg-slate-800 hover:bg-slate-700 text-slate-300 transition-all cursor-pointer"
+          >
+            <RotateCcw className="w-3 h-3" />
+          </button>
 
-          <span className="text-slate-400 flex items-center gap-1">
-            <span>◇</span> 1등총금액 [이월금]
-          </span>
-          <div className="flex items-center gap-1.5 flex-wrap">
-            <span className="font-black text-blue-400 font-mono text-xs">
-              {displayFirstPrize.toLocaleString()}원
-            </span>
-            <span className="text-slate-400 text-[10px]">
-              [ {displayCarryOver.toLocaleString()}원 / {displayCarryOverCount}회 ]
-            </span>
-          </div>
+          <button
+            onClick={handleAutoPicks}
+            className="flex items-center gap-1 px-2 py-0.5 rounded border border-slate-700 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-[10px] transition-all cursor-pointer"
+          >
+            <Sparkles className="w-2.5 h-2.5 text-amber-400" />
+            <span>자동</span>
+          </button>
         </div>
       </div>
 
-      {/* 🛠️ 2. 유틸리티 컨트롤 바: 1000원 선택기 | 초기화(금지아이콘) | 자동 선택 */}
-      <div className={`px-3 py-2 border-b flex items-center justify-end gap-2 text-xs ${
-        isLight ? 'bg-slate-100/70 border-slate-200' : 'bg-slate-900/50 border-slate-800'
-      }`}>
-        <select
-          value={betUnit}
-          onChange={(e) => setBetUnit(Number(e.target.value))}
-          className="px-2 py-1 rounded border border-slate-700 bg-slate-900 text-[11px] font-bold text-slate-200 outline-none"
-        >
-          <option value={100}>100원</option>
-          <option value={500}>500원</option>
-          <option value={1000}>1000원</option>
-          <option value={2000}>2000원</option>
-          <option value={5000}>5000원</option>
-          <option value={10000}>10000원</option>
-        </select>
-
-        <button
-          onClick={handleReset}
-          title="마킹 전체 초기화"
-          className="p-1 rounded border border-slate-700 bg-slate-800 hover:bg-slate-700 text-slate-300 transition-all cursor-pointer"
-        >
-          <RotateCcw className="w-3.5 h-3.5" />
-        </button>
-
-        <button
-          onClick={handleAutoPicks}
-          className="flex items-center gap-1 px-2.5 py-1 rounded border border-slate-700 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-[11px] transition-all cursor-pointer"
-        >
-          <Sparkles className="w-3 h-3 text-amber-400" />
-          <span>자동</span>
-        </button>
-      </div>
-
-      {/* 📊 3. 14경기 배트맨 슬립 테이블 (이미지와 동일한 컬럼 및 비율 배정) */}
-      <div className="w-full overflow-x-auto">
-        <table className="w-full text-center border-collapse">
+      {/* 📊 2. 14경기 슬립 테이블 (화면 꽉 차게 flex-1 컴팩트 행 패딩) */}
+      <div className="flex-1 overflow-hidden flex flex-col min-h-0 bg-slate-950/60">
+        <table className="w-full text-center border-collapse table-fixed h-full">
           <thead>
-            <tr className={`border-b text-[11px] font-bold ${
-              isLight ? 'bg-slate-100 text-slate-700 border-slate-200' : 'bg-slate-900/90 text-slate-400 border-slate-800'
+            <tr className={`border-b text-[10px] font-bold shrink-0 ${
+              isLight ? 'bg-slate-100 text-slate-700 border-slate-200' : 'bg-slate-900/95 text-slate-400 border-slate-800'
             }`}>
-              <th className="py-2 px-1 w-8 border-r border-slate-800/40">번호</th>
-              <th className="py-2 px-2 w-20 border-r border-slate-800/40">홈</th>
-              <th className="py-2 px-1 w-20 border-r border-slate-800/40">시간</th>
-              <th className="py-2 px-2 w-20 border-r border-slate-800/40">원정</th>
-              <th className="py-2 px-1 w-10 border-r border-slate-800/40">
+              <th className="py-1 px-0.5 w-7 border-r border-slate-800/40">번호</th>
+              <th className="py-1 px-1 w-[26%] border-r border-slate-800/40 text-left pl-2">홈</th>
+              <th className="py-1 px-0.5 w-14 border-r border-slate-800/40">시간</th>
+              <th className="py-1 px-1 w-[26%] border-r border-slate-800/40 text-left pl-2">원정</th>
+              <th className="py-1 px-0.5 w-6 border-r border-slate-800/40">
                 <span className="text-rose-500 font-black">+</span>
               </th>
-              <th className="py-2 px-2 border-r border-slate-800/40 text-emerald-400">승</th>
-              <th className="py-2 px-2 border-r border-slate-800/40 text-amber-400">{drawColHeader}</th>
-              <th className="py-2 px-2 text-cyan-400">패</th>
+              <th className="py-1 px-1 border-r border-slate-800/40 text-emerald-400 font-bold">승</th>
+              <th className="py-1 px-1 border-r border-slate-800/40 text-amber-400 font-bold">{drawColHeader}</th>
+              <th className="py-1 px-1 text-cyan-400 font-bold">패</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-800/60 font-mono text-[11px]">
+          <tbody className="divide-y divide-slate-800/40 font-mono text-[10px]">
             {rows.map((r) => {
               const currentPick = picks[r.matchNo] || new Set();
               const isWin = currentPick.has('WIN');
@@ -522,53 +507,55 @@ export const TotoSlipTableView: React.FC<TotoSlipTableViewProps> = ({
                 <tr
                   key={r.matchNo}
                   className={`transition-colors ${
-                    isLight ? 'hover:bg-slate-50' : 'hover:bg-slate-900/40'
+                    isLight ? 'hover:bg-slate-50' : 'hover:bg-slate-900/50'
                   }`}
                 >
                   {/* 경기 번호 */}
-                  <td className="py-2.5 px-1 font-bold text-slate-400 border-r border-slate-800/30">
+                  <td className="py-0.5 px-0.5 font-bold text-slate-400 border-r border-slate-800/30">
                     {r.matchNo}
                   </td>
 
                   {/* 홈팀 */}
                   <td 
                     onClick={() => r.matchObj && onSelectMatch(r.matchObj)}
-                    className="py-2.5 px-2 font-bold text-left truncate cursor-pointer hover:text-amber-400 transition-colors border-r border-slate-800/30 font-sans"
+                    className="py-0.5 px-1 font-bold text-left truncate cursor-pointer hover:text-amber-400 transition-colors border-r border-slate-800/30 font-sans"
+                    title={r.homeTeam}
                   >
                     {r.homeTeam}
                   </td>
 
                   {/* 시간 */}
-                  <td className="py-2.5 px-1 text-[10px] text-slate-400 border-r border-slate-800/30">
+                  <td className="py-0.5 px-0.5 text-[9px] text-slate-400 border-r border-slate-800/30 whitespace-nowrap">
                     {r.matchTime}
                   </td>
 
                   {/* 원정팀 */}
                   <td 
                     onClick={() => r.matchObj && onSelectMatch(r.matchObj)}
-                    className="py-2.5 px-2 font-bold text-left truncate cursor-pointer hover:text-amber-400 transition-colors border-r border-slate-800/30 font-sans"
+                    className="py-0.5 px-1 font-bold text-left truncate cursor-pointer hover:text-amber-400 transition-colors border-r border-slate-800/30 font-sans"
+                    title={r.awayTeam}
                   >
                     {r.awayTeam}
                   </td>
 
                   {/* [+] 상세 통계 열기 버튼 */}
-                  <td className="py-2 px-1 border-r border-slate-800/30">
+                  <td className="py-0.5 px-0.5 border-r border-slate-800/30">
                     <button
                       onClick={() => r.matchObj && onSelectMatch(r.matchObj)}
-                      className="w-6 h-5 rounded border border-slate-700 bg-slate-800 hover:bg-slate-700 text-slate-300 font-black text-xs flex items-center justify-center transition-all cursor-pointer mx-auto"
-                      title="상세 상대전적 & 선발투수 조회"
+                      className="w-4 h-4 rounded border border-slate-700 bg-slate-800 hover:bg-slate-700 text-slate-300 font-black text-[10px] flex items-center justify-center transition-all cursor-pointer mx-auto"
+                      title="상세 상대전적 & 선발투수"
                     >
                       +
                     </button>
                   </td>
 
-                  {/* 승 마킹 버튼 (투표율 % 표기) */}
-                  <td className="p-1 border-r border-slate-800/30">
+                  {/* 승 마킹 버튼 */}
+                  <td className="p-0.5 border-r border-slate-800/30">
                     <button
                       onClick={() => handleToggleOption(r.matchNo, 'WIN')}
-                      className={`w-full py-1.5 px-1 rounded border text-[11px] font-bold transition-all cursor-pointer ${
+                      className={`w-full py-0.5 px-0.5 rounded border text-[10px] font-bold transition-all cursor-pointer leading-tight ${
                         isWin
-                          ? 'bg-rose-500 text-white border-rose-400 shadow-sm font-black'
+                          ? 'bg-rose-500 text-white border-rose-400 font-black shadow-sm'
                           : isLight
                             ? 'bg-white text-slate-700 border-slate-200 hover:border-slate-400'
                             : 'bg-slate-900/90 text-slate-300 border-slate-800 hover:border-slate-600'
@@ -579,12 +566,12 @@ export const TotoSlipTableView: React.FC<TotoSlipTableViewProps> = ({
                   </td>
 
                   {/* 1(무) 마킹 버튼 */}
-                  <td className="p-1 border-r border-slate-800/30">
+                  <td className="p-0.5 border-r border-slate-800/30">
                     <button
                       onClick={() => handleToggleOption(r.matchNo, 'DRAW')}
-                      className={`w-full py-1.5 px-1 rounded border text-[11px] font-bold transition-all cursor-pointer ${
+                      className={`w-full py-0.5 px-0.5 rounded border text-[10px] font-bold transition-all cursor-pointer leading-tight ${
                         isDraw
-                          ? 'bg-amber-500 text-slate-950 border-amber-400 shadow-sm font-black'
+                          ? 'bg-amber-500 text-slate-950 border-amber-400 font-black shadow-sm'
                           : isLight
                             ? 'bg-white text-slate-700 border-slate-200 hover:border-slate-400'
                             : 'bg-slate-900/90 text-slate-300 border-slate-800 hover:border-slate-600'
@@ -595,12 +582,12 @@ export const TotoSlipTableView: React.FC<TotoSlipTableViewProps> = ({
                   </td>
 
                   {/* 패 마킹 버튼 */}
-                  <td className="p-1">
+                  <td className="p-0.5">
                     <button
                       onClick={() => handleToggleOption(r.matchNo, 'LOSE')}
-                      className={`w-full py-1.5 px-1 rounded border text-[11px] font-bold transition-all cursor-pointer ${
+                      className={`w-full py-0.5 px-0.5 rounded border text-[10px] font-bold transition-all cursor-pointer leading-tight ${
                         isLose
-                          ? 'bg-blue-600 text-white border-blue-400 shadow-sm font-black'
+                          ? 'bg-blue-600 text-white border-blue-400 font-black shadow-sm'
                           : isLight
                             ? 'bg-white text-slate-700 border-slate-200 hover:border-slate-400'
                             : 'bg-slate-900/90 text-slate-300 border-slate-800 hover:border-slate-600'
@@ -616,146 +603,107 @@ export const TotoSlipTableView: React.FC<TotoSlipTableViewProps> = ({
         </table>
       </div>
 
-      {/* 🎯 4. 하단 액션 바: 총투표수 노출 | [계산] 버튼 | [리셋] 버튼 */}
-      <div className={`p-3 border-t flex items-center justify-between shrink-0 ${
-        isLight ? 'bg-slate-100 border-slate-200' : 'bg-slate-900/90 border-slate-800'
+      {/* 🎯 3. 하단 액션 바 & 즉시 계산 결과 (한 화면 일체형 패널) */}
+      <div className={`shrink-0 border-t ${
+        isLight ? 'bg-slate-50 border-slate-200' : 'bg-slate-900/95 border-slate-800'
       }`}>
-        <div className="font-black text-sm text-cyan-400 font-mono tracking-wider">
-          {displayTotalVotes.toLocaleString()}
+        {/* 계산 버튼 라인 */}
+        <div className="px-3 py-1.5 flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2 font-mono">
+            <span className="text-[10px] text-slate-400">총투표:</span>
+            <span className="font-bold text-xs text-cyan-400">{displayTotalVotes.toLocaleString()}</span>
+            {calcResults && (
+              <span className="text-[10px] text-amber-400">
+                ({calcResults.combinationsCount}조합 / {calcResults.totalAmount.toLocaleString()}원)
+              </span>
+            )}
+          </div>
+
+          <div className="flex items-center gap-1.5">
+            <button
+              onClick={handleCalculate}
+              className="px-4 py-1 rounded bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-[11px] shadow transition-all cursor-pointer flex items-center gap-1"
+            >
+              <Calculator className="w-3.5 h-3.5" />
+              <span>계산</span>
+            </button>
+
+            <button
+              onClick={handleReset}
+              className="px-3 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-[11px] border border-slate-700 transition-all cursor-pointer"
+            >
+              리셋
+            </button>
+          </div>
         </div>
 
-        <div className="flex items-center gap-2">
-          <button
-            onClick={handleCalculate}
-            className="px-5 py-2 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs shadow-md transition-all cursor-pointer flex items-center gap-1.5"
-          >
-            <Calculator className="w-4 h-4" />
-            <span>계산</span>
-          </button>
+        {/* 🏆 계산값 한눈에 보기: 1등~4등 가로 4열 통계 그리드 (스크롤 필요 없이 바로 표시) */}
+        {calcResults && calcResults.calculated ? (
+          <div className="px-3 py-2 border-t border-slate-800/80 bg-slate-950/80 space-y-1.5">
+            <div className="flex items-center justify-between text-[10px]">
+              <div className="flex items-center gap-1 text-slate-300 truncate">
+                <Trophy className="w-3 h-3 text-amber-400 shrink-0" />
+                <span className="font-bold text-white truncate">AI 등위 시뮬레이션:</span>
+                <span className="text-slate-400 truncate">{calcResults.unfoldingNotice}</span>
+              </div>
+              <span className="shrink-0 px-1.5 py-0.2 rounded text-[9px] font-bold bg-amber-500/20 text-amber-300 border border-amber-400/30">
+                {calcResults.difficultyTier === 'EXTREME_REVERSE' ? '초고난도' : calcResults.difficultyTier === 'VERY_HARD' ? '접전난전' : '표준'}
+              </span>
+            </div>
 
-          <button
-            onClick={handleReset}
-            className="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs border border-slate-700 transition-all cursor-pointer"
-          >
-            리셋
-          </button>
-        </div>
+            {/* 1등, 2등, 3등, 4등 가로 4분할 카드 그리드 */}
+            <div className="grid grid-cols-4 gap-1.5 font-mono text-[10px]">
+              {/* 🥇 1등 */}
+              <div className="p-1.5 rounded-lg bg-amber-950/30 border border-amber-500/50 flex flex-col">
+                <span className="font-black text-amber-400 text-[10px]">🥇 1등(14개)</span>
+                <span className="text-[9px] text-amber-300 font-bold">{calcResults.probabilityRank1}%</span>
+                <span className="font-black text-amber-400 text-[11px] mt-0.5 truncate">
+                  {calcResults.expectedDividendRank1 >= 100000000
+                    ? `${(calcResults.expectedDividendRank1 / 100000000).toFixed(1)}억원`
+                    : `${(calcResults.expectedDividendRank1 / 10000).toFixed(0)}만원`}
+                </span>
+              </div>
+
+              {/* 🥈 2등 */}
+              <div className="p-1.5 rounded-lg bg-slate-900 border border-slate-700/80 flex flex-col">
+                <span className="font-bold text-slate-200 text-[10px]">🥈 2등(13개)</span>
+                <span className="text-[9px] text-slate-300">{calcResults.probabilityRank2}%</span>
+                <span className="font-bold text-slate-200 text-[11px] mt-0.5 truncate">
+                  {calcResults.expectedDividendRank2 >= 10000
+                    ? `${(calcResults.expectedDividendRank2 / 10000).toFixed(0)}만원`
+                    : `${calcResults.expectedDividendRank2.toLocaleString()}원`}
+                </span>
+              </div>
+
+              {/* 🥉 3등 */}
+              <div className="p-1.5 rounded-lg bg-slate-900 border border-slate-700/80 flex flex-col">
+                <span className="font-bold text-slate-300 text-[10px]">🥉 3등(12개)</span>
+                <span className="text-[9px] text-slate-300">{calcResults.probabilityRank3}%</span>
+                <span className="font-bold text-slate-300 text-[11px] mt-0.5 truncate">
+                  {calcResults.expectedDividendRank3 >= 10000
+                    ? `${(calcResults.expectedDividendRank3 / 10000).toFixed(0)}만원`
+                    : `${calcResults.expectedDividendRank3.toLocaleString()}원`}
+                </span>
+              </div>
+
+              {/* 🎖️ 4등 */}
+              <div className="p-1.5 rounded-lg bg-slate-900 border border-slate-700/80 flex flex-col">
+                <span className="font-bold text-slate-400 text-[10px]">🎖️ 4등(11개)</span>
+                <span className="text-[9px] text-slate-400">{calcResults.probabilityRank4}%</span>
+                <span className="font-bold text-slate-400 text-[11px] mt-0.5 truncate">
+                  {calcResults.expectedDividendRank4 >= 10000
+                    ? `${(calcResults.expectedDividendRank4 / 10000).toFixed(0)}만원`
+                    : `${calcResults.expectedDividendRank4.toLocaleString()}원`}
+                </span>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="px-3 py-1 bg-slate-950/40 text-[10px] text-slate-400 text-center">
+            💡 승/1/패 항목을 마킹한 후 <strong className="text-emerald-400 font-bold">[계산]</strong>을 누르면 1~4등 확률 및 예상 당첨금이 바로 표시됩니다.
+          </div>
+        )}
       </div>
-
-      {/* 🏆 5. 계산 결과 패널: 통계적 몇 등 순위까지 적중 확률 및 예상 당첨금 출력 */}
-      {calcResults && calcResults.calculated && (
-        <div className="p-4 bg-gradient-to-b from-slate-900 to-slate-950 border-t-2 border-emerald-500 space-y-4 animate-in fade-in-50 duration-200">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Trophy className="w-5 h-5 text-amber-400 animate-bounce" />
-              <span className="font-black text-white text-sm">토큰 AI 통계적 등위 시뮬레이션 결과</span>
-            </div>
-            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-400/30">
-              {calcResults.difficultyTier === 'EXTREME_REVERSE' ? '🔥 초고난도 역배' : calcResults.difficultyTier === 'VERY_HARD' ? '⚠️ 1점차 난전' : '🟢 표준 흐름'}
-            </span>
-          </div>
-
-          <p className="text-xs text-slate-300 bg-slate-800/60 p-2.5 rounded-lg border border-slate-700/60">
-            📌 <strong>분석 총평:</strong> {calcResults.unfoldingNotice}
-          </p>
-
-          {/* 구매 조합 및 비용 */}
-          <div className="grid grid-cols-2 gap-2 text-xs">
-            <div className="p-2.5 rounded-lg bg-slate-900 border border-slate-800">
-              <span className="text-slate-400 text-[11px] block">선택한 조합 수</span>
-              <span className="text-sm font-black text-amber-400 font-mono">
-                {calcResults.combinationsCount.toLocaleString()}개 조합
-              </span>
-            </div>
-            <div className="p-2.5 rounded-lg bg-slate-900 border border-slate-800">
-              <span className="text-slate-400 text-[11px] block">총 구매 금액 ({betUnit}원 기준)</span>
-              <span className="text-sm font-black text-emerald-400 font-mono">
-                {calcResults.totalAmount.toLocaleString()}원
-              </span>
-            </div>
-          </div>
-
-          {/* 🥇 1등 ~ 4등 순위별 통계 확률 및 예상 수령액 카드 그리드 */}
-          <div className="space-y-2">
-            <span className="text-[11px] font-bold text-slate-400 block">📊 등위별 통계적 적중 확률 & 예상 당첨금</span>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 font-mono">
-              {/* 1등 (14경기 올킬) */}
-              <div className="p-3 rounded-xl bg-gradient-to-r from-amber-950/40 to-slate-900 border border-amber-500/60 flex items-center justify-between">
-                <div>
-                  <div className="flex items-center gap-1.5 font-sans">
-                    <span className="font-black text-amber-400 text-xs">🥇 1등 (14경기 적중)</span>
-                  </div>
-                  <span className="text-[11px] text-slate-400">적중 확률: </span>
-                  <span className="text-xs font-bold text-amber-300">{calcResults.probabilityRank1}%</span>
-                </div>
-                <div className="text-right">
-                  <span className="text-[10px] text-slate-400 block font-sans">예상 1인 당첨금</span>
-                  <span className="font-black text-amber-400 text-sm">{calcResults.expectedDividendRank1.toLocaleString()}원</span>
-                </div>
-              </div>
-
-              {/* 2등 (13경기 적중) */}
-              <div className="p-3 rounded-xl bg-slate-900 border border-slate-700 flex items-center justify-between">
-                <div>
-                  <div className="flex items-center gap-1.5 font-sans">
-                    <span className="font-bold text-slate-200 text-xs">🥈 2등 (13경기 적중)</span>
-                  </div>
-                  <span className="text-[11px] text-slate-400">적중 확률: </span>
-                  <span className="text-xs font-bold text-slate-200">{calcResults.probabilityRank2}%</span>
-                </div>
-                <div className="text-right">
-                  <span className="text-[10px] text-slate-400 block font-sans">예상 당첨금</span>
-                  <span className="font-bold text-slate-200 text-sm">{calcResults.expectedDividendRank2.toLocaleString()}원</span>
-                </div>
-              </div>
-
-              {/* 3등 (12경기 적중) */}
-              <div className="p-3 rounded-xl bg-slate-900 border border-slate-700 flex items-center justify-between">
-                <div>
-                  <div className="flex items-center gap-1.5 font-sans">
-                    <span className="font-bold text-slate-300 text-xs">🥉 3등 (12경기 적중)</span>
-                  </div>
-                  <span className="text-[11px] text-slate-400">적중 확률: </span>
-                  <span className="text-xs font-bold text-slate-300">{calcResults.probabilityRank3}%</span>
-                </div>
-                <div className="text-right">
-                  <span className="text-[10px] text-slate-400 block font-sans">예상 당첨금</span>
-                  <span className="font-bold text-slate-300 text-sm">{calcResults.expectedDividendRank3.toLocaleString()}원</span>
-                </div>
-              </div>
-
-              {/* 4등 (11경기 적중) */}
-              <div className="p-3 rounded-xl bg-slate-900 border border-slate-700 flex items-center justify-between">
-                <div>
-                  <div className="flex items-center gap-1.5 font-sans">
-                    <span className="font-bold text-slate-400 text-xs">🎖️ 4등 (11경기 적중)</span>
-                  </div>
-                  <span className="text-[11px] text-slate-400">적중 확률: </span>
-                  <span className="text-xs font-bold text-slate-400">{calcResults.probabilityRank4}%</span>
-                </div>
-                <div className="text-right">
-                  <span className="text-[10px] text-slate-400 block font-sans">예상 당첨금</span>
-                  <span className="font-bold text-slate-400 text-sm">{calcResults.expectedDividendRank4.toLocaleString()}원</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <button
-            onClick={() => {
-              const textLines = Object.entries(picks)
-                .map(([no, set]) => `${no}번: ${Array.from(set).map(p => p === 'WIN' ? '승' : p === 'DRAW' ? drawColHeader : '패').join('/')}`)
-                .join(', ');
-              navigator.clipboard.writeText(`[토큰 승1패 마킹 조합]\n${textLines}\n조합: ${calcResults.combinationsCount}개 (${calcResults.totalAmount.toLocaleString()}원)\n1등예상: ${calcResults.expectedDividendRank1.toLocaleString()}원`);
-              alert('마킹 조합 및 등위 통계가 클립보드에 복사되었습니다! 📋');
-            }}
-            className="w-full py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-black text-xs shadow-lg transition-all cursor-pointer text-center"
-          >
-            📋 마킹 조합 & 당첨 시뮬레이션 복사하기
-          </button>
-        </div>
-      )}
     </div>
   );
 };

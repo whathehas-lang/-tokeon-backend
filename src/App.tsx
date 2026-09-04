@@ -1012,7 +1012,7 @@ export default function App() {
                 </div>
 
                 {/* 실제 모바일 경기 카드 목록 스크롤 영역 또는 승1패/승무패 배트맨 슬립 표 */}
-                <div className="flex-1 overflow-y-auto p-3 space-y-3 custom-scrollbar">
+                <div className={`flex-1 overflow-hidden ${selectedFolder === 'SEUNG1PAE' || selectedFolder === 'SEUNGMUBAE' ? 'p-0 flex flex-col' : 'overflow-y-auto p-3 space-y-3 custom-scrollbar'}`}>
                   {selectedFolder === 'SEUNG1PAE' || selectedFolder === 'SEUNGMUBAE' ? (
                     <TotoSlipTableView
                       category={selectedFolder as any}
