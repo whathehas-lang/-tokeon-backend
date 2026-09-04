@@ -781,8 +781,8 @@ export default function App() {
             {/* 🖥️ PC DESKTOP (lg 이상): 좌측(실제 모바일 경기 화면) + 중앙(실시간 채팅) + 우측(블로그) 3등분 완벽 분할 */}
             <div className="hidden lg:flex flex-row gap-0 w-full items-stretch h-full flex-1 overflow-hidden">
               
-              {/* 📱 1. [LEFT PANE 28%]: 실제 핸드폰 경기 화면 */}
-              <div className={`w-[28%] xl:w-[27%] h-full flex flex-col min-w-0 rounded-none border-r overflow-hidden ${
+              {/* 📱 1. [LEFT PANE 50% (비율 5)]: 실시간 경기 목록 */}
+              <div className={`w-[50%] h-full flex flex-col min-w-0 rounded-none border-r overflow-hidden ${
                 isLight ? 'bg-white border-slate-200' : 'bg-slate-900 border-slate-800'
               }`}>
                 {/* 좌측 경기 목록 헤더 */}
@@ -836,8 +836,8 @@ export default function App() {
                 </div>
               </div>
 
-              {/* 💬 2. [CENTER PANE 46%]: 실시간 텍스트 채팅방 (와이드) */}
-              <div className="w-[46%] h-full flex flex-col min-w-0">
+              {/* 💬 2. [CENTER PANE 30% (비율 3)]: 실시간 텍스트 채팅방 */}
+              <div className="w-[30%] h-full flex flex-col min-w-0">
                 <PCWebCommunityHub
                   matches={matches}
                   userProfile={userProfile}
@@ -847,8 +847,8 @@ export default function App() {
                 />
               </div>
 
-              {/* 📝 3. [RIGHT PANE 27%]: 스포츠 분석 블로그 */}
-              <div className="w-[27%] h-full flex flex-col min-w-0">
+              {/* 📝 3. [RIGHT PANE 20% (비율 2)]: 스포츠 분석 블로그 */}
+              <div className="w-[20%] h-full flex flex-col min-w-0">
                 <SportsBlogSection
                   matches={matches}
                   theme={theme}
