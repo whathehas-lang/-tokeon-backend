@@ -776,10 +776,8 @@ export default function App() {
         onToggleShowAllMatches={handleToggleShowAllMatches}
       />
 
-      {/* Dynamic View Mode Main Container */}
-      <main className={`flex-1 w-full mx-auto px-2 sm:px-4 py-3 space-y-3 ${
-        viewMode === 'PC_WEB' ? 'max-w-[1920px]' : 'max-w-xl md:max-w-3xl lg:max-w-4xl'
-      }`}>
+      {/* Dynamic View Mode Main Container - Full width and height */}
+      <main className="flex-1 w-full p-2 flex flex-col overflow-hidden">
 
 
 
@@ -787,15 +785,15 @@ export default function App() {
 
         {/* HOME TAB CONTENT (경기목록 탭 전용) */}
         {activeTab === 'home' && (
-          <div className="space-y-4">
+          <div className="flex-1 flex flex-col h-full overflow-hidden">
             
 
 
             {/* 🖥️ PC DESKTOP (lg 이상): 좌측(실제 모바일 경기 화면) + 중앙(실시간 채팅) + 우측(블로그) 3등분 완벽 분할 */}
-            <div className="hidden lg:flex flex-row gap-3.5 xl:gap-5 w-full items-stretch h-[calc(100vh-140px)] min-h-[700px]">
+            <div className="hidden lg:flex flex-row gap-2.5 w-full items-stretch h-[calc(100vh-16px)] flex-1 overflow-hidden">
               
               {/* 📱 1. [LEFT PANE 32%]: 실제 핸드폰에서 보이는 경기 화면 그대로 (가짜 껍데기/노치 없이 깔끔한 모바일 뷰) */}
-              <div className={`w-[32%] xl:w-[30%] h-full flex flex-col shrink-0 rounded-2xl border shadow-xl overflow-hidden ${
+              <div className={`flex-1 h-full flex flex-col min-w-0 rounded-xl border shadow-md overflow-hidden ${
                 isLight ? 'bg-white border-slate-200' : 'bg-slate-900 border-slate-800'
               }`}>
                 {/* 좌측 경기 목록 헤더 */}
@@ -850,7 +848,7 @@ export default function App() {
               </div>
 
               {/* 💬 2. [CENTER PANE 38~40%]: FastAPI WebSocket 실시간 채팅 */}
-              <div className="w-[38%] xl:w-[40%] h-full flex flex-col min-w-0 flex-1">
+              <div className="flex-1 h-full flex flex-col min-w-0">
                 <PCWebCommunityHub
                   matches={matches}
                   userProfile={userProfile}
@@ -861,7 +859,7 @@ export default function App() {
               </div>
 
               {/* 📝 3. [RIGHT PANE 30%]: 전문 스포츠 분석 블로그 & 칼럼 */}
-              <div className="w-[30%] xl:w-[30%] h-full flex flex-col shrink-0 min-w-0">
+              <div className="flex-1 h-full flex flex-col min-w-0">
                 <SportsBlogSection
                   matches={matches}
                   theme={theme}
