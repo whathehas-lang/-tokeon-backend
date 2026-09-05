@@ -8,7 +8,7 @@ import { verifiedMatchDatabase } from '../db/verifiedMatchDatabase';
 
 export const RENDER_BACKEND_URL = 'https://tokeon-backend.onrender.com';
 
-const OFFICIAL_CACHE_VERSION = 'v20260905_official_sync_v7';
+const OFFICIAL_CACHE_VERSION = 'v20260905_official_sync_v8';
 
 // 🚀 초기 메모리 상태를 localStorage 캐시 또는 번들된 최신 시드(118+ 경기)로 즉시 하이드레이션
 function getInitialMatches(): Match[] {
@@ -84,11 +84,50 @@ export class BetmanLiveSyncService {
             if (m && m.id) mergedMap.set(m.id, m);
           }
 
-          // 3. 백엔드 실시간 최신 정보 오버레이 (진행 중 스코어 등 덮어쓰기)
+          // 3. 대진 인덱스 생성 (ID 불일치 시에도 팀명+일시 기준 100% 안전 매칭)
+          const getMatchupKey = (match: Match): string => {
+            const sport = match.sport || '';
+            const h = (match.homeTeam?.name || '').replace(/[^a-zA-Z0-9가-힣]/g, '').toLowerCase();
+            const a = (match.awayTeam?.name || '').replace(/[^a-zA-Z0-9가-힣]/g, '').toLowerCase();
+            const dateStr = (match.matchTime || match.rawTimeIso || '').slice(0, 10);
+            return `${sport}_${h}_${a}_${dateStr}`;
+          };
+
+          const matchupIndex = new Map<string, string>();
+          for (const [id, m] of mergedMap.entries()) {
+            matchupIndex.set(getMatchupKey(m), id);
+          }
+
+          // 4. 백엔드 실시간 최신 정보 오버레이 (진행 중 스코어, 최신 선발투수 등 덮어쓰기)
           for (const m of data.matches) {
-            if (m && m.id) {
-              const prev = mergedMap.get(m.id);
-              mergedMap.set(m.id, prev ? { ...prev, ...m } : m);
+            if (!m) continue;
+            let targetId = m.id;
+            if (!mergedMap.has(targetId)) {
+              const mKey = getMatchupKey(m);
+              if (matchupIndex.has(mKey)) {
+                targetId = matchupIndex.get(mKey)!;
+              }
+            }
+
+            const prev = mergedMap.get(targetId);
+            if (prev) {
+              const homeStarter = (m.homeTeam?.starterPitcherInfo && !m.homeTeam.starterPitcherInfo.name?.includes('미정'))
+                ? m.homeTeam.starterPitcherInfo
+                : prev.homeTeam?.starterPitcherInfo;
+              const awayStarter = (m.awayTeam?.starterPitcherInfo && !m.awayTeam.starterPitcherInfo.name?.includes('미정'))
+                ? m.awayTeam.starterPitcherInfo
+                : prev.awayTeam?.starterPitcherInfo;
+
+              mergedMap.set(targetId, {
+                ...prev,
+                ...m,
+                id: targetId,
+                homeTeam: { ...prev.homeTeam, ...m.homeTeam, starterPitcherInfo: homeStarter },
+                awayTeam: { ...prev.awayTeam, ...m.awayTeam, starterPitcherInfo: awayStarter }
+              });
+            } else {
+              mergedMap.set(m.id, m);
+              matchupIndex.set(getMatchupKey(m), m.id);
             }
           }
 

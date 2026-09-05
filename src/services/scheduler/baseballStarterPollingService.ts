@@ -1,6 +1,7 @@
 import type { Match, StarterPitcherInfo, OfficialPlayerInfo } from '../../types/sports';
 import { KboNpbOfficialLineupService } from '../crawler/kboNpbOfficialLineupService';
 import { MLB_TEAM_TRANSLATIONS } from '../api/mlbLiveApiService';
+import { verifiedMatchDatabase } from '../db/verifiedMatchDatabase';
 
 export type StarterUpdateListener = (updatedMatches: Match[]) => void;
 
@@ -297,8 +298,16 @@ export class BaseballStarterPollingService {
 
       if (hasAnyUpdate) {
         this.currentMatches = updatedList;
+        try {
+          if (typeof window !== 'undefined' && window.localStorage) {
+            localStorage.setItem('tokeon_cached_live_matches', JSON.stringify(updatedList));
+          }
+          verifiedMatchDatabase.ingestAndVerifyMatches(updatedList);
+        } catch {
+          // ignore
+        }
         this.notify(updatedList);
-        console.log('[BaseballStarterPollingService] ✅ 공식 선발투수/라인업 자동 갱신 완료');
+        console.log('[BaseballStarterPollingService] ✅ 공식 선발투수/라인업 자동 갱신 및 로컬 캐시 동기화 완료');
       }
     } catch (err) {
       console.warn('[BaseballStarterPollingService] 선발 폴링 에러:', err);
@@ -313,26 +322,44 @@ export class BaseballStarterPollingService {
   private async fetchMlbOfficialSchedule(): Promise<any[]> {
     try {
       const now = new Date();
-      // KST 기준 어제, 오늘, 내일 스캔
-      const datesToScan: string[] = [];
-      for (let offset = -1; offset <= 1; offset++) {
+      const dateSet = new Set<string>();
+      // 현재 기준 전후 4일 스캔
+      for (let offset = -2; offset <= 4; offset++) {
         const d = new Date(now.getTime() + offset * 24 * 60 * 60 * 1000);
-        datesToScan.push(d.toISOString().slice(0, 10));
+        dateSet.add(d.toISOString().slice(0, 10));
+      }
+
+      // 현재 경기들의 rawTimeIso 및 matchTime 기준 날짜 추가
+      for (const m of this.currentMatches) {
+        if (m.rawTimeIso) {
+          try {
+            const dt = new Date(m.rawTimeIso);
+            dateSet.add(dt.toISOString().slice(0, 10));
+            const prev = new Date(dt.getTime() - 24 * 3600 * 1000);
+            dateSet.add(prev.toISOString().slice(0, 10));
+          } catch {}
+        }
       }
 
       const allGames: any[] = [];
-      for (const d of datesToScan) {
-        const url = `https://statsapi.mlb.com/api/v1/schedule?sportId=1&hydrate=probablePitcher,lineups&date=${d}`;
-        const res = await fetch(url, { headers: { Accept: 'application/json' } });
-        if (res.ok) {
-          const data = await res.json();
-          for (const dateObj of data.dates || []) {
-            if (Array.isArray(dateObj.games)) {
-              allGames.push(...dateObj.games);
+      const fetchDates = Array.from(dateSet);
+      await Promise.all(fetchDates.map(async (d) => {
+        try {
+          const url = `https://statsapi.mlb.com/api/v1/schedule?sportId=1&hydrate=probablePitcher,lineups&date=${d}`;
+          const res = await fetch(url, { headers: { Accept: 'application/json' } });
+          if (res.ok) {
+            const data = await res.json();
+            for (const dateObj of data.dates || []) {
+              if (Array.isArray(dateObj.games)) {
+                allGames.push(...dateObj.games);
+              }
             }
           }
+        } catch {
+          // ignore individual date fetch error
         }
-      }
+      }));
+
       return allGames;
     } catch (e) {
       console.warn('[BaseballStarterPollingService] MLB API fetch failed:', e);
@@ -341,11 +368,21 @@ export class BaseballStarterPollingService {
   }
 
   /**
-   * 매치 팀명과 MLB 공식 경기 매칭
+   * 매치 팀명 및 경기 시간 기준 MLB 공식 경기 1:1 정밀 매칭
+   * (3연전 시리즈 중 동일 팀 간의 1차전, 2차전, 3차전 오인 매칭 원천 방지)
    */
   private findMlbGame(match: Match, games: any[]): any | null {
     const homeNorm = (match.homeTeam?.name || '').replace(/\s+/g, '').toLowerCase();
     const awayNorm = (match.awayTeam?.name || '').replace(/\s+/g, '').toLowerCase();
+
+    let matchTimeMs = 0;
+    if (match.timestamp) {
+      matchTimeMs = match.timestamp * 1000;
+    } else if (match.rawTimeIso) {
+      matchTimeMs = new Date(match.rawTimeIso).getTime();
+    }
+
+    const candidateGames: any[] = [];
 
     for (const g of games) {
       const gHomeRaw = g.teams?.home?.team?.name || '';
@@ -357,10 +394,24 @@ export class BaseballStarterPollingService {
       const awayMatch = awayNorm.includes(gAwayKo) || gAwayKo.includes(awayNorm) || awayNorm.includes(gAwayRaw.toLowerCase());
 
       if (homeMatch && awayMatch) {
-        return g;
+        candidateGames.push(g);
       }
     }
-    return null;
+
+    if (candidateGames.length === 0) return null;
+    if (candidateGames.length === 1) return candidateGames[0];
+
+    // 여러 경기가 매칭된 경우 (예: 3연전 시리즈) 예정 시간과 가장 가까운 공식 경기 선택
+    if (matchTimeMs > 0) {
+      candidateGames.sort((a, b) => {
+        const timeA = new Date(a.gameDate).getTime();
+        const timeB = new Date(b.gameDate).getTime();
+        return Math.abs(timeA - matchTimeMs) - Math.abs(timeB - matchTimeMs);
+      });
+      return candidateGames[0];
+    }
+
+    return candidateGames[0];
   }
 
   private pitcherStatsCache: Map<number, Partial<StarterPitcherInfo>> = new Map();
