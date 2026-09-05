@@ -933,62 +933,52 @@ export const LineupTacticsView = ({ match, theme = 'light' }: LineupTacticsViewP
             </span>
           </div>
 
-          <div className="relative w-full min-h-[660px] sm:min-h-[740px] bg-gradient-to-b from-emerald-950 via-emerald-900 to-emerald-950 rounded-3xl border-2 border-emerald-500/60 overflow-hidden shadow-2xl p-4 flex flex-col justify-between">
+          <div className="relative w-full min-h-[500px] sm:min-h-[560px] bg-gradient-to-b from-[#0b3820] via-[#0e4427] to-[#0b3820] rounded-2xl border border-emerald-500/40 overflow-hidden shadow-2xl p-3 sm:p-4 flex flex-col justify-between">
             {/* Authentic Grass Pitch Stripe Patterns */}
-            <div className="absolute inset-0 bg-[radial-gradient(#10b981_1.5px,transparent_1.5px)] [background-size:20px_20px] opacity-15 pointer-events-none" />
-            <div className="absolute inset-0 bg-gradient-to-b from-emerald-950/80 via-transparent to-emerald-950/80 pointer-events-none" />
+            <div className="absolute inset-0 bg-[linear-gradient(to_bottom,transparent_49%,rgba(0,0,0,0.06)_50%)] bg-[length:100%_40px] pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/20 pointer-events-none" />
 
             {/* Pitch Outer Touchlines & Penalty Boxes */}
-            <div className="absolute inset-2 border-2 border-emerald-300/40 rounded-2xl pointer-events-none" />
+            <div className="absolute inset-2 border border-emerald-300/30 rounded-xl pointer-events-none" />
             
             {/* Center Halfway Line & Center Circle */}
-            <div className="absolute top-1/2 left-2 right-2 border-b-2 border-emerald-300/40 pointer-events-none" />
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-36 h-36 border-2 border-emerald-300/40 rounded-full pointer-events-none flex items-center justify-center">
-              <div className="w-2.5 h-2.5 bg-emerald-300/60 rounded-full" />
+            <div className="absolute top-1/2 left-2 right-2 border-b border-emerald-300/30 pointer-events-none" />
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-28 h-28 border border-emerald-300/30 rounded-full pointer-events-none flex items-center justify-center">
+              <div className="w-1.5 h-1.5 bg-emerald-300/60 rounded-full" />
             </div>
 
-            {/* Goal Area Line */}
-            <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-48 h-20 border-t-2 border-x-2 border-emerald-300/40 pointer-events-none" />
+            {/* Goal Penalty Area Line */}
+            <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-44 h-16 border-t border-x border-emerald-300/30 pointer-events-none" />
 
             {/* Soccer Pitch Top Header */}
-            <div className="absolute top-3 left-4 right-4 z-30 flex items-center justify-between text-xs font-black text-emerald-300 bg-slate-950/90 px-3.5 py-2 rounded-xl border border-emerald-500/40 shadow-lg">
-              <span className="flex items-center gap-1.5 text-xs sm:text-sm">
-                <AlertCircle className="w-4 h-4 text-emerald-400" />
-                ⚽ {activeTeam.name} ({activeLineup?.formation || '4-3-3'}) — 1군 {selectedTeam === 'home' ? homeTier.firstTeam : awayTier.firstTeam}명 + 2군대체 {selectedTeam === 'home' ? homeTier.secondTeam : awayTier.secondTeam}명
+            <div className="absolute top-3 left-3 right-3 z-30 flex items-center justify-between text-xs font-bold text-emerald-200 bg-slate-950/85 backdrop-blur-md px-3 py-1.5 rounded-xl border border-emerald-500/30 shadow-md">
+              <span className="flex items-center gap-1.5 text-[11px] sm:text-xs">
+                <AlertCircle className="w-3.5 h-3.5 text-emerald-400" />
+                <span>⚽ <strong>{activeTeam.name}</strong> ({activeLineup?.formation || '4-3-3'})</span>
+                <span className="text-slate-400 text-[10px] hidden sm:inline">• 1군 {selectedTeam === 'home' ? homeTier.firstTeam : awayTier.firstTeam}명 / 2군 {selectedTeam === 'home' ? homeTier.secondTeam : awayTier.secondTeam}명</span>
               </span>
-              <div className="hidden sm:flex items-center gap-2 text-[10px]">
-                <span className="text-emerald-400 bg-emerald-950/90 px-2 py-0.5 rounded border border-emerald-500/40 font-bold">
-                  ⭐ 1군주전
-                </span>
-                <span className="text-slate-950 bg-gradient-to-r from-yellow-300 via-amber-400 to-yellow-300 px-2 py-0.5 rounded border border-yellow-200 font-black shadow-[0_0_12px_#f59e0b]">
-                  👑🔥 핫폼
-                </span>
-                <span className="text-amber-300 bg-amber-950/90 px-2 py-0.5 rounded border border-amber-500/60 font-black">
-                  ⚽ 골 / 🅰️ 도움
-                </span>
-                <span className="text-slate-100 bg-black px-2 py-0.5 rounded border-2 border-slate-600 animate-pulse font-black shadow-[0_0_10px_#475569]">
-                  🚨 2군대체
-                </span>
+              <div className="flex items-center gap-2 text-[10px]">
+                <span className="text-emerald-400 font-medium">⭐ 1군</span>
+                <span className="text-amber-400 font-black">🔥 핫폼</span>
+                <span className="text-rose-400 font-bold">🚨 2군</span>
               </div>
             </div>
 
-            {/* ⚽ 11 PLAYERS ON GRASS PITCH */}
-            <div className="relative z-20 h-full flex flex-col justify-between pt-16 pb-2 space-y-3">
+            {/* ⚽ 11 PLAYERS ON GRASS PITCH (FotMob / Sofascore 클린 스타일) */}
+            <div className="relative z-20 h-full flex flex-col justify-between pt-12 pb-1 space-y-2">
               {singleTeamRows.map((row, rIdx) => (
-                <div key={rIdx} className="space-y-2">
-                  {/* 포지션 라벨 독립 헤더 띠 */}
-                  <div className="flex items-center justify-start pl-2">
-                    <span className={`${row.badgeBg} px-2.5 py-0.5 rounded-md font-black text-[10px] sm:text-xs shadow-md border border-slate-700/50`}>
+                <div key={rIdx} className="space-y-1">
+                  {/* 포지션 라벨 (우측 상단 뱃지 형태 대신 깔끔한 미니 칩) */}
+                  <div className="flex items-center justify-start pl-1">
+                    <span className="px-2 py-0.5 rounded text-[9px] font-black bg-slate-950/70 text-slate-300 border border-slate-700/50 backdrop-blur-xs">
                       {row.label}
                     </span>
                   </div>
 
-                  {/* 선수 동그라미 노드 수평 정렬 */}
+                  {/* 선수 노드 수평 균등 분할 */}
                   <div className="flex justify-around items-center px-1">
                     {row.players.map((player: OfficialPlayerInfo) => {
                       const stPercent = getStaminaPercent(player);
-                      const stBarBg = getStaminaBarColor(player);
-                      const mins = player.minutesPlayed14d || 270;
                       const isSub = player.tierCategory === '2GUN_SUBSTITUTE';
                       const isCardRisk = player.isCardSuspensionRisk;
                       const isHot = player.isHotForm;
@@ -996,102 +986,66 @@ export const LineupTacticsView = ({ match, theme = 'light' }: LineupTacticsViewP
                       const hasAssist = !!player.recentMatchAssists;
 
                       return (
-                        <div key={player.id} className="flex flex-col items-center group cursor-pointer shrink-0 z-20 space-y-1">
-                          {/* ⚽ 🅰️ 직전 경기 득점/어시스트 최상단 플로팅 뱃지 */}
-                          {(hasGoal || hasAssist) && (
-                            <div className="flex items-center gap-1 z-30 mb-0.5">
-                              {hasGoal && (
-                                <span className="bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500 text-slate-950 px-2 py-0.5 rounded-full border border-yellow-100 font-black text-[9px] sm:text-[10px] shadow-[0_0_16px_#f59e0b] animate-bounce flex items-center gap-0.5">
-                                  ⚽ {player.recentMatchGoals}골
-                                </span>
-                              )}
-                              {hasAssist && (
-                                <span className="bg-gradient-to-r from-cyan-400 via-sky-300 to-blue-500 text-slate-950 px-2 py-0.5 rounded-full border border-cyan-100 font-black text-[9px] sm:text-[10px] shadow-[0_0_16px_#06b6d4] flex items-center gap-0.5">
-                                  🅰️ {player.recentMatchAssists}도움
-                                </span>
-                              )}
+                        <div key={player.id} className="flex flex-col items-center group cursor-pointer shrink-0 z-20 w-16 sm:w-20 transition-transform duration-200 hover:scale-105">
+                          {/* 선수 배번/원형 저지 노드 */}
+                          <div className="relative">
+                            <div className={`w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center font-black text-xs sm:text-sm shadow-md transition-all ${
+                              isSub
+                                ? 'bg-slate-900 text-rose-300 border-2 border-rose-400/80 shadow-[0_0_10px_rgba(244,63,94,0.4)]'
+                                : isHot
+                                  ? 'bg-gradient-to-br from-amber-300 to-yellow-500 text-slate-950 border-2 border-yellow-100 shadow-[0_0_12px_#f59e0b]'
+                                  : selectedTeam === 'home'
+                                    ? 'bg-emerald-500 text-slate-950 border-2 border-white shadow'
+                                    : 'bg-cyan-500 text-slate-950 border-2 border-white shadow'
+                            }`}>
+                              #{player.number}
                             </div>
-                          )}
 
-                          {/* 상단 [확정] vs [예상] & 상태 이모티콘 뱃지 */}
-                          <div className="flex items-center gap-1">
-                            {match.lineupAlertInfo?.isPublished ? (
-                              <span className="bg-emerald-500 text-slate-950 px-1.5 py-0.2 rounded font-black text-[8px] sm:text-[9px] shadow flex items-center gap-0.5">
-                                🟢 확정
+                            {/* 우측 상단 상태 뱃지 (골/어시스트 or 핫폼 or 경고) */}
+                            {hasGoal ? (
+                              <span className="absolute -top-1 -right-1 bg-amber-400 text-slate-950 font-black text-[8px] px-1 py-0.2 rounded-full border border-yellow-200 shadow-sm" title={`최근 ${player.recentMatchGoals}골`}>
+                                ⚽{player.recentMatchGoals}
                               </span>
-                            ) : (
-                              <span className="bg-amber-400 text-slate-950 px-1.5 py-0.2 rounded font-black text-[8px] sm:text-[9px] shadow flex items-center gap-0.5 animate-pulse">
-                                🟡 예상
+                            ) : hasAssist ? (
+                              <span className="absolute -top-1 -right-1 bg-cyan-400 text-slate-950 font-black text-[8px] px-1 py-0.2 rounded-full border border-cyan-200 shadow-sm" title={`최근 ${player.recentMatchAssists}도움`}>
+                                🅰️{player.recentMatchAssists}
+                              </span>
+                            ) : isHot ? (
+                              <span className="absolute -top-1 -right-1 text-xs" title="핫폼">
+                                👑
+                              </span>
+                            ) : isCardRisk ? (
+                              <span className="absolute -top-1 -right-1 bg-rose-600 text-white font-black text-[8px] px-1 py-0.2 rounded-full border border-rose-300 shadow-sm" title="경고 누적 주의">
+                                ⚠️
+                              </span>
+                            ) : null}
+
+                            {/* 2군 대체 선수 표시 */}
+                            {isSub && (
+                              <span className="absolute -bottom-1 -left-1 bg-black text-rose-300 text-[8px] font-black px-1 rounded border border-rose-500/60">
+                                2군
                               </span>
                             )}
-
-                            {isSub ? (
-                              <div className="relative flex items-center gap-0.5 bg-black text-slate-100 px-1.5 py-0.2 rounded-full border border-slate-500 font-black text-[8px] sm:text-[9px] shadow">
-                                <span>🚨 2군</span>
-                              </div>
-                            ) : isCardRisk ? (
-                              <div className="relative flex items-center gap-0.5 bg-red-950 text-red-400 px-1.5 py-0.2 rounded-full border border-red-500 font-black text-[8px] sm:text-[9px] shadow animate-pulse">
-                                <span>🚨 4장</span>
-                              </div>
-                            ) : isHot ? (
-                              <div className="flex items-center gap-0.5 bg-gradient-to-r from-yellow-400 via-amber-300 to-yellow-400 text-slate-950 px-1.5 py-0.2 rounded-full border border-yellow-200 font-black text-[8px] sm:text-[9px] shadow">
-                                <Crown className="w-2.5 h-2.5 text-slate-950 fill-slate-950" />
-                                <span>핫폼</span>
-                              </div>
-                            ) : null}
                           </div>
 
-                          {/* 1군 주전 중 👑🔥 핫폼 활약자만 3D 퓨어 풀 황금색 적용 (대형 노드 - 선수 이름 표출) */}
-                          <div className={`relative w-11 h-11 sm:w-14 sm:h-14 rounded-full ${
-                            isSub
-                              ? 'bg-gradient-to-br from-slate-800 to-black text-white ring-2 ring-slate-400 shadow-[0_0_14px_#334155] animate-bounce'
-                              : isCardRisk
-                                ? 'bg-gradient-to-br from-red-500 to-rose-700 text-white ring-2 ring-red-500 shadow-[0_0_16px_#ef4444] animate-pulse'
-                                : isHot
-                                  ? 'bg-gradient-to-br from-yellow-300 via-amber-400 to-amber-500 text-slate-950 font-black border-2 border-yellow-100 shadow-[0_0_24px_#f59e0b] ring-4 ring-yellow-300'
-                                  : match.lineupAlertInfo?.isPublished
-                                    ? selectedTeam === 'home'
-                                      ? 'bg-gradient-to-br from-emerald-400 to-teal-500 text-slate-950 border-2 border-white ring-2 ring-emerald-300/60'
-                                      : 'bg-gradient-to-br from-cyan-400 to-blue-500 text-slate-950 border-2 border-white ring-2 ring-cyan-300/60'
-                                    : selectedTeam === 'home'
-                                      ? 'bg-gradient-to-br from-emerald-700/80 to-teal-900/80 text-emerald-100 border-2 border-dashed border-amber-300 ring-2 ring-amber-400/40'
-                                      : 'bg-gradient-to-br from-cyan-700/80 to-blue-900/80 text-cyan-100 border-2 border-dashed border-amber-300 ring-2 ring-amber-400/40'
-                          } flex items-center justify-center font-black shadow-2xl group-hover:scale-115 transition-transform p-1`}>
-                            <span className="font-black text-[10px] sm:text-xs text-center truncate leading-tight tracking-tighter max-w-[42px] sm:max-w-[50px]">
+                          {/* 선수 이름 및 정보 카드 (오버플로 없는 세련된 텍스트) */}
+                          <div className="mt-1 flex flex-col items-center max-w-full">
+                            <span className="text-[10px] sm:text-[11px] font-bold text-white text-center truncate max-w-[62px] sm:max-w-[76px] drop-shadow-md bg-slate-950/60 px-1 py-0.5 rounded backdrop-blur-xs">
                               {player.name}
                             </span>
-                            <span className="absolute -top-1 -right-1 text-xs">
-                              {isHot ? '👑' : isCardRisk ? '🔴' : getFormIcon(player.formStatus)}
-                            </span>
-                            <span className="absolute -bottom-1 -left-1 bg-slate-950 text-amber-300 text-[8px] sm:text-[9px] font-mono font-bold px-1 rounded-full border border-slate-700">
-                              #{player.number}
-                            </span>
-                          </div>
-
-                          {/* 🔋 실시간 체력 프로그레스 바 (확대) */}
-                          <div className="w-16 sm:w-20 bg-slate-950/90 rounded-full p-0.5 border border-slate-700 shadow-md">
-                            <div className="h-2 w-full bg-slate-800 rounded-full overflow-hidden">
-                              <div 
-                                className={`h-full ${stBarBg} transition-all duration-700 rounded-full`}
-                                style={{ width: `${stPercent}%` }}
+                            
+                            <div className="flex items-center gap-1 mt-0.5">
+                              <span className="text-[9px] font-bold text-amber-300/90 font-mono">
+                                {player.marketValue}
+                              </span>
+                              {/* 미니 체력 상태 도트 */}
+                              <span 
+                                className={`w-1.5 h-1.5 rounded-full ${
+                                  player.stamina === 'RED' ? 'bg-rose-500 animate-pulse' : player.stamina === 'YELLOW' ? 'bg-amber-400' : 'bg-emerald-400'
+                                }`} 
+                                title={`체력: ${stPercent}%`}
                               />
                             </div>
-                          </div>
-
-                          {/* 선수 이름 + 출전시간 수치 + 몸값 뱃지 (대형 가독성) */}
-                          <div className={`flex flex-col items-center bg-slate-950/95 px-2.5 py-1 rounded-xl border ${
-                            isSub ? 'border-slate-500 shadow-[0_0_10px_rgba(255,255,255,0.2)]' : isCardRisk ? 'border-red-500 shadow-[0_0_12px_rgba(239,68,68,0.6)] animate-pulse' : isHot ? 'border-amber-400 shadow-[0_0_14px_rgba(245,158,11,0.8)]' : 'border-slate-700'
-                          } shadow-lg whitespace-nowrap`}>
-                            <span className="text-[10px] sm:text-xs font-black text-white flex items-center gap-1">
-                              <span>{player.name}</span>
-                              <span className="text-[10px] sm:text-[11px] font-extrabold text-amber-300">{player.marketValue}</span>
-                            </span>
-                            <span className={`text-[9px] sm:text-[10px] font-extrabold flex items-center gap-1 ${
-                              player.stamina === 'RED' ? 'text-red-400 animate-pulse' : player.stamina === 'YELLOW' ? 'text-amber-300' : 'text-emerald-400'
-                            }`}>
-                              <Battery className="w-3 h-3" />
-                              14일 {mins}분 {getStaminaLight(player.stamina)}
-                            </span>
                           </div>
                         </div>
                       );
