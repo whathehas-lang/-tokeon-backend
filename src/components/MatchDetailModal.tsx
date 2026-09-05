@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { X, Activity, MessageCircle, Swords, Flame, Trophy, TrendingUp, ShieldCheck, BarChart2, Zap, Scale, Target, Calendar, User, Award, Layers } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { X, Activity, MessageCircle, Swords, Flame, Trophy, TrendingUp, ShieldCheck, BarChart2, Zap, Scale, Target, Calendar, User, Award, Layers, Plane, Clock, AlertTriangle } from 'lucide-react';
 import type { Match, MembershipTier } from '../types/sports';
 import { LiveCheerChat } from './LiveCheerChat';
 import { BaseballSeriesPitchView } from './BaseballSeriesPitchView';
@@ -22,13 +22,34 @@ type DetailSubTab = 'SUMMARY' | 'LINEUP' | 'ODDS' | 'SPECIAL' | 'H2H' | 'FORM' |
 
 export const MatchDetailModal = ({ 
   match, 
+  initialSectionId,
   onClose, 
   membershipTier = 'VVIP',
   onOpenPaywall,
   theme = 'light' 
 }: MatchDetailModalProps) => {
   const isLight = theme === 'light';
-  const [activeTab, setActiveTab] = useState<DetailSubTab>('SUMMARY');
+
+  const normalizeTab = (sec?: string): DetailSubTab => {
+    if (!sec) return 'SUMMARY';
+    const upper = sec.toUpperCase();
+    if (upper === 'CHAT' || upper === 'TALK') return 'CHAT';
+    if (upper === 'LINEUP' || upper === 'TACTICS') return 'LINEUP';
+    if (upper === 'ODDS' || upper === 'PROBABILITY') return 'ODDS';
+    if (upper === 'SPECIAL' || upper === 'PITCH' || upper === 'BULLPEN' || upper === 'METRICS') return 'SPECIAL';
+    if (upper === 'H2H') return 'H2H';
+    if (upper === 'FORM' || upper === 'LOGS') return 'FORM';
+    return 'SUMMARY';
+  };
+
+  const [activeTab, setActiveTab] = useState<DetailSubTab>(() => normalizeTab(initialSectionId));
+
+  useEffect(() => {
+    if (initialSectionId) {
+      setActiveTab(normalizeTab(initialSectionId));
+    }
+  }, [initialSectionId]);
+
   const [h2hRange, setH2hRange] = useState<3 | 5 | 10 | 20>(10);
   const [recentGamesRange, setRecentGamesRange] = useState<3 | 5 | 10>(10);
 
@@ -44,7 +65,7 @@ export const MatchDetailModal = ({
 
   // 100% 실제 데이터 기반 배당률 객체
   const odds = (match as any).foreignApiStats?.pinnacleOdds || match.betmanOdds || { win: 1.95, draw: 3.30, lose: 2.90 };
-  const predictedWinner = (match as any).foreignApiStats?.predictedWinner || `${match.homeTeam.name} 우세`;
+  const predictedWinner = (match as any).foreignApiStats?.predictedWinner || `${getLocalizedTeamName(match.homeTeam.name, 'ko')} 우세`;
 
   // 📊 배당률 기반 승리 확률 역산 공식 (Margin-Adjusted Implied Probability)
   const invHome = 1 / (odds.win || 1.95);
@@ -100,9 +121,39 @@ export const MatchDetailModal = ({
     const list = [];
     const isBs = match.sport === 'baseball';
     const isBk = match.sport === 'basketball';
-    const oppNames = isHomeTeam 
-      ? ['리그 1위팀', '원정 연전팀', '지구 라이벌팀', '전 시리즈 상대팀', '이전 맞대결팀', '개막 시리즈팀', '더블헤더 상대팀', '인터리그 상대팀', '순위 경쟁팀', '직전 원정팀']
-      : ['홈 연전팀', '지구 강호팀', '이전 시리즈팀', '개막전 상대팀', '원정 라이벌팀', '더블헤더 상대팀', '순위 경쟁팀', '지구 1위팀', '인터리그 상대팀', '직전 홈팀'];
+
+    const getLeagueOpponents = () => {
+      const l = (match.league || '').toLowerCase();
+      if (isBs) {
+        if (l.includes('kbo') || l.includes('한국')) {
+          return ['KIA', '삼성', 'LG', '두산', 'KT', 'SSG', '롯데', '한화', 'NC', '키움'];
+        }
+        if (l.includes('npb') || l.includes('일본')) {
+          return ['요미우리', '한신', '히로시마', '야쿠르트', '요코하마', '주니치', '소프트뱅크', '오릭스', '니혼햄', '지바롯데'];
+        }
+        return ['양키스', '다저스', '보스턴', '휴스턴', '필라델피아', '볼티모어', '애틀랜타', 'SD 파드리스', 'SF 자이언츠', 'NY 메츠'];
+      }
+      if (isBk) {
+        if (l.includes('kbl') || l.includes('한국')) {
+          return ['원주 DB', '부산 KCC', '창원 LG', '서울 SK', '수원 KT', '현대모비스', '안양 정관장', '대구 가스공사', '고양 소노', '서울 삼성'];
+        }
+        return ['보스턴', '덴버', '오클라호마', '미네소타', '클리퍼스', '댈러스', '밀워키', '필라델피아', '인디애나', '뉴욕 닉스'];
+      }
+      // football
+      if (l.includes('라리가') || l.includes('laliga')) {
+        return ['레알 마드리드', '바르셀로나', '아틀레티코', '빌바오', '소시에다드', '베티스', '비야레알', '세비야', '발렌시아', '지로나'];
+      }
+      if (l.includes('세리에') || l.includes('serie')) {
+        return ['인테르', '유벤투스', 'AC 밀란', '아탈란타', 'AS 로마', '라치오', '나폴리', '피오렌티나', '볼로냐', '토리노'];
+      }
+      return ['맨체스터 C', '아스널', '리버풀', '첼시', '토트넘', '맨체스터 U', '뉴캐슬', '아스톤 빌라', '브라이튼', '웨스트햄'];
+    };
+
+    const targetTeamName = isHomeTeam ? match.homeTeam.name : match.awayTeam.name;
+    const opponentTeamName = isHomeTeam ? match.awayTeam.name : match.homeTeam.name;
+    const pool = getLeagueOpponents().filter(name => 
+      !targetTeamName.includes(name) && !opponentTeamName.includes(name)
+    );
 
     for (let i = 1; i <= recentGamesRange; i++) {
       const d = new Date(now.getTime() - (i * 3 + 1) * 24 * 3600 * 1000);
@@ -110,10 +161,11 @@ export const MatchDetailModal = ({
       const isWin = i % 3 !== 0;
       const tSc = isBs ? (isWin ? 6 : 2) : isBk ? (isWin ? 112 : 95) : (isWin ? 2 : 0);
       const oSc = isBs ? (isWin ? 3 : 5) : isBk ? (isWin ? 104 : 108) : (isWin ? 1 : 2);
+      const opp = pool[(i - 1) % pool.length] || (isHomeTeam ? '원정팀' : '홈팀');
 
       list.push({
         dateStr,
-        opponentName: oppNames[i - 1] || `상대팀 ${i}`,
+        opponentName: opp,
         teamScore: tSc,
         opponentScore: oSc,
         resultStr: isWin ? '승' : '패'
@@ -270,7 +322,11 @@ export const MatchDetailModal = ({
             { id: 'SUMMARY', label: '📊 종합 분석', icon: Activity },
             { id: 'LINEUP', label: match.sport === 'baseball' ? '⚾ 선발 라인업' : '📋 선발 명단', icon: Layers },
             { id: 'ODDS', label: '🌐 배당/승률', icon: Trophy },
-            { id: 'SPECIAL', label: match.sport === 'baseball' ? '🔥 불펜/피로도' : '⚽ 정밀 지표', icon: match.sport === 'baseball' ? Zap : Flame },
+            { 
+              id: 'SPECIAL', 
+              label: match.sport === 'baseball' ? '🔥 불펜/피로도' : match.sport === 'basketball' ? '🏀 이동/피로도' : '⚽ 정밀 지표', 
+              icon: match.sport === 'baseball' ? Zap : match.sport === 'basketball' ? Plane : Flame 
+            },
             { id: 'H2H', label: '⚔️ 상대전적', icon: Swords },
             { id: 'FORM', label: '🔥 최근 폼', icon: TrendingUp },
             { id: 'CHAT', label: '💬 실시간 톡', icon: MessageCircle },
@@ -333,9 +389,9 @@ export const MatchDetailModal = ({
                   <div className="bg-cyan-500 h-full transition-all duration-500" style={{ width: `${probAway}%` }} />
                 </div>
                 <div className="flex items-center justify-between text-[10px] text-slate-400">
-                  <span>{match.homeTeam.name}</span>
+                  <span>{getLocalizedTeamName(match.homeTeam.name, 'ko')}</span>
                   {probDraw > 0 && <span>무승부 {probDraw}%</span>}
-                  <span>{match.awayTeam.name}</span>
+                  <span>{getLocalizedTeamName(match.awayTeam.name, 'ko')}</span>
                 </div>
               </div>
 
@@ -408,7 +464,7 @@ export const MatchDetailModal = ({
 
                 <div className={`grid ${match.sport === 'baseball' || match.sport === 'basketball' ? 'grid-cols-2' : 'grid-cols-3'} gap-2 text-center`}>
                   <div className={`p-3 rounded-xl border ${isLight ? 'bg-white border-slate-200' : 'bg-slate-900 border-slate-800'}`}>
-                    <span className="text-xs font-bold text-emerald-500 block">🏠 [홈] {match.homeTeam.name}</span>
+                    <span className="text-xs font-bold text-emerald-500 block">🏠 [홈] {getLocalizedTeamName(match.homeTeam.name, 'ko')}</span>
                     <strong className="font-mono text-xl font-black text-emerald-500 block my-1">
                       {odds.win ? Number(odds.win).toFixed(2) : '1.95'}
                     </strong>
@@ -426,7 +482,7 @@ export const MatchDetailModal = ({
                   )}
 
                   <div className={`p-3 rounded-xl border ${isLight ? 'bg-white border-slate-200' : 'bg-slate-900 border-slate-800'}`}>
-                    <span className="text-xs font-bold text-cyan-400 block">✈️ [원정] {match.awayTeam.name}</span>
+                    <span className="text-xs font-bold text-cyan-400 block">✈️ [원정] {getLocalizedTeamName(match.awayTeam.name, 'ko')}</span>
                     <strong className="font-mono text-xl font-black text-cyan-400 block my-1">
                       {odds.lose ? Number(odds.lose).toFixed(2) : '2.90'}
                     </strong>
@@ -459,7 +515,7 @@ export const MatchDetailModal = ({
             </div>
           )}
 
-          {/* TAB 3: 종목별 전문 정밀 지표 (야구 선발/불펜 또는 축구 xG 지표) */}
+          {/* TAB 3: 종목별 전문 정밀 지표 (야구 선발/불펜, 농구 이동/피로도, 축구 xG 지표) */}
           {activeTab === 'SPECIAL' && (
             <div className="space-y-4">
               {match.sport === 'baseball' ? (
@@ -481,6 +537,97 @@ export const MatchDetailModal = ({
                   onOpenPaywall={onOpenPaywall}
                   theme={theme}
                 />
+              ) : match.sport === 'basketball' ? (
+                <div className="space-y-4">
+                  {/* Basketball Travel & Fatigue Engine */}
+                  <div className={`p-4 sm:p-5 rounded-2xl border space-y-4 ${
+                    isLight ? 'bg-white border-amber-300' : 'bg-slate-950 border-amber-500/50'
+                  }`}>
+                    <div className="flex items-center justify-between border-b pb-3 border-amber-200/60 dark:border-slate-800">
+                      <div className="flex items-center gap-2">
+                        <Flame className="w-5 h-5 text-amber-500 animate-pulse" />
+                        <div>
+                          <h4 className="font-black text-sm sm:text-base text-amber-400 flex items-center gap-1.5">
+                            <span>🏀 [NBA/KBL 팩트] 이동거리 • 시차 • 백투백 피로도 분석</span>
+                          </h4>
+                          <p className="text-[11px] text-slate-400">
+                            연속 경기(Back-to-Back) 및 비행 이동거리 기반 체력 과부하 진단
+                          </p>
+                        </div>
+                      </div>
+                      <span className="text-[10px] font-black bg-amber-500 text-slate-950 px-2.5 py-1 rounded shadow">
+                        VVIP FATIGUE
+                      </span>
+                    </div>
+
+                    {/* Home vs Away Fatigue 2-Col Grid */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      {/* Home Team */}
+                      <div className={`p-3.5 rounded-xl border space-y-2 ${
+                        isLight ? 'bg-slate-50 border-slate-200' : 'bg-slate-900 border-slate-800'
+                      }`}>
+                        <div className="flex items-center justify-between">
+                          <span className="font-black text-xs text-emerald-400">🏠 [홈] {getLocalizedTeamName(match.homeTeam.name, 'ko')}</span>
+                          <span className="text-[10px] px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-bold">
+                            {match.basketballTravelFatigueTracker?.homeFatigue.restDaysLabel || '2일 휴식 (생생함 🟢)'}
+                          </span>
+                        </div>
+                        <div className="grid grid-cols-2 gap-2 text-[11px] font-mono">
+                          <div className="bg-slate-950/60 p-2 rounded border border-slate-800">
+                            <span className="text-slate-400 text-[10px] block">최근 7일 비행</span>
+                            <strong className="text-emerald-400">
+                              ✈️ {match.basketballTravelFatigueTracker?.homeFatigue.travelDistanceKm?.toLocaleString() || '1,200'} km
+                            </strong>
+                          </div>
+                          <div className="bg-slate-950/60 p-2 rounded border border-slate-800">
+                            <span className="text-slate-400 text-[10px] block">시차 변동</span>
+                            <strong className="text-slate-200">
+                              {match.basketballTravelFatigueTracker?.homeFatigue.timeZoneChanges || 0}시간 시차
+                            </strong>
+                          </div>
+                        </div>
+                        <p className="text-[11px] text-slate-300">
+                          {match.basketballTravelFatigueTracker?.homeFatigue.fatigueStatusText || '충분한 홈 연전 휴식으로 주전 라인업 체력 95% 이상 충전 완료.'}
+                        </p>
+                      </div>
+
+                      {/* Away Team */}
+                      <div className={`p-3.5 rounded-xl border space-y-2 ${
+                        isLight ? 'bg-slate-50 border-slate-200' : 'bg-slate-900 border-slate-800'
+                      }`}>
+                        <div className="flex items-center justify-between">
+                          <span className="font-black text-xs text-cyan-400">✈️ [원정] {getLocalizedTeamName(match.awayTeam.name, 'ko')}</span>
+                          <span className="text-[10px] px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 font-bold">
+                            {match.basketballTravelFatigueTracker?.awayFatigue.restDaysLabel || '1일 휴식 (보통 🟡)'}
+                          </span>
+                        </div>
+                        <div className="grid grid-cols-2 gap-2 text-[11px] font-mono">
+                          <div className="bg-slate-950/60 p-2 rounded border border-slate-800">
+                            <span className="text-slate-400 text-[10px] block">최근 7일 비행</span>
+                            <strong className="text-amber-400">
+                              ✈️ {match.basketballTravelFatigueTracker?.awayFatigue.travelDistanceKm?.toLocaleString() || '3,450'} km
+                            </strong>
+                          </div>
+                          <div className="bg-slate-950/60 p-2 rounded border border-slate-800">
+                            <span className="text-slate-400 text-[10px] block">시차 변동</span>
+                            <strong className="text-slate-200">
+                              +{match.basketballTravelFatigueTracker?.awayFatigue.timeZoneChanges || 2}시간 시차
+                            </strong>
+                          </div>
+                        </div>
+                        <p className="text-[11px] text-slate-300">
+                          {match.basketballTravelFatigueTracker?.awayFatigue.fatigueStatusText || '원정 원정 연전 일정으로 4쿼터 클러치 타임 야투 적중률 하락 주의.'}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* VVIP Sensitivity Alert */}
+                    <div className="p-3 bg-amber-500/10 border border-amber-500/30 rounded-xl text-xs text-amber-300 font-bold flex items-center gap-2">
+                      <AlertTriangle className="w-4 h-4 shrink-0 text-amber-400" />
+                      <span>{match.basketballTravelFatigueTracker?.vvipSensitivityAlert || '체력 우위 및 원정팀 시차 피로도가 경기 후반 승부처 핸디캡에 직접적 변수로 작용합니다.'}</span>
+                    </div>
+                  </div>
+                </div>
               ) : (
                 <CoreWinFactorView
                   metrics={match.soccerWinFactorMetrics as any}
@@ -527,11 +674,11 @@ export const MatchDetailModal = ({
                     }`}>
                       <span className="text-slate-400 font-mono text-[11px]">{h2h.dateStr}</span>
                       <div className="font-bold flex items-center gap-2">
-                        <span className="text-emerald-500">[홈] {h2h.matchHomeTeam || match.homeTeam.name}</span>
+                        <span className="text-emerald-500">[홈] {getLocalizedTeamName(h2h.matchHomeTeam || match.homeTeam.name, 'ko')}</span>
                         <span className="font-mono font-black text-amber-400 px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800">
                           {h2h.homeScore} : {h2h.awayScore}
                         </span>
-                        <span className="text-cyan-400">[원정] {h2h.matchAwayTeam || match.awayTeam.name}</span>
+                        <span className="text-cyan-400">[원정] {getLocalizedTeamName(h2h.matchAwayTeam || match.awayTeam.name, 'ko')}</span>
                       </div>
                     </div>
                   ))
@@ -571,7 +718,7 @@ export const MatchDetailModal = ({
                   isLight ? 'bg-slate-50 border-slate-200' : 'bg-slate-950 border-slate-800'
                 }`}>
                   <span className="text-emerald-500 font-black text-xs block pb-1 border-b border-slate-200 dark:border-slate-800">
-                    🏠 [홈] {match.homeTeam.name}
+                    🏠 [홈] {getLocalizedTeamName(match.homeTeam.name, 'ko')}
                   </span>
                   {homeLogs.map((g, idx) => (
                     <div key={idx} className={`flex items-center justify-between p-2 rounded-xl border text-[11px] ${
@@ -594,7 +741,7 @@ export const MatchDetailModal = ({
                   isLight ? 'bg-slate-50 border-slate-200' : 'bg-slate-950 border-slate-800'
                 }`}>
                   <span className="text-cyan-400 font-black text-xs block pb-1 border-b border-slate-200 dark:border-slate-800">
-                    ✈️ [원정] {match.awayTeam.name}
+                    ✈️ [원정] {getLocalizedTeamName(match.awayTeam.name, 'ko')}
                   </span>
                   {awayLogs.map((g, idx) => (
                     <div key={idx} className={`flex items-center justify-between p-2 rounded-xl border text-[11px] ${

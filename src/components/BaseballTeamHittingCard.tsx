@@ -47,7 +47,7 @@ export const BaseballTeamHittingCard: React.FC<BaseballTeamHittingCardProps> = (
           isLight ? 'bg-amber-100 text-amber-900 border-amber-300' : 'bg-amber-950 text-amber-300 border-amber-400'
         }`}>
           <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-          OFFICIAL MLB TEAM STATS
+          OFFICIAL BASEBALL FACT STATS
         </span>
       </div>
 

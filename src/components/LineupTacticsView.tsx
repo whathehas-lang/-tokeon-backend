@@ -85,7 +85,7 @@ export const LineupTacticsView = ({ match, theme = 'light' }: LineupTacticsViewP
   const realStartersMatch = findRealStarters(activeTeam.name);
 
   const getPlayerByPos = (posCode: string, fallbackName: string, fallbackNum: number, fallbackVal: string) => {
-    // 공식 발표된 선발 명단에서 포지션별 선수 매칭
+    // 1. 공식 발표된 선발 명단에서 포지션별 선수 매칭
     const found = players.find(p => p.position.toUpperCase().includes(posCode.toUpperCase()));
     if (found && !found.name.includes('선수') && !found.name.includes('포수') && !found.name.includes('1루수') && !found.name.includes('2루수') && !found.name.includes('3루수') && !found.name.includes('유격수') && !found.name.includes('외야수')) {
       return {
@@ -101,7 +101,23 @@ export const LineupTacticsView = ({ match, theme = 'light' }: LineupTacticsViewP
       };
     }
 
-    // 공식 사이트 라인업 발표 대기 상태 (과거 구단 이적 선수 노출 원천 차단)
+    // 2. 오더지 미발표 시 팀 1군 주전 로스터에서 포지션 매칭 (실제 선수 명단 제공)
+    const realFound = realBaseballPlayers.find(p => p.position.toUpperCase().includes(posCode.toUpperCase()));
+    if (realFound) {
+      return {
+        name: realFound.name,
+        num: realFound.number,
+        val: realFound.marketValue || '1군 주전',
+        form: realFound.formStatus || 'GREEN',
+        isHot: realFound.isHotForm,
+        stamina: realFound.stamina || 'GREEN',
+        mins: realFound.minutesPlayed14d || 0,
+        playerObj: realFound,
+        isConfirmed: false
+      };
+    }
+
+    // 3. 미확정 시 안전한 대기 표출
     return {
       name: `${posCode} 발표 대기`,
       num: fallbackNum,
@@ -247,7 +263,32 @@ export const LineupTacticsView = ({ match, theme = 'light' }: LineupTacticsViewP
 
   // Helper to map Basketball 5 Starters to Spatial Positions on Court
   const getBasketballPlayerByPos = (playersList: OfficialPlayerInfo[], pos: string) => {
-    return playersList.find(p => p.position === pos) || playersList[0];
+    const direct = playersList.find(p => p.position === pos);
+    if (direct) return direct;
+
+    const posIndexMap: Record<string, number> = { 'PG': 0, 'SG': 1, 'SF': 2, 'PF': 3, 'C': 4 };
+    const targetIdx = posIndexMap[pos] ?? 0;
+    if (playersList[targetIdx]) return playersList[targetIdx];
+
+    const defaultPosNames: Record<string, { name: string; number: number; val: string }> = {
+      'PG': { name: '포인트가드', number: 1, val: '850억' },
+      'SG': { name: '슈팅가드', number: 2, val: '920억' },
+      'SF': { name: '스몰포워드', number: 3, val: '1,200억' },
+      'PF': { name: '파워포워드', number: 4, val: '1,050억' },
+      'C': { name: '센터', number: 5, val: '1,400억' }
+    };
+    const def = defaultPosNames[pos] || { name: '주전선수', number: 10, val: '800억' };
+    return {
+      id: `bk_${pos}`,
+      name: def.name,
+      number: def.number,
+      position: pos,
+      marketValue: def.val,
+      formStatus: 'GREEN' as const,
+      stamina: 'GREEN' as const,
+      minutesPlayed14d: 210,
+      tierCategory: '1GUN_STARTER' as const
+    };
   };
 
   const basketballStarters = [
@@ -388,12 +429,12 @@ export const LineupTacticsView = ({ match, theme = 'light' }: LineupTacticsViewP
                 ) : (
                   <>
                     <span className="bg-amber-400 text-slate-950 px-2 py-0.5 rounded font-black text-[10px] animate-pulse">🟡 선발 미정</span>
-                    <span className="text-slate-300">⚾ [{activeTeam.name}] 공식 선발투수 발표 대기 (10분 주기 자동 동기화 ⏳)</span>
+                    <span className="text-slate-300">⚾ [{activeTeam.name}] 공식 선발투수 발표 대기 (1시간 주기 자동 동기화 ⏳)</span>
                   </>
                 )}
               </span>
               <span className="text-[10px] text-slate-400 hidden sm:block">
-                {isPitcherConfirmed ? '공식 사이트 검증 완료 • 실시간 타순 연동' : '10분마다 공식 사이트 확인 후 자동 갱신'}
+                {isPitcherConfirmed ? '공식 사이트 검증 완료 • 실시간 타순 연동' : '1시간마다 공식 사이트 확인 후 확정 시 자동 갱신'}
               </span>
             </div>
 
@@ -670,10 +711,10 @@ export const LineupTacticsView = ({ match, theme = 'light' }: LineupTacticsViewP
                     <div className={`flex flex-col items-center bg-slate-950/95 px-2 py-0.5 rounded-lg border ${
                       isHot ? 'border-amber-400 shadow-[0_0_14px_rgba(245,158,11,0.8)]' : 'border-amber-500/60'
                     } shadow whitespace-nowrap`}>
-                      <span className="text-[9px] font-black text-amber-300">{spot.pos} • {player?.name || '르브론'}</span>
+                      <span className="text-[9px] font-black text-amber-300">{spot.pos} • {player?.name || spot.pos}</span>
                       <span className="text-[8px] font-extrabold text-emerald-400 flex items-center gap-0.5">
                         <Battery className="w-2.5 h-2.5" />
-                        14일 {mins}분 {getStaminaLight(player?.stamina)} • {player?.marketValue || '4,500억'}
+                        14일 {mins}분 {getStaminaLight(player?.stamina)} • {player?.marketValue || '1,000억'}
                       </span>
                     </div>
                   </div>

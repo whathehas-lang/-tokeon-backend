@@ -83,7 +83,7 @@ export const LiveCheerChat: React.FC<LiveCheerChatProps> = ({
     const updated = [...messages, newMsg];
     setMessages(updated);
     try {
-      localStorage.setItem(`tokeon_chat_${roomId}`, JSON.stringify(updated.slice(-50)));
+      localStorage.setItem(`tokeon_realtime_room_${roomId}`, JSON.stringify(updated.slice(-50)));
     } catch (e) {}
 
     if (!customText) setInputText('');
