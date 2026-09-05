@@ -25,12 +25,13 @@ export const BaseballSeriesPitchView = ({
 
   if (!homeTeam || !awayTeam) return null;
 
-  const homeStarter = homeTeam.starterPitcherInfo || {
-    name: '홈 선발투수',
-    number: 1,
+  const homeStarter = homeTeam.starterPitcherInfo?.name && !homeTeam.starterPitcherInfo.name.includes('미정') ? homeTeam.starterPitcherInfo : {
+    name: '선발 미정',
+    number: 0,
     throwsHand: 'R',
-    era: '3.50',
-    whip: '1.20',
+    era: '발표대기',
+    seasonEra: '미정',
+    whip: '-',
     wins: 0,
     losses: 0,
     inningsPitched: '0.0',
@@ -38,12 +39,13 @@ export const BaseballSeriesPitchView = ({
     vsOpponentLogs: []
   };
 
-  const awayStarter = awayTeam.starterPitcherInfo || {
-    name: '원정 선발투수',
-    number: 1,
+  const awayStarter = awayTeam.starterPitcherInfo?.name && !awayTeam.starterPitcherInfo.name.includes('미정') ? awayTeam.starterPitcherInfo : {
+    name: '선발 미정',
+    number: 0,
     throwsHand: 'R',
-    era: '3.50',
-    whip: '1.20',
+    era: '발표대기',
+    seasonEra: '미정',
+    whip: '-',
     wins: 0,
     losses: 0,
     inningsPitched: '0.0',

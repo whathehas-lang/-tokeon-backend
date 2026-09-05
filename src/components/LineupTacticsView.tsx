@@ -115,11 +115,17 @@ export const LineupTacticsView = ({ match, theme = 'light' }: LineupTacticsViewP
     };
   };
 
-  // Baseball Pitcher Confirmed Check (오직 연맹 공식 예고선발만 표출 - 임의 추측 및 과거 2024 더미 데이터 원천 차단)
+  // Baseball Pitcher Confirmed Check (오직 연맹 공식 예고선발만 표출 - 임의 추측 및 과거 더미 데이터 원천 차단)
   const rawStarterName = activeTeam.starterPitcherInfo?.name || '';
-  const isPitcherConfirmed = !!rawStarterName && !rawStarterName.includes('선발투수') && !rawStarterName.includes('미정') && rawStarterName !== '선발';
+  const isPitcherConfirmed = !!rawStarterName && 
+    !rawStarterName.includes('선발투수') && 
+    !rawStarterName.includes('1선발') && 
+    !rawStarterName.includes('미정') && 
+    !rawStarterName.includes('?') && 
+    !rawStarterName.includes('i?') && 
+    rawStarterName.trim() !== '선발';
   const pitcherDisplayName = isPitcherConfirmed ? rawStarterName : '선발 미정';
-  const pitcherDisplayVal = isPitcherConfirmed ? (activeTeam.starterPitcherInfo?.era ? `ERA ${activeTeam.starterPitcherInfo.era}` : '오피셜 예고') : '공식 발표 대기 ⏳';
+  const pitcherDisplayVal = isPitcherConfirmed ? (activeTeam.starterPitcherInfo?.era && activeTeam.starterPitcherInfo.era !== '발표대기' ? `ERA ${activeTeam.starterPitcherInfo.era}` : '오피셜 예고') : '공식 발표 대기 ⏳';
 
   const sp = {
     name: pitcherDisplayName,

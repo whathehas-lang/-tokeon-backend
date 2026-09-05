@@ -179,7 +179,12 @@ export const MatchDetailModal = ({
                 </span>
               </div>
               {match.sport === 'baseball' && (
-                match.homeTeam.starterPitcherInfo?.name && !match.homeTeam.starterPitcherInfo.name.includes('미정') ? (
+                match.homeTeam.starterPitcherInfo?.name && 
+                !match.homeTeam.starterPitcherInfo.name.includes('미정') &&
+                !match.homeTeam.starterPitcherInfo.name.includes('?') &&
+                !match.homeTeam.starterPitcherInfo.name.includes('i?') &&
+                !match.homeTeam.starterPitcherInfo.name.includes('선발투수') &&
+                !match.homeTeam.starterPitcherInfo.name.includes('1선발') ? (
                   <span className="text-[11px] text-emerald-400 font-bold mt-0.5 truncate max-w-full">
                     선발 {match.homeTeam.starterPitcherInfo.name} ({match.homeTeam.starterPitcherInfo.era || 'ERA --'})
                   </span>
@@ -238,7 +243,12 @@ export const MatchDetailModal = ({
                 <span className="text-[10px] font-black text-cyan-400 bg-cyan-500/10 px-1.5 py-0.2 rounded border border-cyan-500/20">원정</span>
               </div>
               {match.sport === 'baseball' && (
-                match.awayTeam.starterPitcherInfo?.name && !match.awayTeam.starterPitcherInfo.name.includes('미정') ? (
+                match.awayTeam.starterPitcherInfo?.name && 
+                !match.awayTeam.starterPitcherInfo.name.includes('미정') &&
+                !match.awayTeam.starterPitcherInfo.name.includes('?') &&
+                !match.awayTeam.starterPitcherInfo.name.includes('i?') &&
+                !match.awayTeam.starterPitcherInfo.name.includes('선발투수') &&
+                !match.awayTeam.starterPitcherInfo.name.includes('1선발') ? (
                   <span className="text-[11px] text-cyan-400 font-bold mt-0.5 truncate max-w-full">
                     선발 {match.awayTeam.starterPitcherInfo.name} ({match.awayTeam.starterPitcherInfo.era || 'ERA --'})
                   </span>

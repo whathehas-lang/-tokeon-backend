@@ -80,6 +80,41 @@ export class BaseballStarterPollingService {
   }
 
   /**
+   * 🛡️ 선발투수 팩트 검증 및 정제기:
+   * 깨진 문자(?), i?, 임의 추측, 가짜 1선발, 더미 데이터를 원천 필터링하여
+   * 공식 발표 전에는 무조건 '선발 미정 (공식 발표 대기 ⏳)'으로 정규화
+   */
+  public static sanitizeStarter(starter: StarterPitcherInfo | null | undefined): StarterPitcherInfo {
+    if (
+      !starter ||
+      !starter.name ||
+      typeof starter.name !== 'string' ||
+      starter.name.includes('선발투수') ||
+      starter.name.includes('1선발') ||
+      starter.name.includes('?') ||
+      starter.name.includes('i?') ||
+      starter.name.trim() === '선발' ||
+      starter.name.includes('미정') ||
+      starter.name.trim() === ''
+    ) {
+      return {
+        name: '선발 미정',
+        number: 0,
+        throwsHand: 'R',
+        era: '발표대기',
+        seasonEra: '미정',
+        whip: '-',
+        wins: 0,
+        losses: 0,
+        inningsPitched: '0.0',
+        strikeouts: 0,
+        vsOpponentLogs: []
+      };
+    }
+    return starter;
+  }
+
+  /**
    * 🔍 1순위 공식 사이트 스캔 & 2순위 API 동기화 파이프라인
    */
   public async checkAndUpdateStarters(): Promise<void> {
@@ -95,14 +130,19 @@ export class BaseballStarterPollingService {
         if (m.sport !== 'baseball') return m;
 
         const league = (m.league || '').toLowerCase();
-        let homeStarter = m.homeTeam?.starterPitcherInfo;
-        let awayStarter = m.awayTeam?.starterPitcherInfo;
+        let homeStarter = BaseballStarterPollingService.sanitizeStarter(m.homeTeam?.starterPitcherInfo);
+        let awayStarter = BaseballStarterPollingService.sanitizeStarter(m.awayTeam?.starterPitcherInfo);
         let homeLineup = m.homeOfficialLineup;
         let awayLineup = m.awayOfficialLineup;
         let updated = false;
 
-        // 🇺🇸 A. MLB 메이저리그
-        if (league.includes('mlb') || league.includes('major league')) {
+        // 기존 데이터와 정제 결과가 다르면 즉시 갱신
+        if (m.homeTeam?.starterPitcherInfo?.name !== homeStarter.name || m.awayTeam?.starterPitcherInfo?.name !== awayStarter.name) {
+          updated = true;
+        }
+
+        // 🇺🇸 A. MLB 메이저리그 (1순위 statsapi.mlb.com 공식 hydrate=probablePitcher)
+        if (league.includes('mlb') || league.includes('major league') || m.countryFlag === '🇺🇸') {
           const matchedGame = this.findMlbGame(m, mlbOfficialData);
           if (matchedGame) {
             const hProbable = matchedGame.teams?.home?.probablePitcher;
@@ -110,78 +150,47 @@ export class BaseballStarterPollingService {
 
             // 홈팀 선발 확인
             if (hProbable && hProbable.fullName) {
-              const prevName = homeStarter?.name || '';
-              if (prevName !== hProbable.fullName) {
+              if (homeStarter.name !== hProbable.fullName) {
+                console.log(`[BaseballStarterPollingService] 🚀 [MLB 공식 선발 확정] ${m.homeTeam.name} -> ${hProbable.fullName}`);
                 homeStarter = {
                   name: hProbable.fullName,
-                  number: 1,
+                  number: hProbable.primaryNumber || 1,
                   throwsHand: 'R',
-                  era: homeStarter?.era || '3.50',
-                  seasonEra: homeStarter?.seasonEra || '3.50',
-                  whip: homeStarter?.whip || '1.18',
-                  wins: homeStarter?.wins || 8,
-                  losses: homeStarter?.losses || 5,
-                  inningsPitched: homeStarter?.inningsPitched || '110.0',
-                  strikeouts: homeStarter?.strikeouts || 95,
+                  era: homeStarter?.era && homeStarter.era !== '발표대기' ? homeStarter.era : '3.50',
+                  seasonEra: homeStarter?.seasonEra && homeStarter.seasonEra !== '미정' ? homeStarter.seasonEra : '3.50',
+                  whip: homeStarter?.whip && homeStarter.whip !== '-' ? homeStarter.whip : '1.18',
+                  wins: homeStarter?.wins || 0,
+                  losses: homeStarter?.losses || 0,
+                  inningsPitched: homeStarter?.inningsPitched && homeStarter.inningsPitched !== '0.0' ? homeStarter.inningsPitched : '0.0',
+                  strikeouts: homeStarter?.strikeouts || 0,
                   vsOpponentLogs: homeStarter?.vsOpponentLogs || []
                 };
                 updated = true;
               }
-            } else if (!homeStarter?.name) {
-              // 미정 상태 명시
-              homeStarter = {
-                name: '선발 미정',
-                number: 0,
-                throwsHand: 'R',
-                era: '발표대기',
-                seasonEra: '미정',
-                whip: '-',
-                wins: 0,
-                losses: 0,
-                inningsPitched: '0.0',
-                strikeouts: 0,
-                vsOpponentLogs: []
-              };
-              updated = true;
             }
 
             // 원정팀 선발 확인
             if (aProbable && aProbable.fullName) {
-              const prevName = awayStarter?.name || '';
-              if (prevName !== aProbable.fullName) {
+              if (awayStarter.name !== aProbable.fullName) {
+                console.log(`[BaseballStarterPollingService] 🚀 [MLB 공식 선발 확정] ${m.awayTeam.name} -> ${aProbable.fullName}`);
                 awayStarter = {
                   name: aProbable.fullName,
-                  number: 1,
+                  number: aProbable.primaryNumber || 1,
                   throwsHand: 'R',
-                  era: awayStarter?.era || '3.70',
-                  seasonEra: awayStarter?.seasonEra || '3.70',
-                  whip: awayStarter?.whip || '1.22',
-                  wins: awayStarter?.wins || 7,
-                  losses: awayStarter?.losses || 6,
-                  inningsPitched: awayStarter?.inningsPitched || '105.0',
-                  strikeouts: awayStarter?.strikeouts || 90,
+                  era: awayStarter?.era && awayStarter.era !== '발표대기' ? awayStarter.era : '3.70',
+                  seasonEra: awayStarter?.seasonEra && awayStarter.seasonEra !== '미정' ? awayStarter.seasonEra : '3.70',
+                  whip: awayStarter?.whip && awayStarter.whip !== '-' ? awayStarter.whip : '1.22',
+                  wins: awayStarter?.wins || 0,
+                  losses: awayStarter?.losses || 0,
+                  inningsPitched: awayStarter?.inningsPitched && awayStarter.inningsPitched !== '0.0' ? awayStarter.inningsPitched : '0.0',
+                  strikeouts: awayStarter?.strikeouts || 0,
                   vsOpponentLogs: awayStarter?.vsOpponentLogs || []
                 };
                 updated = true;
               }
-            } else if (!awayStarter?.name) {
-              awayStarter = {
-                name: '선발 미정',
-                number: 0,
-                throwsHand: 'R',
-                era: '발표대기',
-                seasonEra: '미정',
-                whip: '-',
-                wins: 0,
-                losses: 0,
-                inningsPitched: '0.0',
-                strikeouts: 0,
-                vsOpponentLogs: []
-              };
-              updated = true;
             }
 
-            // 🎯 당일 공식 발표 9인 타순 반영 (이적생 100% 자동 반영)
+            // 🎯 당일 공식 발표 9인 타순 반영
             if (matchedGame.lineups) {
               if (Array.isArray(matchedGame.lineups.homePlayers) && matchedGame.lineups.homePlayers.length > 0) {
                 homeLineup = {
@@ -229,60 +238,39 @@ export class BaseballStarterPollingService {
             }
           }
         } 
-        // 🇰🇷🇯🇵 B. KBO & NPB 한국/일본야구
-        else if (league.includes('kbo') || league.includes('npb') || league.includes('professional baseball')) {
+        // 🇰🇷🇯🇵 B. KBO & NPB 한국/일본야구 (1순위: 공식 사이트 발표 확인 시에만 변경, 미공시 시 선발 미정 유지)
+        else if (league.includes('kbo') || league.includes('npb') || league.includes('professional baseball') || m.countryFlag === '🇰🇷' || m.countryFlag === '🇯🇵') {
           const officialHome = KboNpbOfficialLineupService.getOfficialStarter(m.homeTeam.name);
           const officialAway = KboNpbOfficialLineupService.getOfficialStarter(m.awayTeam.name);
 
-          if (officialHome) {
-            homeStarter = officialHome;
-            updated = true;
-          } else if (!homeStarter || !homeStarter.name) {
-            homeStarter = {
-              name: '선발 미정',
-              number: 0,
-              throwsHand: 'R',
-              era: '발표대기',
-              seasonEra: '미정',
-              whip: '-',
-              wins: 0,
-              losses: 0,
-              inningsPitched: '0.0',
-              strikeouts: 0,
-              vsOpponentLogs: []
-            };
-            updated = true;
+          if (officialHome && officialHome.name && !officialHome.name.includes('미정')) {
+            if (homeStarter.name !== officialHome.name) {
+              console.log(`[BaseballStarterPollingService] 🚀 [KBO/NPB 공식 선발 발표] ${m.homeTeam.name} -> ${officialHome.name}`);
+              homeStarter = officialHome;
+              updated = true;
+            }
           }
 
-          if (officialAway) {
-            awayStarter = officialAway;
-            updated = true;
-          } else if (!awayStarter || !awayStarter.name) {
-            awayStarter = {
-              name: '선발 미정',
-              number: 0,
-              throwsHand: 'R',
-              era: '발표대기',
-              seasonEra: '미정',
-              whip: '-',
-              wins: 0,
-              losses: 0,
-              inningsPitched: '0.0',
-              strikeouts: 0,
-              vsOpponentLogs: []
-            };
-            updated = true;
+          if (officialAway && officialAway.name && !officialAway.name.includes('미정')) {
+            if (awayStarter.name !== officialAway.name) {
+              console.log(`[BaseballStarterPollingService] 🚀 [KBO/NPB 공식 선발 발표] ${m.awayTeam.name} -> ${officialAway.name}`);
+              awayStarter = officialAway;
+              updated = true;
+            }
           }
         }
 
         if (updated) {
           hasAnyUpdate = true;
+          const isBothAnnounced = homeStarter.name !== '선발 미정' && awayStarter.name !== '선발 미정';
           return {
             ...m,
             homeTeam: { ...m.homeTeam, starterPitcherInfo: homeStarter },
             awayTeam: { ...m.awayTeam, starterPitcherInfo: awayStarter },
             homeOfficialLineup: homeLineup,
-            awayOfficialLineup: awayLineup
+            awayOfficialLineup: awayLineup,
+            isPitcherAnnounced: isBothAnnounced,
+            isDataCheckingPending: !isBothAnnounced
           };
         }
 

@@ -161,7 +161,12 @@ export const MatchCardComponent = ({
               </span>
             </div>
             {match.sport === 'baseball' && (
-              match.homeTeam.starterPitcherInfo?.name && !match.homeTeam.starterPitcherInfo.name.includes('미정') ? (
+              match.homeTeam.starterPitcherInfo?.name && 
+              !match.homeTeam.starterPitcherInfo.name.includes('미정') &&
+              !match.homeTeam.starterPitcherInfo.name.includes('?') &&
+              !match.homeTeam.starterPitcherInfo.name.includes('i?') &&
+              !match.homeTeam.starterPitcherInfo.name.includes('선발투수') &&
+              !match.homeTeam.starterPitcherInfo.name.includes('1선발') ? (
                 <span className="text-[10px] text-emerald-500 font-bold block truncate">
                   선발 {match.homeTeam.starterPitcherInfo.name} ({match.homeTeam.starterPitcherInfo.era || 'ERA --'})
                 </span>
@@ -205,7 +210,12 @@ export const MatchCardComponent = ({
               <span className="text-[10px] font-black text-cyan-400 shrink-0">원정</span>
             </div>
             {match.sport === 'baseball' && (
-              match.awayTeam.starterPitcherInfo?.name && !match.awayTeam.starterPitcherInfo.name.includes('미정') ? (
+              match.awayTeam.starterPitcherInfo?.name && 
+              !match.awayTeam.starterPitcherInfo.name.includes('미정') &&
+              !match.awayTeam.starterPitcherInfo.name.includes('?') &&
+              !match.awayTeam.starterPitcherInfo.name.includes('i?') &&
+              !match.awayTeam.starterPitcherInfo.name.includes('선발투수') &&
+              !match.awayTeam.starterPitcherInfo.name.includes('1선발') ? (
                 <span className="text-[10px] text-cyan-400 font-bold block truncate">
                   선발 {match.awayTeam.starterPitcherInfo.name} ({match.awayTeam.starterPitcherInfo.era || 'ERA --'})
                 </span>
