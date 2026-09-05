@@ -192,11 +192,10 @@ export class FootballH2HRecentFormEngine {
 
     for (let i = 0; i < 5; i++) {
       const idx = Math.abs((seed * 17) + (i * 23)) % scoresPool.length;
-      const isHomeFirst = (i % 2 === 0);
       const curScore = scoresPool[idx];
 
-      const matchHome = isHomeFirst ? homeTeam : awayTeam;
-      const matchAway = isHomeFirst ? awayTeam : homeTeam;
+      const matchHome = homeTeam; // 🏠 항상 앞쪽은 홈팀
+      const matchAway = awayTeam; // ✈️ 항상 뒤쪽은 원정팀
       const hScore = curScore.h;
       const aScore = curScore.a;
 
@@ -248,6 +247,7 @@ export class FootballH2HRecentFormEngine {
         dateStr: recentDates[0] || '09.01',
         opponentName: matchedReal.yesterday.opp,
         homeOrAway: matchedReal.yesterday.isHome ? 'HOME' : 'AWAY',
+        isHome: matchedReal.yesterday.isHome,
         teamScore: matchedReal.yesterday.t,
         opponentScore: matchedReal.yesterday.o,
         resultStr: matchedReal.yesterday.r
@@ -258,6 +258,7 @@ export class FootballH2HRecentFormEngine {
         dateStr: recentDates[1] || '08.31',
         opponentName: matchedReal.twoDaysAgo.opp,
         homeOrAway: matchedReal.twoDaysAgo.isHome ? 'HOME' : 'AWAY',
+        isHome: matchedReal.twoDaysAgo.isHome,
         teamScore: matchedReal.twoDaysAgo.t,
         opponentScore: matchedReal.twoDaysAgo.o,
         resultStr: matchedReal.twoDaysAgo.r
@@ -295,6 +296,7 @@ export class FootballH2HRecentFormEngine {
         dateStr: recentDates[i] || `08.${28 - i * 3}`,
         opponentName: opponent,
         homeOrAway: isHomeGame ? 'HOME' : 'AWAY',
+        isHome: isHomeGame,
         teamScore: sc.t,
         opponentScore: sc.o,
         resultStr: sc.r

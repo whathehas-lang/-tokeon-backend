@@ -81,11 +81,29 @@ export const MatchDetailModal = ({
   const defaultTotalLine = match.sport === 'baseball' ? 8.5 : match.sport === 'basketball' ? 215.5 : 2.5;
   const unitStr = match.sport === 'baseball' ? '점' : match.sport === 'basketball' ? '점' : '골';
 
-  // ⚔️ H2H 상대전적
+  // ⚔️ H2H 상대전적 (앞=홈팀, 뒤=원정팀, 승무패 100% 완전 고정)
   const getEnrichedH2H = () => {
-    if (match.h2hRecentMatches && match.h2hRecentMatches.length > 0) {
-      return match.h2hRecentMatches.slice(0, h2hRange);
+    const rawMatches = (match.h2hRecentMatches && match.h2hRecentMatches.length > 0)
+      ? match.h2hRecentMatches.slice(0, h2hRange)
+      : null;
+
+    if (rawMatches && rawMatches.length > 0) {
+      return rawMatches.map((m: any) => {
+        // 과거 경기에서 홈/원정이 교차되었더라도 현재 매치업 기준 앞=홈팀, 뒤=원정팀으로 100% 정렬
+        const isCurrentHomeOnHome = !m.matchHomeTeam || m.matchHomeTeam === match.homeTeam.name;
+        const homeScore = isCurrentHomeOnHome ? (m.homeScore ?? 0) : (m.awayScore ?? 0);
+        const awayScore = isCurrentHomeOnHome ? (m.awayScore ?? 0) : (m.homeScore ?? 0);
+        return {
+          dateStr: m.dateStr,
+          matchHomeTeam: match.homeTeam.name,
+          matchAwayTeam: match.awayTeam.name,
+          homeScore,
+          awayScore,
+          winnerName: homeScore > awayScore ? match.homeTeam.name : (awayScore > homeScore ? match.awayTeam.name : '무승부')
+        };
+      });
     }
+
     const now = new Date();
     const list = [];
     const isBs = match.sport === 'baseball';
@@ -100,7 +118,8 @@ export const MatchDetailModal = ({
         matchHomeTeam: match.homeTeam.name,
         matchAwayTeam: match.awayTeam.name,
         homeScore: hSc,
-        awayScore: aSc
+        awayScore: aSc,
+        winnerName: hSc > aSc ? match.homeTeam.name : (aSc > hSc ? match.awayTeam.name : '무승부')
       });
     }
     return list;
@@ -108,13 +127,32 @@ export const MatchDetailModal = ({
 
   const h2hMatches = getEnrichedH2H();
 
-  // 📊 최근 경기 득실점 폼 로그
+  // 📊 최근 경기 득실점 폼 로그 (앞=홈, 뒤=원정, 승무패 완벽 정렬)
   const getEnrichedRecentLogs = (isHomeTeam: boolean) => {
     const existing = isHomeTeam 
       ? (match.homeRecentLogs || match.homeTeam.recentGamesLog || [])
       : (match.awayRecentLogs || match.awayTeam.recentGamesLog || []);
     if (existing && existing.length > 0) {
-      return existing.slice(0, recentGamesRange);
+      return existing.slice(0, recentGamesRange).map((e: any, idx: number) => {
+        let tSc = e.teamScore;
+        let oSc = e.opponentScore;
+        if (tSc === undefined && e.score) {
+          const parts = String(e.score).split(/[:\-]/);
+          tSc = parseInt(parts[0], 10) || 0;
+          oSc = parseInt(parts[1], 10) || 0;
+        }
+        const isH = e.isHome !== undefined ? e.isHome : (e.homeOrAway ? e.homeOrAway === 'HOME' : idx % 2 === 0);
+        return {
+          ...e,
+          dateStr: e.dateStr || e.date || `09.${String(10 - idx).padStart(2, '0')}`,
+          opponentName: e.opponentName || e.opponent || (isHomeTeam ? '상대팀' : '상대팀'),
+          isHome: isH,
+          homeOrAway: isH ? 'HOME' : 'AWAY',
+          teamScore: tSc ?? 3,
+          opponentScore: oSc ?? 2,
+          resultStr: e.resultStr || e.result || ((tSc ?? 3) > (oSc ?? 2) ? '승' : (tSc ?? 3) === (oSc ?? 2) ? '무' : '패')
+        };
+      });
     }
 
     const now = new Date();
@@ -162,10 +200,13 @@ export const MatchDetailModal = ({
       const tSc = isBs ? (isWin ? 6 : 2) : isBk ? (isWin ? 112 : 95) : (isWin ? 2 : 0);
       const oSc = isBs ? (isWin ? 3 : 5) : isBk ? (isWin ? 104 : 108) : (isWin ? 1 : 2);
       const opp = pool[(i - 1) % pool.length] || (isHomeTeam ? '원정팀' : '홈팀');
+      const isHomeGame = i % 2 === 1;
 
       list.push({
         dateStr,
         opponentName: opp,
+        isHome: isHomeGame,
+        homeOrAway: isHomeGame ? 'HOME' : 'AWAY',
         teamScore: tSc,
         opponentScore: oSc,
         resultStr: isWin ? '승' : '패'
@@ -647,7 +688,7 @@ export const MatchDetailModal = ({
               <div className="flex items-center justify-between">
                 <span className="text-xs sm:text-sm font-black text-amber-400 flex items-center gap-1.5">
                   <Swords className="w-4 h-4" />
-                  <span>맞대결 전적 기록 ({h2hRange}경기)</span>
+                  <span>맞대결 상대전적 ({h2hRange}경기)</span>
                 </span>
                 <div className="flex items-center gap-1 bg-slate-950 p-1 rounded-xl border border-slate-800">
                   {[3, 5, 10, 20].map((num) => (
@@ -664,24 +705,86 @@ export const MatchDetailModal = ({
                 </div>
               </div>
 
-              <div className={`rounded-2xl border overflow-hidden p-3 space-y-2 ${
+              {/* 📌 안내 배너: [앞: 홈팀] [뒤: 원정팀] [승무패] 고정 */}
+              <div className={`p-2.5 rounded-xl border flex items-center justify-between text-[11px] font-bold ${
+                isLight ? 'bg-slate-100 border-slate-200 text-slate-700' : 'bg-slate-950/80 border-slate-800 text-slate-300'
+              }`}>
+                <span className="flex items-center gap-1.5">
+                  <span>📌</span>
+                  <span>상대전적 고정: <strong>[홈팀]</strong>(왼쪽) vs <strong>[원정팀]</strong>(오른쪽) ➔ <strong>[승무패]</strong></span>
+                </span>
+                <span className="font-mono font-black text-emerald-400">
+                  {homeWinsInH2H}승 {drawsInH2H > 0 ? `${drawsInH2H}무 ` : ''}{awayWinsInH2H}패
+                </span>
+              </div>
+
+              <div className={`rounded-2xl border overflow-hidden p-2.5 sm:p-3 space-y-2 ${
                 isLight ? 'bg-slate-50 border-slate-200' : 'bg-slate-950 border-slate-800'
               }`}>
+                {/* 헤더 */}
+                <div className="grid grid-cols-12 items-center px-3 py-1.5 text-[11px] font-black text-slate-400 border-b border-slate-200 dark:border-slate-800/80">
+                  <span className="col-span-2 text-left font-mono">일자</span>
+                  <span className="col-span-4 text-left text-emerald-500 font-bold truncate flex items-center gap-1">
+                    <span>🏠</span>
+                    <span>[홈] {getLocalizedTeamName(match.homeTeam.name, 'ko')}</span>
+                  </span>
+                  <span className="col-span-2 text-center font-mono">스코어</span>
+                  <span className="col-span-3 text-right text-cyan-400 font-bold truncate flex items-center justify-end gap-1">
+                    <span>[원정] {getLocalizedTeamName(match.awayTeam.name, 'ko')}</span>
+                    <span>✈️</span>
+                  </span>
+                  <span className="col-span-1 text-right">결과</span>
+                </div>
+
                 {h2hMatches.length > 0 ? (
-                  h2hMatches.map((h2h, idx) => (
-                    <div key={idx} className={`flex items-center justify-between p-2.5 rounded-xl border text-xs ${
-                      isLight ? 'bg-white border-slate-200' : 'bg-slate-900 border-slate-800'
-                    }`}>
-                      <span className="text-slate-400 font-mono text-[11px]">{h2h.dateStr}</span>
-                      <div className="font-bold flex items-center gap-2">
-                        <span className="text-emerald-500">[홈] {getLocalizedTeamName(h2h.matchHomeTeam || match.homeTeam.name, 'ko')}</span>
-                        <span className="font-mono font-black text-amber-400 px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800">
-                          {h2h.homeScore} : {h2h.awayScore}
-                        </span>
-                        <span className="text-cyan-400">[원정] {getLocalizedTeamName(h2h.matchAwayTeam || match.awayTeam.name, 'ko')}</span>
+                  h2hMatches.map((h2h, idx) => {
+                    const isHomeWin = h2h.homeScore > h2h.awayScore;
+                    const isDraw = h2h.homeScore === h2h.awayScore;
+                    const resultText = isHomeWin ? '홈승' : isDraw ? '무' : '원정승';
+                    const badgeBg = isHomeWin
+                      ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/40'
+                      : isDraw
+                        ? 'bg-amber-500/20 text-amber-400 border-amber-500/40'
+                        : 'bg-rose-500/20 text-rose-400 border-rose-500/40';
+
+                    return (
+                      <div key={idx} className={`grid grid-cols-12 items-center p-2.5 rounded-xl border text-xs transition-all ${
+                        isLight ? 'bg-white border-slate-200 shadow-xs' : 'bg-slate-900 border-slate-800 shadow-xs'
+                      }`}>
+                        <span className="col-span-2 text-slate-400 font-mono text-[11px]">{h2h.dateStr}</span>
+                        
+                        {/* 🏠 앞: [홈팀] */}
+                        <div className="col-span-4 flex items-center gap-1 min-w-0">
+                          <span className="text-emerald-500 font-black text-[10px] shrink-0">[홈]</span>
+                          <span className={`font-bold truncate ${isHomeWin ? 'text-emerald-500 dark:text-emerald-400 font-extrabold' : 'text-slate-700 dark:text-slate-200'}`}>
+                            {getLocalizedTeamName(match.homeTeam.name, 'ko')}
+                          </span>
+                        </div>
+
+                        {/* 스코어 */}
+                        <div className="col-span-2 text-center">
+                          <span className="font-mono font-black text-amber-400 px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-950 text-xs border border-slate-200 dark:border-slate-800">
+                            {h2h.homeScore} : {h2h.awayScore}
+                          </span>
+                        </div>
+
+                        {/* ✈️ 뒤: [원정팀] */}
+                        <div className="col-span-3 flex items-center justify-end gap-1 min-w-0 text-right">
+                          <span className={`font-bold truncate ${!isHomeWin && !isDraw ? 'text-cyan-500 dark:text-cyan-400 font-extrabold' : 'text-slate-700 dark:text-slate-200'}`}>
+                            {getLocalizedTeamName(match.awayTeam.name, 'ko')}
+                          </span>
+                          <span className="text-cyan-400 font-black text-[10px] shrink-0">[원정]</span>
+                        </div>
+
+                        {/* 결과 뱃지 */}
+                        <div className="col-span-1 text-right">
+                          <span className={`px-1.5 py-0.5 rounded text-[10px] font-black border inline-block ${badgeBg}`}>
+                            {resultText}
+                          </span>
+                        </div>
                       </div>
-                    </div>
-                  ))
+                    );
+                  })
                 ) : (
                   <p className="text-xs text-slate-500 text-center py-4">공식 맞대결 기록 집계 중입니다.</p>
                 )}
@@ -712,51 +815,138 @@ export const MatchDetailModal = ({
                 </div>
               </div>
 
+              {/* 📌 안내 배너: [앞: 홈팀] [뒤: 원정팀] [승무패] 고정 */}
+              <div className={`p-2.5 rounded-xl border flex items-center justify-between text-[11px] font-bold ${
+                isLight ? 'bg-slate-100 border-slate-200 text-slate-700' : 'bg-slate-950/80 border-slate-800 text-slate-300'
+              }`}>
+                <span className="flex items-center gap-1.5">
+                  <span>📌</span>
+                  <span>최근경기 고정: <strong>[홈팀]</strong>(앞/왼쪽) vs <strong>[원정팀]</strong>(뒤/오른쪽) ➔ <strong>[승무패]</strong></span>
+                </span>
+                <span className="text-slate-400 text-[10px]">최근 {recentGamesRange}경기 기준</span>
+              </div>
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 {/* 홈팀 최근 경기 */}
-                <div className={`p-3.5 rounded-2xl border space-y-2 ${
+                <div className={`p-3.5 rounded-2xl border space-y-2.5 ${
                   isLight ? 'bg-slate-50 border-slate-200' : 'bg-slate-950 border-slate-800'
                 }`}>
-                  <span className="text-emerald-500 font-black text-xs block pb-1 border-b border-slate-200 dark:border-slate-800">
-                    🏠 [홈] {getLocalizedTeamName(match.homeTeam.name, 'ko')}
-                  </span>
-                  {homeLogs.map((g, idx) => (
-                    <div key={idx} className={`flex items-center justify-between p-2 rounded-xl border text-[11px] ${
-                      isLight ? 'bg-white border-slate-200' : 'bg-slate-900 border-slate-800'
-                    }`}>
-                      <span className="text-slate-400 font-mono">{g.dateStr}</span>
-                      <span className="font-bold truncate max-w-[90px]">{g.opponentName}</span>
-                      <span className="font-mono font-black text-amber-400">{g.teamScore}:{g.opponentScore}</span>
-                      <span className={`px-1.5 py-0.2 rounded text-[10px] font-black ${
-                        g.resultStr === '승' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-rose-500/20 text-rose-400'
+                  <div className="flex items-center justify-between pb-1.5 border-b border-slate-200 dark:border-slate-800">
+                    <span className="text-emerald-500 font-black text-xs flex items-center gap-1.5">
+                      <span>🏠</span>
+                      <span>[홈] {getLocalizedTeamName(match.homeTeam.name, 'ko')}</span>
+                    </span>
+                    <span className="text-[10px] text-slate-400 font-mono">앞: [홈] vs 뒤: [원정]</span>
+                  </div>
+
+                  {homeLogs.map((g, idx) => {
+                    const isTeamHome = g.isHome === true || g.homeOrAway === 'HOME';
+                    const homeName = isTeamHome ? match.homeTeam.name : g.opponentName;
+                    const awayName = isTeamHome ? g.opponentName : match.homeTeam.name;
+                    const homeScore = isTeamHome ? g.teamScore : g.opponentScore;
+                    const awayScore = isTeamHome ? g.opponentScore : g.teamScore;
+                    const res = g.resultStr || (g.teamScore > g.opponentScore ? '승' : g.teamScore === g.opponentScore ? '무' : '패');
+                    const badgeBg = res === '승'
+                      ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+                      : res === '무'
+                        ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
+                        : 'bg-rose-500/20 text-rose-400 border border-rose-500/30';
+
+                    return (
+                      <div key={idx} className={`p-2 rounded-xl border text-[11px] flex items-center justify-between gap-1.5 ${
+                        isLight ? 'bg-white border-slate-200' : 'bg-slate-900 border-slate-800'
                       }`}>
-                        {g.resultStr}
-                      </span>
-                    </div>
-                  ))}
+                        <span className="text-slate-400 font-mono text-[10px] shrink-0 w-9">{g.dateStr}</span>
+
+                        {/* 🏠 앞: [홈팀] */}
+                        <div className="flex items-center gap-1 min-w-0 flex-1">
+                          <span className="text-emerald-500 font-black text-[9px] shrink-0">[홈]</span>
+                          <span className={`truncate font-bold ${isTeamHome ? 'text-emerald-500 dark:text-emerald-400 font-black' : 'text-slate-500 dark:text-slate-400'}`}>
+                            {getLocalizedTeamName(homeName, 'ko')}
+                          </span>
+                        </div>
+
+                        {/* 스코어 */}
+                        <span className="font-mono font-black text-amber-400 px-1.5 py-0.2 rounded bg-slate-100 dark:bg-slate-950 text-xs shrink-0 border border-slate-200 dark:border-slate-800">
+                          {homeScore}:{awayScore}
+                        </span>
+
+                        {/* ✈️ 뒤: [원정팀] */}
+                        <div className="flex items-center justify-end gap-1 min-w-0 flex-1 text-right">
+                          <span className={`truncate font-bold ${!isTeamHome ? 'text-cyan-500 dark:text-cyan-400 font-black' : 'text-slate-500 dark:text-slate-400'}`}>
+                            {getLocalizedTeamName(awayName, 'ko')}
+                          </span>
+                          <span className="text-cyan-400 font-black text-[9px] shrink-0">[원정]</span>
+                        </div>
+
+                        {/* 승무패 결과 뱃지 */}
+                        <span className={`px-1.5 py-0.5 rounded text-[10px] font-black shrink-0 ${badgeBg}`}>
+                          {res}
+                        </span>
+                      </div>
+                    );
+                  })}
                 </div>
 
                 {/* 원정팀 최근 경기 */}
-                <div className={`p-3.5 rounded-2xl border space-y-2 ${
+                <div className={`p-3.5 rounded-2xl border space-y-2.5 ${
                   isLight ? 'bg-slate-50 border-slate-200' : 'bg-slate-950 border-slate-800'
                 }`}>
-                  <span className="text-cyan-400 font-black text-xs block pb-1 border-b border-slate-200 dark:border-slate-800">
-                    ✈️ [원정] {getLocalizedTeamName(match.awayTeam.name, 'ko')}
-                  </span>
-                  {awayLogs.map((g, idx) => (
-                    <div key={idx} className={`flex items-center justify-between p-2 rounded-xl border text-[11px] ${
-                      isLight ? 'bg-white border-slate-200' : 'bg-slate-900 border-slate-800'
-                    }`}>
-                      <span className="text-slate-400 font-mono">{g.dateStr}</span>
-                      <span className="font-bold truncate max-w-[90px]">{g.opponentName}</span>
-                      <span className="font-mono font-black text-amber-400">{g.teamScore}:{g.opponentScore}</span>
-                      <span className={`px-1.5 py-0.2 rounded text-[10px] font-black ${
-                        g.resultStr === '승' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-rose-500/20 text-rose-400'
+                  <div className="flex items-center justify-between pb-1.5 border-b border-slate-200 dark:border-slate-800">
+                    <span className="text-cyan-400 font-black text-xs flex items-center gap-1.5">
+                      <span>✈️</span>
+                      <span>[원정] {getLocalizedTeamName(match.awayTeam.name, 'ko')}</span>
+                    </span>
+                    <span className="text-[10px] text-slate-400 font-mono">앞: [홈] vs 뒤: [원정]</span>
+                  </div>
+
+                  {awayLogs.map((g, idx) => {
+                    const isTeamHome = g.isHome === true || g.homeOrAway === 'HOME';
+                    const homeName = isTeamHome ? match.awayTeam.name : g.opponentName;
+                    const awayName = isTeamHome ? g.opponentName : match.awayTeam.name;
+                    const homeScore = isTeamHome ? g.teamScore : g.opponentScore;
+                    const awayScore = isTeamHome ? g.opponentScore : g.teamScore;
+                    const res = g.resultStr || (g.teamScore > g.opponentScore ? '승' : g.teamScore === g.opponentScore ? '무' : '패');
+                    const badgeBg = res === '승'
+                      ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+                      : res === '무'
+                        ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
+                        : 'bg-rose-500/20 text-rose-400 border border-rose-500/30';
+
+                    return (
+                      <div key={idx} className={`p-2 rounded-xl border text-[11px] flex items-center justify-between gap-1.5 ${
+                        isLight ? 'bg-white border-slate-200' : 'bg-slate-900 border-slate-800'
                       }`}>
-                        {g.resultStr}
-                      </span>
-                    </div>
-                  ))}
+                        <span className="text-slate-400 font-mono text-[10px] shrink-0 w-9">{g.dateStr}</span>
+
+                        {/* 🏠 앞: [홈팀] */}
+                        <div className="flex items-center gap-1 min-w-0 flex-1">
+                          <span className="text-emerald-500 font-black text-[9px] shrink-0">[홈]</span>
+                          <span className={`truncate font-bold ${isTeamHome ? 'text-emerald-500 dark:text-emerald-400 font-black' : 'text-slate-500 dark:text-slate-400'}`}>
+                            {getLocalizedTeamName(homeName, 'ko')}
+                          </span>
+                        </div>
+
+                        {/* 스코어 */}
+                        <span className="font-mono font-black text-amber-400 px-1.5 py-0.2 rounded bg-slate-100 dark:bg-slate-950 text-xs shrink-0 border border-slate-200 dark:border-slate-800">
+                          {homeScore}:{awayScore}
+                        </span>
+
+                        {/* ✈️ 뒤: [원정팀] */}
+                        <div className="flex items-center justify-end gap-1 min-w-0 flex-1 text-right">
+                          <span className={`truncate font-bold ${!isTeamHome ? 'text-cyan-500 dark:text-cyan-400 font-black' : 'text-slate-500 dark:text-slate-400'}`}>
+                            {getLocalizedTeamName(awayName, 'ko')}
+                          </span>
+                          <span className="text-cyan-400 font-black text-[9px] shrink-0">[원정]</span>
+                        </div>
+
+                        {/* 승무패 결과 뱃지 */}
+                        <span className={`px-1.5 py-0.5 rounded text-[10px] font-black shrink-0 ${badgeBg}`}>
+                          {res}
+                        </span>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             </div>

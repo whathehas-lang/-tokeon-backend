@@ -86,27 +86,27 @@ export class BaseballSeriesFatigueEngine {
     },
     "피츠버그": {
       prev1: { dateStr: "09.03 (직전 경기)", opponentName: "시카고 컵스", teamScore: 5, opponentScore: 3, result: "승", starterName: "미치 켈러", innings: "6.0", pitches: 88, balls: 31, strikes: 57, bullpen: [{ name: "콜린 홀더맨", pitches: 16, role: "VICTORY" }, { name: "데이비드 베드나", pitches: 14, role: "VICTORY" }] },
-      prev2: { dateStr: "09.02 (2일전 경기)", opponentName: "시카고 컵스", teamScore: 4, opponentScore: 1, result: "승", starterName: "폴 스킨스", innings: "7.0", pitches: 95, balls: 30, strikes: 65, bullpen: [{ name: "아롤디스 채프먼", pitches: 15, role: "VICTORY" }, { name: "데이비드 베드나", pitches: 12, role: "VICTORY" }] }
+      prev2: { dateStr: "08.31 (이전 시리즈)", opponentName: "클리블랜드", teamScore: 4, opponentScore: 1, result: "승", starterName: "폴 스킨스", innings: "7.0", pitches: 95, balls: 30, strikes: 65, bullpen: [{ name: "아롤디스 채프먼", pitches: 15, role: "VICTORY" }, { name: "데이비드 베드나", pitches: 12, role: "VICTORY" }] }
     },
     "샌프란시스코": {
       prev1: { dateStr: "09.03 (직전 경기)", opponentName: "애리조나", teamScore: 3, opponentScore: 2, result: "승", starterName: "카일 해리슨", innings: "5.1", pitches: 86, balls: 32, strikes: 54, bullpen: [{ name: "타일러 로저스", pitches: 14, role: "VICTORY" }, { name: "카밀로 도발", pitches: 16, role: "VICTORY" }] },
-      prev2: { dateStr: "09.02 (2일전 경기)", opponentName: "애리조나", teamScore: 6, opponentScore: 4, result: "승", starterName: "로건 웹", innings: "7.0", pitches: 98, balls: 33, strikes: 65, bullpen: [{ name: "에릭 밀러", pitches: 18, role: "VICTORY" }, { name: "라이언 워커", pitches: 15, role: "VICTORY" }] }
+      prev2: { dateStr: "08.31 (이전 시리즈)", opponentName: "마이애미", teamScore: 6, opponentScore: 4, result: "승", starterName: "로건 웹", innings: "7.0", pitches: 98, balls: 33, strikes: 65, bullpen: [{ name: "에릭 밀러", pitches: 18, role: "VICTORY" }, { name: "라이언 워커", pitches: 15, role: "VICTORY" }] }
     },
     "클리블랜드": {
       prev1: { dateStr: "09.03 (직전 경기)", opponentName: "캔자스시티", teamScore: 7, opponentScore: 1, result: "승", starterName: "태너 바이비", innings: "6.0", pitches: 92, balls: 32, strikes: 60, bullpen: [{ name: "헌터 가디스", pitches: 15, role: "VICTORY" }, { name: "엠마누엘 클라세", pitches: 12, role: "VICTORY" }] },
-      prev2: { dateStr: "09.02 (2일전 경기)", opponentName: "캔자스시티", teamScore: 4, opponentScore: 2, result: "승", starterName: "벤 라이블리", innings: "5.2", pitches: 89, balls: 31, strikes: 58, bullpen: [{ name: "케이드 스미스", pitches: 18, role: "VICTORY" }] }
+      prev2: { dateStr: "08.31 (이전 시리즈)", opponentName: "텍사스", teamScore: 4, opponentScore: 2, result: "승", starterName: "벤 라이블리", innings: "5.2", pitches: 89, balls: 31, strikes: 58, bullpen: [{ name: "케이드 스미스", pitches: 18, role: "VICTORY" }] }
     },
     "토론토": {
       prev1: { dateStr: "09.03 (직전 경기)", opponentName: "보스턴", teamScore: 2, opponentScore: 0, result: "승", starterName: "케빈 가우스먼", innings: "7.0", pitches: 95, balls: 30, strikes: 65, bullpen: [{ name: "채드 그린", pitches: 14, role: "VICTORY" }] },
-      prev2: { dateStr: "09.02 (2일전 경기)", opponentName: "보스턴", teamScore: 3, opponentScore: 5, result: "패", starterName: "호세 베리오스", innings: "6.0", pitches: 91, balls: 33, strikes: 58, bullpen: [{ name: "헤네시스 카브레라", pitches: 16, role: "PURSUIT" }] }
+      prev2: { dateStr: "08.31 (이전 시리즈)", opponentName: "미네소타", teamScore: 3, opponentScore: 5, result: "패", starterName: "호세 베리오스", innings: "6.0", pitches: 91, balls: 33, strikes: 58, bullpen: [{ name: "헤네시스 카브레라", pitches: 16, role: "PURSUIT" }] }
     },
     "휴스턴": {
       prev1: { dateStr: "09.03 (직전 경기)", opponentName: "필라델피아", teamScore: 5, opponentScore: 2, result: "승", starterName: "프람버 발데스", innings: "7.0", pitches: 96, balls: 31, strikes: 65, bullpen: [{ name: "브라이언 아브레우", pitches: 16, role: "VICTORY" }, { name: "조쉬 헤이더", pitches: 14, role: "VICTORY" }] },
-      prev2: { dateStr: "09.02 (2일전 경기)", opponentName: "필라델피아", teamScore: 3, opponentScore: 4, result: "패", starterName: "헌터 브라운", innings: "6.0", pitches: 90, balls: 32, strikes: 58, bullpen: [{ name: "라이언 프레슬리", pitches: 18, role: "VICTORY" }] }
+      prev2: { dateStr: "08.31 (이전 시리즈)", opponentName: "볼티모어", teamScore: 3, opponentScore: 4, result: "패", starterName: "헌터 브라운", innings: "6.0", pitches: 90, balls: 32, strikes: 58, bullpen: [{ name: "라이언 프레슬리", pitches: 18, role: "VICTORY" }] }
     },
     "시카고 화이트삭스": {
       prev1: { dateStr: "09.03 (직전 경기)", opponentName: "볼티모어", teamScore: 0, opponentScore: 9, result: "패", starterName: "개럿 크로셰", innings: "4.0", pitches: 75, balls: 28, strikes: 47, bullpen: [{ name: "차드 쿨", pitches: 24, role: "PURSUIT" }] },
-      prev2: { dateStr: "09.02 (2일전 경기)", opponentName: "볼티모어", teamScore: 3, opponentScore: 6, result: "패", starterName: "크리스 플렉센", innings: "5.0", pitches: 86, balls: 34, strikes: 52, bullpen: [{ name: "존 브레비아", pitches: 18, role: "PURSUIT" }] }
+      prev2: { dateStr: "08.31 (이전 시리즈)", opponentName: "디트로이트", teamScore: 3, opponentScore: 6, result: "패", starterName: "크리스 플렉센", innings: "5.0", pitches: 86, balls: 34, strikes: 52, bullpen: [{ name: "존 브레비아", pitches: 18, role: "PURSUIT" }] }
     },
 
     // 🇰🇷 KBO 구단 (09.01 월요 휴식일 / 08.31 주말 3연전)
@@ -154,29 +154,69 @@ export class BaseballSeriesFatigueEngine {
     // 🇯🇵 NPB 일본프로야구 구단
     "요미우리": {
       prev1: { dateStr: "09.03 (직전 경기)", opponentName: "야쿠르트", teamScore: 4, opponentScore: 2, result: "승", starterName: "스가노 토모유키", innings: "7.0", pitches: 96, balls: 31, strikes: 65, bullpen: [{ name: "알베르토 발도나도", pitches: 15, role: "VICTORY" }, { name: "다이세이", pitches: 12, role: "VICTORY" }] },
-      prev2: { dateStr: "09.02 (2일전 경기)", opponentName: "야쿠르트", teamScore: 3, opponentScore: 1, result: "승", starterName: "이오리 야마사키", innings: "6.1", pitches: 90, balls: 30, strikes: 60, bullpen: [{ name: "다카나시 유헤이", pitches: 14, role: "VICTORY" }] }
+      prev2: { dateStr: "08.31 (이전 시리즈)", opponentName: "히로시마", teamScore: 3, opponentScore: 1, result: "승", starterName: "이오리 야마사키", innings: "6.1", pitches: 90, balls: 30, strikes: 60, bullpen: [{ name: "다카나시 유헤이", pitches: 14, role: "VICTORY" }] }
     },
     "한신": {
       prev1: { dateStr: "09.03 (직전 경기)", opponentName: "주니치", teamScore: 3, opponentScore: 1, result: "승", starterName: "무라카미 쇼키", innings: "7.0", pitches: 94, balls: 28, strikes: 66, bullpen: [{ name: "스구루 이와자키", pitches: 14, role: "VICTORY" }] },
-      prev2: { dateStr: "09.02 (2일전 경기)", opponentName: "주니치", teamScore: 2, opponentScore: 4, result: "패", starterName: "사이키 히로토", innings: "6.0", pitches: 92, balls: 32, strikes: 60, bullpen: [{ name: "게라", pitches: 18, role: "PURSUIT" }] }
+      prev2: { dateStr: "08.31 (이전 시리즈)", opponentName: "요코하마", teamScore: 2, opponentScore: 4, result: "패", starterName: "사이키 히로토", innings: "6.0", pitches: 92, balls: 32, strikes: 60, bullpen: [{ name: "게라", pitches: 18, role: "PURSUIT" }] }
     },
     "소프트뱅크": {
       prev1: { dateStr: "09.03 (직전 경기)", opponentName: "세이부", teamScore: 5, opponentScore: 2, result: "승", starterName: "아리하라 고헤이", innings: "7.0", pitches: 98, balls: 33, strikes: 65, bullpen: [{ name: "츠모리 유키", pitches: 16, role: "VICTORY" }, { name: "오수나", pitches: 12, role: "VICTORY" }] },
-      prev2: { dateStr: "09.02 (2일전 경기)", opponentName: "세이부", teamScore: 4, opponentScore: 1, result: "승", starterName: "모이넬로", innings: "7.0", pitches: 102, balls: 35, strikes: 67, bullpen: [{ name: "마츠모토 유키", pitches: 14, role: "VICTORY" }] }
+      prev2: { dateStr: "08.31 (이전 시리즈)", opponentName: "지바롯데", teamScore: 4, opponentScore: 1, result: "승", starterName: "모이넬로", innings: "7.0", pitches: 102, balls: 35, strikes: 67, bullpen: [{ name: "마츠모토 유키", pitches: 14, role: "VICTORY" }] }
     },
     "라쿠텐": {
       prev1: { dateStr: "09.03 (직전 경기)", opponentName: "닛폰햄", teamScore: 3, opponentScore: 2, result: "승", starterName: "하야카와 다카히사", innings: "6.2", pitches: 94, balls: 31, strikes: 63, bullpen: [{ name: "노리모토 다카히로", pitches: 14, role: "VICTORY" }] },
-      prev2: { dateStr: "09.02 (2일전 경기)", opponentName: "닛폰햄", teamScore: 1, opponentScore: 4, result: "패", starterName: "기시 다카유키", innings: "6.0", pitches: 88, balls: 29, strikes: 59, bullpen: [{ name: "사카이 도모히토", pitches: 16, role: "PURSUIT" }] }
+      prev2: { dateStr: "08.31 (이전 시리즈)", opponentName: "오릭스", teamScore: 1, opponentScore: 4, result: "패", starterName: "기시 다카유키", innings: "6.0", pitches: 88, balls: 29, strikes: 59, bullpen: [{ name: "사카이 도모히토", pitches: 16, role: "PURSUIT" }] }
     },
     "닛폰햄": {
       prev1: { dateStr: "09.03 (직전 경기)", opponentName: "라쿠텐", teamScore: 2, opponentScore: 3, result: "패", starterName: "이토 히로미", innings: "7.0", pitches: 96, balls: 30, strikes: 66, bullpen: [{ name: "다나카 세이기", pitches: 15, role: "PURSUIT" }] },
-      prev2: { dateStr: "09.02 (2일전 경기)", opponentName: "라쿠텐", teamScore: 4, opponentScore: 1, result: "승", starterName: "가토 다카유키", innings: "6.0", pitches: 89, balls: 28, strikes: 61, bullpen: [{ name: "이케다 다카히데", pitches: 14, role: "VICTORY" }] }
+      prev2: { dateStr: "08.31 (이전 시리즈)", opponentName: "소프트뱅크", teamScore: 4, opponentScore: 1, result: "승", starterName: "가토 다카유키", innings: "6.0", pitches: 89, balls: 28, strikes: 61, bullpen: [{ name: "이케다 다카히데", pitches: 14, role: "VICTORY" }] }
     },
     "오릭스": {
       prev1: { dateStr: "09.03 (직전 경기)", opponentName: "지바롯데", teamScore: 4, opponentScore: 2, result: "승", starterName: "미야기 히로야", innings: "7.0", pitches: 95, balls: 31, strikes: 64, bullpen: [{ name: "마차도", pitches: 14, role: "VICTORY" }] },
-      prev2: { dateStr: "09.02 (2일전 경기)", opponentName: "지바롯데", teamScore: 2, opponentScore: 3, result: "패", starterName: "소타니 류헤이", innings: "5.1", pitches: 86, balls: 32, strikes: 54, bullpen: [{ name: "페르도모", pitches: 16, role: "PURSUIT" }] }
+      prev2: { dateStr: "08.31 (이전 시리즈)", opponentName: "세이부", teamScore: 2, opponentScore: 3, result: "패", starterName: "소타니 류헤이", innings: "5.1", pitches: 86, balls: 32, strikes: 54, bullpen: [{ name: "페르도모", pitches: 16, role: "PURSUIT" }] }
     }
   };
+
+  /**
+   * 본인 구단 및 현재 매치업 상대팀과 절대 겹치지 않는 리그 내 실존 타 구단명 반환
+   */
+  public static getAlternativeRival(teamName: string, opponentName: string, excludeList: string[] = []): string {
+    const cleanTeam = SportsEntityMappingService.normalize(teamName);
+    const cleanOpp = SportsEntityMappingService.normalize(opponentName);
+    const cleanExcludes = excludeList.map(e => SportsEntityMappingService.normalize(e));
+
+    const isExcluded = (name: string) => {
+      const cleanN = SportsEntityMappingService.normalize(name);
+      return cleanN.includes(cleanTeam) || cleanTeam.includes(cleanN) ||
+             cleanN.includes(cleanOpp) || cleanOpp.includes(cleanN) ||
+             cleanExcludes.some(ex => cleanN.includes(ex) || ex.includes(cleanN));
+    };
+
+    // 🇰🇷 KBO 10개 구단
+    const kboPool = ['KIA', '삼성', 'LG', '두산', 'KT', 'SSG', '롯데', '한화', 'NC', '키움'];
+    if (kboPool.some(t => SportsEntityMappingService.normalize(t).includes(cleanTeam) || cleanTeam.includes(SportsEntityMappingService.normalize(t)))) {
+      const found = kboPool.find(t => !isExcluded(t));
+      if (found) return found;
+    }
+
+    // 🇯🇵 NPB 12개 구단
+    const npbPool = ['요미우리', '한신', '히로시마', '야쿠르트', '요코하마', '주니치', '소프트뱅크', '오릭스', '닛폰햄', '지바롯데', '라쿠텐', '세이부'];
+    if (npbPool.some(t => SportsEntityMappingService.normalize(t).includes(cleanTeam) || cleanTeam.includes(SportsEntityMappingService.normalize(t)))) {
+      const found = npbPool.find(t => !isExcluded(t));
+      if (found) return found;
+    }
+
+    // 🇺🇸 MLB 30개 구단
+    const mlbPool = [
+      'LA 다저스', '뉴욕 양키스', '보스턴', '볼티모어', '휴스턴', '필라델피아',
+      '애틀랜타', '샌디에이고', '시애틀', '캔자스시티', '밀워키', '시카고 컵스',
+      '세인트루이스', '샌프란시스코', '탬파베이', '토론토', '클리블랜드', '뉴욕 메츠',
+      '텍사스', '미네소타', '디트로이트', '피츠버그', '애리조나', '시카고 화이트삭스'
+    ];
+    const found = mlbPool.find(t => !isExcluded(t));
+    return found || '리그 타 구단';
+  }
 
   /**
    * 실측 경기 로그 기반 SeriesGamePitchLog 생성
@@ -193,6 +233,12 @@ export class BaseballSeriesFatigueEngine {
   ) {
     const clean = SportsEntityMappingService.normalize(teamName);
     let matchedLog: any = null;
+
+    const now = new Date();
+    const d1 = new Date(now.getTime() - 24 * 3600 * 1000);
+    const d1Str = `${String(d1.getMonth() + 1).padStart(2, '0')}.${String(d1.getDate()).padStart(2, '0')}`;
+    const d2 = new Date(now.getTime() - 48 * 3600 * 1000);
+    const d2Str = `${String(d2.getMonth() + 1).padStart(2, '0')}.${String(d2.getDate()).padStart(2, '0')}`;
 
     const teamEntity = SportsEntityMappingService.resolveTeamEntity(teamName);
     const targetNames = [
@@ -211,11 +257,55 @@ export class BaseballSeriesFatigueEngine {
 
       if (isMatch) {
         if (roundType === 'GAME_3') {
-          // 내일(3차전) 경기: 이틀전은 1차전(prev1), 어제는 2차전
-          matchedLog = isSecondGame ? { ...data.prev1, dateStr: "09.03 (시리즈 2차전)", opponentName: currentOpponentName } : { ...data.prev1, dateStr: "09.02 (시리즈 1차전)", opponentName: currentOpponentName };
+          // ⚾ 3차전: 어제는 2차전(vs 오늘 상대팀), 이틀전은 1차전(vs 오늘 상대팀)
+          matchedLog = isSecondGame
+            ? { ...data.prev1, dateStr: `${d1Str} (시리즈 2차전)`, opponentName: currentOpponentName }
+            : { ...data.prev1, dateStr: `${d2Str} (시리즈 1차전)`, opponentName: currentOpponentName };
+        } else if (roundType === 'GAME_2') {
+          // 📅 2차전: 어제는 이번 시리즈 1차전(vs 오늘 상대팀), 3일전/이틀전은 이전 시리즈 타 구단(절대 오늘 상대팀 아님!)
+          if (isSecondGame) {
+            matchedLog = {
+              ...data.prev1,
+              dateStr: `${d1Str} (시리즈 1차전)`,
+              opponentName: currentOpponentName
+            };
+          } else {
+            let prevOpp = data.prev2.opponentName;
+            const normPrev = SportsEntityMappingService.normalize(prevOpp);
+            const normCur = SportsEntityMappingService.normalize(currentOpponentName);
+            const normTeam = SportsEntityMappingService.normalize(teamName);
+            if (normPrev.includes(normCur) || normCur.includes(normPrev) || normPrev.includes(normTeam) || normTeam.includes(normPrev)) {
+              prevOpp = this.getAlternativeRival(teamName, currentOpponentName);
+            }
+            matchedLog = {
+              ...data.prev2,
+              dateStr: `${d2Str} (이전 시리즈)`,
+              opponentName: prevOpp
+            };
+          }
         } else {
-          // 오늘(1·2차전) 경기: 이틀전은 2일전 경기(prev2), 어제는 직전 경기(prev1)
-          matchedLog = isSecondGame ? data.prev1 : data.prev2;
+          // 📅 1차전: 어제와 이틀전 모두 이전 시리즈 경기 (둘 다 오늘 상대팀과 달라야 함)
+          if (isSecondGame) {
+            let prev1Opp = data.prev1.opponentName;
+            if (prev1Opp === '공식 휴식일') {
+              matchedLog = data.prev1;
+            } else {
+              const normPrev1 = SportsEntityMappingService.normalize(prev1Opp);
+              const normCur = SportsEntityMappingService.normalize(currentOpponentName);
+              if (normPrev1.includes(normCur) || normCur.includes(normPrev1)) {
+                prev1Opp = this.getAlternativeRival(teamName, currentOpponentName);
+              }
+              matchedLog = { ...data.prev1, opponentName: prev1Opp };
+            }
+          } else {
+            let prev2Opp = data.prev2.opponentName;
+            const normPrev2 = SportsEntityMappingService.normalize(prev2Opp);
+            const normCur = SportsEntityMappingService.normalize(currentOpponentName);
+            if (normPrev2.includes(normCur) || normCur.includes(normPrev2)) {
+              prev2Opp = this.getAlternativeRival(teamName, currentOpponentName);
+            }
+            matchedLog = { ...data.prev2, opponentName: prev2Opp };
+          }
         }
         break;
       }
@@ -223,14 +313,24 @@ export class BaseballSeriesFatigueEngine {
 
     // 데이터가 없는 구단 폴백 (동적 날짜와 구단 공식 실명 로스터로 100% 정밀 바인딩)
     if (!matchedLog) {
-      const now = new Date();
-      const d1 = new Date(now.getTime() - 24 * 3600 * 1000);
-      const d1Str = `${String(d1.getMonth() + 1).padStart(2, '0')}.${String(d1.getDate()).padStart(2, '0')}`;
-      const d2 = new Date(now.getTime() - 48 * 3600 * 1000);
-      const d2Str = `${String(d2.getMonth() + 1).padStart(2, '0')}.${String(d2.getDate()).padStart(2, '0')}`;
+      let fallbackOpponent = '';
+      let fallbackDate = '';
 
-      const fallbackOpponent = isSecondGame ? currentOpponentName : (isHome ? "이전 시리즈 상대팀" : "이전 시리즈 홈팀");
-      const fallbackDate = isSecondGame ? `${d1Str} (직전경기)` : `${d2Str} (2일전 경기)`;
+      if (roundType === 'GAME_3') {
+        fallbackOpponent = currentOpponentName;
+        fallbackDate = isSecondGame ? `${d1Str} (시리즈 2차전)` : `${d2Str} (시리즈 1차전)`;
+      } else if (roundType === 'GAME_2') {
+        fallbackOpponent = isSecondGame
+          ? currentOpponentName
+          : this.getAlternativeRival(teamName, currentOpponentName);
+        fallbackDate = isSecondGame ? `${d1Str} (시리즈 1차전)` : `${d2Str} (이전 시리즈)`;
+      } else {
+        const rival1 = this.getAlternativeRival(teamName, currentOpponentName);
+        const rival2 = this.getAlternativeRival(teamName, currentOpponentName, [rival1]);
+        fallbackOpponent = isSecondGame ? rival1 : rival2;
+        fallbackDate = isSecondGame ? `${d1Str} (직전경기)` : `${d2Str} (2일전 경기)`;
+      }
+
       const startersList = (roster as any).starters || [];
       const realStarter = (isSecondGame ? startersList[1] : startersList[0]) || startersList[0] || `${teamName} 선발`;
 

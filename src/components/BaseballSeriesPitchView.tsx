@@ -20,7 +20,7 @@ export const BaseballSeriesPitchView = ({
   onOpenPaywall,
   theme = 'dark'
 }: BaseballSeriesPitchViewProps) => {
-  const [selectedRound, setSelectedRound] = useState<'GAME_1' | 'GAME_2' | 'GAME_3'>(tracker?.seriesRoundType || 'GAME_1');
+  const [selectedRound, setSelectedRound] = useState<'GAME_1' | 'GAME_2' | 'GAME_3'>(tracker?.seriesRoundType || 'GAME_2');
   const isVvip = true; // 🔓 전면 무료 100% 팩트 공개 가림막 해제
 
   if (!homeTeam || !awayTeam) return null;
@@ -271,7 +271,7 @@ export const BaseballSeriesPitchView = ({
                   : 'text-slate-400 hover:text-white bg-slate-950/80 border border-slate-800'
               }`}
             >
-              📅 이틀전 경기 (전전경기)
+              📅 1차전 기준 (이전 시리즈)
             </button>
             <button
               onClick={() => setSelectedRound('GAME_2')}
@@ -281,7 +281,7 @@ export const BaseballSeriesPitchView = ({
                   : 'text-slate-400 hover:text-white bg-slate-950/80 border border-slate-800'
               }`}
             >
-              📅 어제 경기 (전경기)
+              📅 오늘 2차전 (1차전 포함)
             </button>
             <button
               onClick={() => setSelectedRound('GAME_3')}
@@ -291,7 +291,7 @@ export const BaseballSeriesPitchView = ({
                   : 'text-slate-400 hover:text-white bg-slate-950/80 border border-slate-800'
               }`}
             >
-              ⚾ 오늘 경기 (선발/피로도)
+              ⚾ 오늘 3차전 (1·2차전 누적)
             </button>
           </div>
         </div>
