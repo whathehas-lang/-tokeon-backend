@@ -1,5 +1,6 @@
 import type { StarterPitcherInfo } from '../../types/sports';
 import { SportsEntityMappingService } from '../mappers/sportsEntityMappingService';
+import { KboNpbOfficialLineupService } from '../crawler/kboNpbOfficialLineupService';
 
 /**
  * 🇯🇵 NpbOfficialStarterService
@@ -17,13 +18,18 @@ export class NpbOfficialStarterService {
     }
   }
 
-  public static async fetchOfficialStarterByDate(teamName: string, _dateContext: 'TODAY' | 'FUTURE' = 'TODAY'): Promise<StarterPitcherInfo | null> {
+  public static async fetchOfficialStarterByDate(teamName: string, dateContext: 'TODAY' | 'FUTURE' = 'TODAY'): Promise<StarterPitcherInfo | null> {
     const clean = SportsEntityMappingService.normalize(teamName);
     for (const [k, v] of this.dynamicNpbStarters.entries()) {
       if (k.includes(clean) || clean.includes(k)) {
         return v;
       }
     }
+
+    // npb.jp 공식 공시 확정 데이터원 연동
+    const official = KboNpbOfficialLineupService.getOfficialStarter(teamName, dateContext === 'FUTURE' ? '2026-09-06' : '2026-09-05');
+    if (official) return official;
+
     // 🚫 공식 미공시 시 임의 추측 없이 100% null (선발 미정) 반환
     return null;
   }
@@ -32,3 +38,4 @@ export class NpbOfficialStarterService {
     return this.fetchOfficialStarterByDate(teamName, 'TODAY');
   }
 }
+

@@ -8,7 +8,7 @@ import { verifiedMatchDatabase } from '../db/verifiedMatchDatabase';
 
 export const RENDER_BACKEND_URL = 'https://tokeon-backend.onrender.com';
 
-const OFFICIAL_CACHE_VERSION = 'v20260905_official_sync_v6';
+const OFFICIAL_CACHE_VERSION = 'v20260905_official_sync_v7';
 
 // 🚀 초기 메모리 상태를 localStorage 캐시 또는 번들된 최신 시드(118+ 경기)로 즉시 하이드레이션
 function getInitialMatches(): Match[] {
