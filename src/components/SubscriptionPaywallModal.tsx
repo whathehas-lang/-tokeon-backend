@@ -1,17 +1,19 @@
 import React, { useState } from 'react';
-import { Crown, X, Check, CreditCard, Sparkles, AlertTriangle } from 'lucide-react';
+import { Crown, X, Check, CreditCard, Sparkles, AlertTriangle, KeyRound, Zap } from 'lucide-react';
 import type { MembershipTier } from '../types/sports';
 import { tossPaymentsService } from '../services/payment/tossPaymentsService';
 
 interface SubscriptionPaywallModalProps {
   onClose?: () => void;
   onUpgradeSuccess: (tier: MembershipTier) => void;
+  onOpenLogin?: () => void;
   isTrialExpired?: boolean;
 }
 
 export const SubscriptionPaywallModal = ({
   onClose,
   onUpgradeSuccess,
+  onOpenLogin,
   isTrialExpired = false,
 }: SubscriptionPaywallModalProps) => {
   const [paymentSuccess, setPaymentSuccess] = useState<boolean>(false);
@@ -46,11 +48,12 @@ export const SubscriptionPaywallModal = ({
         <div className="absolute -right-16 -top-16 w-48 h-48 bg-amber-500/20 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute -left-16 -bottom-16 w-48 h-48 bg-emerald-500/20 rounded-full blur-3xl pointer-events-none" />
 
-        {/* Close Button (If not force-blocked) */}
-        {onClose && !isTrialExpired && (
+        {/* Close Button (항상 닫기 허용) */}
+        {onClose && (
           <button
             onClick={onClose}
-            className="absolute top-5 right-5 p-2 rounded-xl text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-700 transition-colors z-20"
+            className="absolute top-5 right-5 p-2 rounded-xl text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-700 transition-colors z-20 cursor-pointer"
+            title="창 닫기"
           >
             <X className="w-4 h-4" />
           </button>
@@ -136,7 +139,7 @@ export const SubscriptionPaywallModal = ({
         )}
 
         {/* PAYMENT ACTION BUTTON */}
-        <div className="space-y-2 relative z-10">
+        <div className="space-y-2.5 relative z-10">
           <button
             onClick={handlePayWithToss}
             className="w-full py-3.5 bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 hover:from-amber-300 hover:to-yellow-300 text-slate-950 font-black text-sm rounded-2xl shadow-xl transition-all flex items-center justify-center gap-2 cursor-pointer border border-yellow-200 hover:scale-[1.01]"
@@ -144,6 +147,28 @@ export const SubscriptionPaywallModal = ({
             <CreditCard className="w-4 h-4 text-slate-950 stroke-[3]" />
             <span>[💳 토스페이먼츠 99,000원 VVIP 결제하기]</span>
           </button>
+
+          {/* 🔑 LOGIN ACTION FOR EXISTING / TEST USERS */}
+          {onOpenLogin && (
+            <button
+              type="button"
+              onClick={onOpenLogin}
+              className="w-full py-3 bg-slate-800 hover:bg-slate-750 text-amber-300 hover:text-amber-200 font-black text-xs sm:text-sm rounded-2xl border border-amber-500/40 flex items-center justify-center gap-2 transition-all cursor-pointer shadow-md"
+            >
+              <KeyRound className="w-4 h-4 text-amber-400" />
+              <span>[🔑 이미 회원이신가요? 로그인 / 1초 VVIP 계정 접속]</span>
+            </button>
+          )}
+
+          {onClose && (
+            <button
+              type="button"
+              onClick={onClose}
+              className="w-full py-2 text-slate-400 hover:text-slate-200 text-xs font-semibold underline underline-offset-4 cursor-pointer text-center transition-colors block"
+            >
+              창 닫고 실시간 팩트 데이터 둘러보기
+            </button>
+          )}
           
           <p className="text-[10px] text-slate-500 text-center">
             * 본 서비스는 100% VVIP 유료 회원 전용 오피셜 데이터 서비스입니다.

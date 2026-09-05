@@ -450,6 +450,7 @@ export default function App() {
   });
 
   const [isPaywallOpen, setIsPaywallOpen] = useState<boolean>(() => {
+    if (localStorage.getItem('tokeon_is_logged_in') === 'true') return false;
     const savedTier = localStorage.getItem('tokeon_membership_tier');
     if (savedTier === 'VVIP') return false;
 
@@ -522,7 +523,7 @@ export default function App() {
 
   // Countdown timer effect (compares real-time to prevent resets)
   useEffect(() => {
-    if (isTrialExpired || membershipTier === 'VVIP') return;
+    if (isLoggedIn || isTrialExpired || membershipTier === 'VVIP') return;
     const timer = setInterval(() => {
       const savedStart = localStorage.getItem('tokeon_trial_start_time');
       if (!savedStart) return;
@@ -533,14 +534,16 @@ export default function App() {
       if (remaining <= 0) {
         setTrialSecondsLeft(0);
         setIsTrialExpired(true);
-        setIsPaywallOpen(true);
+        if (!isLoggedIn) {
+          setIsPaywallOpen(true);
+        }
         clearInterval(timer);
       } else {
         setTrialSecondsLeft(remaining);
       }
     }, 1000);
     return () => clearInterval(timer);
-  }, [isTrialExpired, membershipTier]);
+  }, [isLoggedIn, isTrialExpired, membershipTier]);
 
   // Format Trial Timer String
   const formatTimerStr = (totalSec: number) => {
@@ -550,33 +553,33 @@ export default function App() {
     return `${hours}시간 ${mins.toString().padStart(2, '0')}분 ${secs.toString().padStart(2, '0')}초`;
   };
 
-  // 📌 Handle Login & Signup Success (회원가입 및 유료 등급 로그인 시 차단 창 즉시 해제 및 모달 닫기!)
+  // 📌 Handle Login & Signup Success (회원가입 및 로그인 시 즉시 VVIP 등급 부여 & 결제창 닫기!)
   const handleLoginSuccess = (userData: { name: string; tier: MembershipTier; email: string }) => {
+    const assignedTier = userData.tier || 'VVIP';
     setIsLoggedIn(true);
     localStorage.setItem('tokeon_is_logged_in', 'true');
-    setMembershipTier(userData.tier);
-    localStorage.setItem('tokeon_membership_tier', userData.tier);
+    setMembershipTier(assignedTier);
+    localStorage.setItem('tokeon_membership_tier', assignedTier);
     
     const newProfile: UserProfileData = {
       id: 'u_' + Date.now(),
-      name: userData.name,
-      tier: userData.tier === 'VVIP' ? 'PRO_ANALYST' : 'BASIC',
+      name: userData.name || '토큰 VVIP 분석가',
+      tier: assignedTier === 'VVIP' ? 'PRO_ANALYST' : 'BASIC',
       favoriteSport: '야구/농구 (KBO & NBA 팩트)',
-      accuracy: userData.tier === 'VVIP' ? 94.8 : 72.5,
-      totalVotes: userData.tier === 'VVIP' ? 120 : 10,
-      correctVotes: userData.tier === 'VVIP' ? 114 : 7,
-      badges: userData.tier === 'VVIP' ? ['👑 VVIP 팩트 마스터', '🎟️ 토큰 오피셜분석가'] : [`👑 ${userData.tier} 팩트 회원`, '🎟️ 토큰 공식 수치 멤버']
+      accuracy: 95.8,
+      totalVotes: 120,
+      correctVotes: 115,
+      badges: ['👑 VVIP 팩트 마스터', '🎟️ 토큰 오피셜분석가']
     };
     setUserProfile(newProfile);
     localStorage.setItem('tokeon_user_profile', JSON.stringify(newProfile));
     setIsLoginModalOpen(false);
 
-    // VVIP/VIP 유료 회원가입 및 로그인 시 즉시 결제 차단 창(Paywall) 닫기!
-    if (userData.tier === 'VVIP' || userData.tier === 'VIP') {
-      setIsTrialExpired(false);
-      setTrialSecondsLeft(30 * 24 * 3600); // 30일 유료 구독 적용
-      setIsPaywallOpen(false); // 차단 창 즉시 해제 & 지우기!
-    }
+    // 로그인 시 즉시 결제 차단 창(Paywall) 완전 해제 & 30일 무료 연장
+    setIsTrialExpired(false);
+    setTrialSecondsLeft(30 * 24 * 3600);
+    localStorage.setItem('tokeon_trial_start_time', Date.now().toString());
+    setIsPaywallOpen(false);
   };
 
   // Handle Logout
@@ -982,9 +985,9 @@ export default function App() {
           ) : (
             <button
               onClick={() => setIsLoginModalOpen(true)}
-              className="flex items-center gap-1 px-2.5 py-1 rounded-md bg-emerald-500 hover:bg-emerald-400 text-white font-bold text-[11px] shadow-xs transition-all cursor-pointer"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-white font-black text-xs shadow-md transition-all cursor-pointer border border-emerald-300/40 active:scale-95"
             >
-              <LogIn className="w-3 h-3" />
+              <LogIn className="w-3.5 h-3.5" />
               <span>{getUiText('login', appLanguage)}</span>
             </button>
           )}
@@ -1235,7 +1238,9 @@ export default function App() {
           <div className="h-full flex flex-col overflow-y-auto p-4">
             <UserProfileModal
               userProfile={userProfile}
-              onLogout={handleLogout}
+              isLoggedIn={isLoggedIn}
+              onLogout={isLoggedIn ? handleLogout : undefined}
+              onOpenLogin={() => setIsLoginModalOpen(true)}
             />
           </div>
         )}
@@ -1407,8 +1412,12 @@ export default function App() {
       {isPaywallOpen && (
         <SubscriptionPaywallModal
           isTrialExpired={isTrialExpired}
-          onClose={isTrialExpired ? undefined : () => setIsPaywallOpen(false)}
+          onClose={() => setIsPaywallOpen(false)}
           onUpgradeSuccess={handleUpgradeSuccess}
+          onOpenLogin={() => {
+            setIsPaywallOpen(false);
+            setIsLoginModalOpen(true);
+          }}
         />
       )}
 

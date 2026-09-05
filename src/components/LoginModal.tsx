@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Lock, User, ShieldCheck, ArrowRight, KeyRound, CheckCircle2, Loader2 } from 'lucide-react';
+import { X, Lock, User, ShieldCheck, ArrowRight, KeyRound, CheckCircle2, Loader2, Zap, Sparkles } from 'lucide-react';
 import type { MembershipTier } from '../types/sports';
 import { authService } from '../services/auth/authService';
 
@@ -23,6 +23,20 @@ export const LoginModal = ({ onClose, onLoginSuccess }: LoginModalProps) => {
   const [isLoadingKakao, setIsLoadingKakao] = useState<boolean>(false);
   const [isLoadingEmail, setIsLoadingEmail] = useState<boolean>(false);
 
+  // ⚡ 1초 원클릭 VVIP 프리패스 로그인 (PC/모바일 무조건 100% 즉시 로그인)
+  const handleFastPassLogin = () => {
+    setErrorMsg('');
+    setSuccessMsg('👑 [토큰 VVIP 분석가] 계정으로 1초 즉시 로그인되었습니다!');
+    const user = authService.loginAsFastPass('VVIP', '토큰 VVIP 분석가');
+    setTimeout(() => {
+      onLoginSuccess({
+        name: user.name,
+        tier: user.tier,
+        email: user.email,
+      });
+    }, 300);
+  };
+
   // 🌐 Handle Real Google Login
   const handleGoogleLogin = async () => {
     setErrorMsg('');
@@ -40,7 +54,8 @@ export const LoginModal = ({ onClose, onLoginSuccess }: LoginModalProps) => {
         });
       }, 400);
     } catch (err: any) {
-      setErrorMsg(err.message || 'Google 로그인에 실패했습니다.');
+      console.warn('[LoginModal] Google login failed:', err);
+      setErrorMsg(err.message || 'Google 로그인에 실패했습니다. [1초 VVIP 계정으로 바로 로그인]을 이용하시면 즉시 접속됩니다.');
     } finally {
       setIsLoadingGoogle(false);
     }
@@ -63,7 +78,8 @@ export const LoginModal = ({ onClose, onLoginSuccess }: LoginModalProps) => {
         });
       }, 400);
     } catch (err: any) {
-      setErrorMsg(err.message || '카카오 로그인에 실패했습니다.');
+      console.warn('[LoginModal] Kakao login failed:', err);
+      setErrorMsg(err.message || '카카오 로그인에 실패했습니다. [1초 VVIP 계정으로 바로 로그인]을 이용하시면 즉시 접속됩니다.');
     } finally {
       setIsLoadingKakao(false);
     }
@@ -149,6 +165,32 @@ export const LoginModal = ({ onClose, onLoginSuccess }: LoginModalProps) => {
           </button>
         </div>
 
+        {/* ⚡ 1초 원클릭 VVIP 프리패스 로그인 카드 (최상단 강조) */}
+        <div className="p-3.5 rounded-2xl bg-gradient-to-r from-amber-500/25 via-yellow-500/15 to-amber-500/25 border-2 border-amber-400 shadow-xl relative z-10 overflow-hidden space-y-2">
+          <div className="flex items-center justify-between">
+            <span className="flex items-center gap-1.5 text-xs font-black text-amber-300">
+              <Sparkles className="w-4 h-4 text-amber-400 animate-spin" />
+              <span>복잡한 절차 없이 1초 즉시 시작</span>
+            </span>
+            <span className="px-2 py-0.5 rounded-full bg-amber-400 text-slate-950 font-black text-[10px] shadow">
+              👑 VVIP 등급 즉시 부여
+            </span>
+          </div>
+
+          <button
+            type="button"
+            onClick={handleFastPassLogin}
+            className="w-full py-3.5 px-4 bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 hover:from-amber-300 hover:to-yellow-300 active:scale-[0.98] text-slate-950 font-black text-sm rounded-xl shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer border border-yellow-200"
+          >
+            <Zap className="w-4 h-4 fill-slate-950 text-slate-950" />
+            <span>[⚡ 1초 원클릭 VVIP 계정으로 바로 로그인]</span>
+          </button>
+
+          <p className="text-[10px] text-slate-400 text-center font-medium">
+            * PC 웹 및 모바일 어디서든 클릭 1번으로 모든 14경기 팩트 데이터와 분석 기능이 즉시 개방됩니다.
+          </p>
+        </div>
+
         {/* TAB SWITCHER */}
         <div className="grid grid-cols-3 gap-1 bg-slate-950 p-1 rounded-2xl border border-slate-800 relative z-10 text-[11px]">
           <button
@@ -194,14 +236,24 @@ export const LoginModal = ({ onClose, onLoginSuccess }: LoginModalProps) => {
 
         {/* Alert Messages */}
         {errorMsg && (
-          <div className="p-3 bg-rose-950/90 text-rose-200 rounded-xl border border-rose-500 text-xs font-bold flex items-center gap-2">
-            <X className="w-4 h-4 text-rose-400 shrink-0" />
-            <span>{errorMsg}</span>
+          <div className="p-3 bg-rose-950/90 text-rose-200 rounded-xl border border-rose-500 text-xs font-bold space-y-2 relative z-10">
+            <div className="flex items-center gap-2">
+              <X className="w-4 h-4 text-rose-400 shrink-0" />
+              <span>{errorMsg}</span>
+            </div>
+            <button
+              type="button"
+              onClick={handleFastPassLogin}
+              className="w-full py-2 bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-xs rounded-lg flex items-center justify-center gap-1.5 transition-all cursor-pointer shadow"
+            >
+              <Zap className="w-3.5 h-3.5 fill-slate-950 text-slate-950" />
+              <span>인증 오류 무시하고 [1초 VVIP 계정으로 즉시 접속]</span>
+            </button>
           </div>
         )}
 
         {successMsg && (
-          <div className="p-3 bg-emerald-950/90 text-emerald-200 rounded-xl border border-emerald-500 text-xs font-bold flex items-center gap-2">
+          <div className="p-3 bg-emerald-950/90 text-emerald-200 rounded-xl border border-emerald-500 text-xs font-bold flex items-center gap-2 relative z-10">
             <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
             <span>{successMsg}</span>
           </div>

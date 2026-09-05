@@ -1,5 +1,5 @@
 import React from 'react';
-import { Award, Trophy, ShieldCheck, Flame, LogOut } from 'lucide-react';
+import { Award, Trophy, ShieldCheck, Flame, LogOut, KeyRound, Sparkles } from 'lucide-react';
 
 export interface UserProfileData {
   id: string;
@@ -14,12 +14,35 @@ export interface UserProfileData {
 
 interface UserProfileModalProps {
   userProfile: UserProfileData;
+  isLoggedIn?: boolean;
   onLogout?: () => void;
+  onOpenLogin?: () => void;
 }
 
-export const UserProfileModal = ({ userProfile, onLogout }: UserProfileModalProps) => {
+export const UserProfileModal = ({ userProfile, isLoggedIn = false, onLogout, onOpenLogin }: UserProfileModalProps) => {
   return (
     <div className="space-y-6 max-w-4xl mx-auto">
+      {/* Guest Login Banner */}
+      {!isLoggedIn && onOpenLogin && (
+        <div className="p-4 rounded-2xl bg-gradient-to-r from-amber-500/20 via-yellow-500/15 to-amber-500/20 border-2 border-amber-400 flex flex-col sm:flex-row items-center justify-between gap-3 shadow-xl">
+          <div className="flex items-center gap-3">
+            <div className="p-2.5 rounded-xl bg-amber-400/20 text-amber-400 border border-amber-400/30 shrink-0">
+              <Sparkles className="w-5 h-5 text-amber-400 animate-spin" />
+            </div>
+            <div>
+              <div className="text-sm font-black text-white">현재 게스트(손님) 모드로 접속 중입니다</div>
+              <div className="text-xs text-amber-200">1초 원클릭 VVIP 로그인 시 1~14경기 팩트 데이터와 분석 기능이 즉시 개방됩니다.</div>
+            </div>
+          </div>
+          <button
+            onClick={onOpenLogin}
+            className="px-4 py-2.5 bg-gradient-to-r from-amber-400 to-yellow-400 hover:from-amber-300 hover:to-yellow-300 text-slate-950 font-black text-xs rounded-xl shadow-lg transition-all flex items-center gap-1.5 cursor-pointer shrink-0"
+          >
+            <KeyRound className="w-4 h-4 text-slate-950" />
+            <span>⚡ 1초 VVIP 즉시 로그인</span>
+          </button>
+        </div>
+      )}
       {/* Profile Header Card */}
       <div className="bg-gradient-to-br from-slate-900 via-slate-850 to-slate-950 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden">
         <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 relative z-10">
