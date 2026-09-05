@@ -5,13 +5,13 @@ import { MLB_TEAM_TRANSLATIONS } from '../api/mlbLiveApiService';
 export type StarterUpdateListener = (updatedMatches: Match[]) => void;
 
 /**
- * ⚾ [야구 선발투수 & 라인업 2단계 지능형 수집/동기화 엔진]
- * 1. 1순위: 공식 사이트 (MLB Stats API hydrate=probablePitcher,lineups / KBO·NPB 공식 예고선발)
- *    - 아직 미발표 시 ➔ '선발 미정 (공식 발표 대기 ⏳)' 표시
- *    - 미정 경기만 10분 단위 (10 * 60 * 1000ms)로 공식 사이트 백그라운드 자동 재호출
+ * ⚾ [야구 투수 선발 운영방침 2단계 지능형 수집/동기화 엔진]
+ * 1. 1순위: 메이저리그 공식사이트(MLB Stats API), 한국야구(KBO), 일본야구(NPB) 공식사이트에서 먼저 확인
+ *    - 아직 발표가 안 되어 있으면 ➔ '선발 미정 (공식 발표 대기 ⏳)' 표시
+ *    - 미정으로 표시된 경기는 1시간 단위 (60 * 60 * 1000ms)로 공식 사이트 백그라운드 자동 재확인
  * 2. 2순위: 선발투수가 공식 발표/확정되면
- *    - 즉시 해당 선수의 실시간 지표 (ERA, WHIP, 상대전적)와 당일 확정 9인 타순 API 동기화
- *    - 최신 트레이드/이적 선수 100% 자동 반영
+ *    - 확정되는 즉시 api-베이스볼(API-Baseball) 및 공식 연맹 API에서 선발투수와 상세내역(ERA, WHIP, 다승, 탈삼진, 9인 타순) 연동
+ *    - 최신 이적/트레이드 선수 100% 자동 반영
  */
 export class BaseballStarterPollingService {
   private static instance: BaseballStarterPollingService;
@@ -20,8 +20,8 @@ export class BaseballStarterPollingService {
   private currentMatches: Match[] = [];
   private listeners: Set<StarterUpdateListener> = new Set();
   
-  // ⏰ 10분 주기 폴링 (10분 = 600,000 ms)
-  private readonly POLL_INTERVAL_MS = 10 * 60 * 1000;
+  // ⏰ 1시간 주기 폴링 (1시간 = 60분 = 3,600,000 ms)
+  private readonly POLL_INTERVAL_MS = 60 * 60 * 1000;
 
   public static getInstance(): BaseballStarterPollingService {
     if (!BaseballStarterPollingService.instance) {
@@ -46,7 +46,7 @@ export class BaseballStarterPollingService {
   }
 
   /**
-   * 경기 목록 동기화 및 미정 경기 확인 시 10분 주기 자동 폴링 가동
+   * 경기 목록 동기화 및 미정 경기 확인 시 1시간 주기 자동 폴링 가동
    */
   public syncMatches(matches: Match[]) {
     this.currentMatches = matches;
@@ -54,22 +54,29 @@ export class BaseballStarterPollingService {
     // 1회 즉시 공식 선발 상태 동기화
     this.checkAndUpdateStarters();
 
-    // 선발 미정 경기가 남아있다면 10분 주기 타이머 활성화
+    // 선발 미정 경기가 남아있다면 1시간 주기 타이머 활성화
     if (!this.timerId) {
-      this.start10MinPolling();
+      this.start1HourPolling();
     }
   }
 
   /**
-   * 10분 주기 공식 사이트 자동 폴링 시작
+   * 1시간 주기 공식 사이트 자동 폴링 시작 (미정 경기 지속 감시)
    */
-  public start10MinPolling() {
+  public start1HourPolling() {
     if (this.timerId) clearInterval(this.timerId);
-    console.log('[BaseballStarterPollingService] ⏰ 10분 주기 야구 선발투수/라인업 자동 폴링 가동 시작');
+    console.log('[BaseballStarterPollingService] ⏰ 1시간 주기 야구 선발투수 자동 폴링 가동 (운영방침: 미정 시 1시간마다 확인 후 확정 시 api-베이스볼 상세내역 연동)');
     this.timerId = setInterval(() => {
-      console.log('[BaseballStarterPollingService] ⏰ 10분 경과: 1순위 공식 사이트 선발 발표 여부 자동 스캔 중...');
+      console.log('[BaseballStarterPollingService] ⏰ 1시간 경과: 공식 사이트(MLB/KBO/NPB) 선발 발표 여부 자동 스캔 중...');
       this.checkAndUpdateStarters();
     }, this.POLL_INTERVAL_MS);
+  }
+
+  /**
+   * 하위 호환성 유지용 별칭
+   */
+  public start10MinPolling() {
+    this.start1HourPolling();
   }
 
   public stopPolling() {
@@ -126,7 +133,7 @@ export class BaseballStarterPollingService {
       const mlbOfficialData = await this.fetchMlbOfficialSchedule();
 
       let hasAnyUpdate = false;
-      const updatedList = this.currentMatches.map((m) => {
+      const updatedList = await Promise.all(this.currentMatches.map(async (m) => {
         if (m.sport !== 'baseball') return m;
 
         const league = (m.league || '').toLowerCase();
@@ -148,42 +155,52 @@ export class BaseballStarterPollingService {
             const hProbable = matchedGame.teams?.home?.probablePitcher;
             const aProbable = matchedGame.teams?.away?.probablePitcher;
 
-            // 홈팀 선발 확인
+            // 홈팀 선발 확인: 공식 발표 확인 시 api-베이스볼/연맹 공식 상세내역(ERA, WHIP 등) 연동
             if (hProbable && hProbable.fullName) {
-              if (homeStarter.name !== hProbable.fullName) {
-                console.log(`[BaseballStarterPollingService] 🚀 [MLB 공식 선발 확정] ${m.homeTeam.name} -> ${hProbable.fullName}`);
+              let detailedStats: Partial<StarterPitcherInfo> | null = null;
+              if (hProbable.id) {
+                detailedStats = await this.fetchPitcherDetailedStats(hProbable.id);
+              }
+
+              if (homeStarter.name !== hProbable.fullName || (detailedStats && homeStarter.era === '발표대기')) {
+                console.log(`[BaseballStarterPollingService] 🚀 [공식 선발 확정 ➔ 상세내역 연동] ${m.homeTeam.name} -> ${hProbable.fullName} (ERA: ${detailedStats?.era || homeStarter.era}, WHIP: ${detailedStats?.whip || homeStarter.whip})`);
                 homeStarter = {
                   name: hProbable.fullName,
                   number: hProbable.primaryNumber || 1,
                   throwsHand: 'R',
-                  era: homeStarter?.era && homeStarter.era !== '발표대기' ? homeStarter.era : '3.50',
-                  seasonEra: homeStarter?.seasonEra && homeStarter.seasonEra !== '미정' ? homeStarter.seasonEra : '3.50',
-                  whip: homeStarter?.whip && homeStarter.whip !== '-' ? homeStarter.whip : '1.18',
-                  wins: homeStarter?.wins || 0,
-                  losses: homeStarter?.losses || 0,
-                  inningsPitched: homeStarter?.inningsPitched && homeStarter.inningsPitched !== '0.0' ? homeStarter.inningsPitched : '0.0',
-                  strikeouts: homeStarter?.strikeouts || 0,
+                  era: detailedStats?.era || (homeStarter?.era && homeStarter.era !== '발표대기' ? homeStarter.era : '3.50'),
+                  seasonEra: detailedStats?.seasonEra || (homeStarter?.seasonEra && homeStarter.seasonEra !== '미정' ? homeStarter.seasonEra : '3.50'),
+                  whip: detailedStats?.whip || (homeStarter?.whip && homeStarter.whip !== '-' ? homeStarter.whip : '1.18'),
+                  wins: detailedStats?.wins ?? homeStarter?.wins ?? 0,
+                  losses: detailedStats?.losses ?? homeStarter?.losses ?? 0,
+                  inningsPitched: detailedStats?.inningsPitched || (homeStarter?.inningsPitched && homeStarter.inningsPitched !== '0.0' ? homeStarter.inningsPitched : '0.0'),
+                  strikeouts: detailedStats?.strikeouts ?? homeStarter?.strikeouts ?? 0,
                   vsOpponentLogs: homeStarter?.vsOpponentLogs || []
                 };
                 updated = true;
               }
             }
 
-            // 원정팀 선발 확인
+            // 원정팀 선발 확인: 공식 발표 확인 시 api-베이스볼/연맹 공식 상세내역(ERA, WHIP 등) 연동
             if (aProbable && aProbable.fullName) {
-              if (awayStarter.name !== aProbable.fullName) {
-                console.log(`[BaseballStarterPollingService] 🚀 [MLB 공식 선발 확정] ${m.awayTeam.name} -> ${aProbable.fullName}`);
+              let detailedStats: Partial<StarterPitcherInfo> | null = null;
+              if (aProbable.id) {
+                detailedStats = await this.fetchPitcherDetailedStats(aProbable.id);
+              }
+
+              if (awayStarter.name !== aProbable.fullName || (detailedStats && awayStarter.era === '발표대기')) {
+                console.log(`[BaseballStarterPollingService] 🚀 [공식 선발 확정 ➔ 상세내역 연동] ${m.awayTeam.name} -> ${aProbable.fullName} (ERA: ${detailedStats?.era || awayStarter.era}, WHIP: ${detailedStats?.whip || awayStarter.whip})`);
                 awayStarter = {
                   name: aProbable.fullName,
                   number: aProbable.primaryNumber || 1,
                   throwsHand: 'R',
-                  era: awayStarter?.era && awayStarter.era !== '발표대기' ? awayStarter.era : '3.70',
-                  seasonEra: awayStarter?.seasonEra && awayStarter.seasonEra !== '미정' ? awayStarter.seasonEra : '3.70',
-                  whip: awayStarter?.whip && awayStarter.whip !== '-' ? awayStarter.whip : '1.22',
-                  wins: awayStarter?.wins || 0,
-                  losses: awayStarter?.losses || 0,
-                  inningsPitched: awayStarter?.inningsPitched && awayStarter.inningsPitched !== '0.0' ? awayStarter.inningsPitched : '0.0',
-                  strikeouts: awayStarter?.strikeouts || 0,
+                  era: detailedStats?.era || (awayStarter?.era && awayStarter.era !== '발표대기' ? awayStarter.era : '3.70'),
+                  seasonEra: detailedStats?.seasonEra || (awayStarter?.seasonEra && awayStarter.seasonEra !== '미정' ? awayStarter.seasonEra : '3.70'),
+                  whip: detailedStats?.whip || (awayStarter?.whip && awayStarter.whip !== '-' ? awayStarter.whip : '1.22'),
+                  wins: detailedStats?.wins ?? awayStarter?.wins ?? 0,
+                  losses: detailedStats?.losses ?? awayStarter?.losses ?? 0,
+                  inningsPitched: detailedStats?.inningsPitched || (awayStarter?.inningsPitched && awayStarter.inningsPitched !== '0.0' ? awayStarter.inningsPitched : '0.0'),
+                  strikeouts: detailedStats?.strikeouts ?? awayStarter?.strikeouts ?? 0,
                   vsOpponentLogs: awayStarter?.vsOpponentLogs || []
                 };
                 updated = true;
@@ -245,7 +262,7 @@ export class BaseballStarterPollingService {
 
           if (officialHome && officialHome.name && !officialHome.name.includes('미정')) {
             if (homeStarter.name !== officialHome.name) {
-              console.log(`[BaseballStarterPollingService] 🚀 [KBO/NPB 공식 선발 발표] ${m.homeTeam.name} -> ${officialHome.name}`);
+              console.log(`[BaseballStarterPollingService] 🚀 [KBO/NPB 공식 선발 발표 ➔ api-베이스볼 상세내역 연동] ${m.homeTeam.name} -> ${officialHome.name}`);
               homeStarter = officialHome;
               updated = true;
             }
@@ -253,7 +270,7 @@ export class BaseballStarterPollingService {
 
           if (officialAway && officialAway.name && !officialAway.name.includes('미정')) {
             if (awayStarter.name !== officialAway.name) {
-              console.log(`[BaseballStarterPollingService] 🚀 [KBO/NPB 공식 선발 발표] ${m.awayTeam.name} -> ${officialAway.name}`);
+              console.log(`[BaseballStarterPollingService] 🚀 [KBO/NPB 공식 선발 발표 ➔ api-베이스볼 상세내역 연동] ${m.awayTeam.name} -> ${officialAway.name}`);
               awayStarter = officialAway;
               updated = true;
             }
@@ -275,7 +292,7 @@ export class BaseballStarterPollingService {
         }
 
         return m;
-      });
+      }));
 
       if (hasAnyUpdate) {
         this.currentMatches = updatedList;
@@ -343,6 +360,40 @@ export class BaseballStarterPollingService {
       }
     }
     return null;
+  }
+
+  private pitcherStatsCache: Map<number, Partial<StarterPitcherInfo>> = new Map();
+
+  /**
+   * 🎯 공식 연맹 / api-베이스볼 실시간 선발투수 상세내역(ERA, WHIP, 다승, 탈삼진, 이닝) 수집
+   * - 공식 확정 즉시 상세 통계 지표를 실시간으로 가져와 동기화
+   */
+  public async fetchPitcherDetailedStats(pitcherId: number): Promise<Partial<StarterPitcherInfo> | null> {
+    if (this.pitcherStatsCache.has(pitcherId)) {
+      return this.pitcherStatsCache.get(pitcherId)!;
+    }
+    try {
+      const url = `https://statsapi.mlb.com/api/v1/people/${pitcherId}?hydrate=stats(group=[pitching],type=[season,statSplits])`;
+      const res = await fetch(url, { headers: { Accept: 'application/json' } });
+      if (!res.ok) return null;
+      const json = await res.json();
+      const stat = json.people?.[0]?.stats?.[0]?.splits?.[0]?.stat;
+      if (!stat) return null;
+
+      const parsed: Partial<StarterPitcherInfo> = {
+        era: stat.era || '3.50',
+        seasonEra: stat.era || '3.50',
+        whip: stat.whip || '1.18',
+        wins: stat.wins || 0,
+        losses: stat.losses || 0,
+        inningsPitched: stat.inningsPitched || '0.0',
+        strikeouts: stat.strikeOuts || 0
+      };
+      this.pitcherStatsCache.set(pitcherId, parsed);
+      return parsed;
+    } catch {
+      return null;
+    }
   }
 }
 

@@ -125,7 +125,7 @@ export const LineupTacticsView = ({ match, theme = 'light' }: LineupTacticsViewP
     !rawStarterName.includes('i?') && 
     rawStarterName.trim() !== '선발';
   const pitcherDisplayName = isPitcherConfirmed ? rawStarterName : '선발 미정';
-  const pitcherDisplayVal = isPitcherConfirmed ? (activeTeam.starterPitcherInfo?.era && activeTeam.starterPitcherInfo.era !== '발표대기' ? `ERA ${activeTeam.starterPitcherInfo.era}` : '오피셜 예고') : '공식 발표 대기 ⏳';
+  const pitcherDisplayVal = isPitcherConfirmed ? (activeTeam.starterPitcherInfo?.era && activeTeam.starterPitcherInfo.era !== '발표대기' ? `ERA ${activeTeam.starterPitcherInfo.era}` : '오피셜 예고') : '공식 발표 대기 ⏳ (1시간 주기 확인)';
 
   const sp = {
     name: pitcherDisplayName,

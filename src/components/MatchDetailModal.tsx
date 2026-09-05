@@ -190,7 +190,7 @@ export const MatchDetailModal = ({
                   </span>
                 ) : (
                   <span className="text-[10px] text-amber-400 bg-amber-400/10 px-1.5 py-0.5 rounded border border-amber-400/30 font-bold mt-0.5 truncate max-w-full animate-pulse">
-                    🟡 선발 미정 (10분 주기 확인 ⏳)
+                    🟡 선발 미정 (1시간 주기 확인 ⏳)
                   </span>
                 )
               )}
@@ -254,7 +254,7 @@ export const MatchDetailModal = ({
                   </span>
                 ) : (
                   <span className="text-[10px] text-amber-400 bg-amber-400/10 px-1.5 py-0.5 rounded border border-amber-400/30 font-bold mt-0.5 truncate max-w-full animate-pulse">
-                    🟡 선발 미정 (10분 주기 확인 ⏳)
+                    🟡 선발 미정 (1시간 주기 확인 ⏳)
                   </span>
                 )
               )}
