@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { Trophy, Sparkles, MessageSquare, Clock, AlertTriangle, CreditCard, ShieldCheck, Database, CheckCircle2, RefreshCw, X, Globe, LogIn, LogOut, User } from 'lucide-react';
 import { Navbar } from './components/Navbar';
 import { type AppLanguage, getUiText } from './utils/languageHelper';
@@ -17,7 +17,7 @@ import { sportsApiService } from './services/api/sportsApiService';
 import { BetmanLiveSyncService } from './services/betman/betmanLiveSyncService';
 import { getDynamicBetmanGamesMetadata } from './services/betman/betmanRoundRegistry';
 import type { Match, BetmanFolderCategory, MembershipTier, ViewMode } from './types/sports';
-import { isMatchCompleted, isMatchPassed as isMatchPassedHelper } from './utils/matchResultHelper';
+import { isMatchCompleted, isMatchPassed as isMatchPassedHelper, findCurrentTimeMatchId } from './utils/matchResultHelper';
 import { firebaseService, isFirebaseConfigured } from './services/firebase/firebaseService';
 import { verifiedMatchDatabase } from './services/db/verifiedMatchDatabase';
 import type { VerificationAuditReport } from './services/verification/types';
@@ -635,7 +635,8 @@ export default function App() {
     return isMatchPassedHelper(match, nowTicker);
   };
 
-  const [hidePassedMatches] = useState<boolean>(true); // 🔒 무조건 강제 true: 지난 경기는 100% 영구 자동 숨김
+  // 🔒 지난 경기 삭제 방지 (원상복구): 시간이 지나거나 종료된 경기(FINISHED)도 절대 삭제하지 않고 목록에 100% 영구 보존
+  const [hidePassedMatches] = useState<boolean>(false);
 
   useEffect(() => {
     localStorage.removeItem('tokeon_hide_passed_matches');
@@ -667,17 +668,15 @@ export default function App() {
     setSelectedRound(roundTitle);
   };
 
-  // 📌 팩트 데이터 카테고리 필터링 및 시간 지난 경기 100% 자동 숨김 파이프라인
+  // 📌 팩트 데이터 카테고리 필터링 (과거 경기 & 실시간 & 미래 경기 100% 보존)
   const rawFiltered = matches.filter((m) => {
     if (!m) return false;
 
-    // 🔒 1. 시간이 지난 경기 필터링 (명시적 종료 FINISHED 경기만 숨기거나 옵션에 따라 처리)
+    // 🔒 1. 지난 경기 삭제 방지 (원상복구): 과거 경기 및 종료 경기(FINISHED)도 삭제하지 않고 목록에 100% 보존
     if (hidePassedMatches) {
       if (m.status === 'FINISHED') {
         return false;
       }
-      
-      // 시작한 지 5시간 이상 지난 확실한 종료 경기만 자동 숨김 (진행 중이거나 금일/내일 예정 경기는 유지)
       const nowSeconds = Math.floor(Date.now() / 1000);
       const matchTimestamp = (m as any).timestamp;
       if (matchTimestamp && matchTimestamp > 0 && matchTimestamp + 18000 <= nowSeconds) {
@@ -806,6 +805,61 @@ export default function App() {
   
   // 📌 100% 무조건 유닉스 타임스탬프 오름차순 정렬
   const sortedMatches = filteredMatches;
+
+  // ⏰ [현시간 기준 경기 자동 포커스 및 스크롤 관리]
+  const desktopMatchListRef = useRef<HTMLDivElement>(null);
+  const mobileMatchListRef = useRef<HTMLDivElement>(null);
+  const hasAutoScrolledRef = useRef<boolean>(false);
+  const prevFolderRef = useRef<string>(selectedFolder);
+
+  const currentTimeMatchId = useMemo(() => findCurrentTimeMatchId(filteredMatches), [filteredMatches]);
+  const currentTimeMatchIndex = useMemo(() => {
+    if (!currentTimeMatchId) return -1;
+    return filteredMatches.findIndex(m => m.id === currentTimeMatchId);
+  }, [filteredMatches, currentTimeMatchId]);
+
+  const scrollToCurrentTimeMatch = useCallback((smooth: boolean = true) => {
+    if (!filteredMatches || filteredMatches.length === 0 || !currentTimeMatchId) return;
+
+    const scrollContainer = (container: HTMLElement | null, markerId: string) => {
+      if (!container) return;
+      const targetEl = (container.querySelector(markerId) || container.querySelector(`[data-match-id="${currentTimeMatchId}"]`)) as HTMLElement | null;
+      if (!targetEl) return;
+      const containerRect = container.getBoundingClientRect();
+      const targetRect = targetEl.getBoundingClientRect();
+      const targetTop = targetRect.top - containerRect.top + container.scrollTop;
+      
+      container.scrollTo({
+        top: Math.max(0, targetTop - 10),
+        behavior: smooth ? 'smooth' : 'auto'
+      });
+    };
+
+    scrollContainer(desktopMatchListRef.current, '#current-time-marker-desktop');
+    scrollContainer(mobileMatchListRef.current, '#current-time-marker-mobile');
+  }, [filteredMatches, currentTimeMatchId]);
+
+  // 창 오픈 시 또는 폴더/종목 탭 전환 시 현시간 기준 경기로 자동 스크롤
+  useEffect(() => {
+    if (filteredMatches.length === 0) return;
+
+    if (!hasAutoScrolledRef.current) {
+      hasAutoScrolledRef.current = true;
+      prevFolderRef.current = selectedFolder;
+      const timer = setTimeout(() => {
+        scrollToCurrentTimeMatch(false);
+      }, 150);
+      return () => clearTimeout(timer);
+    }
+
+    if (prevFolderRef.current !== selectedFolder) {
+      prevFolderRef.current = selectedFolder;
+      const timer = setTimeout(() => {
+        scrollToCurrentTimeMatch(true);
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [filteredMatches, selectedFolder, scrollToCurrentTimeMatch]);
 
   // Handle favorite toggle
   const handleToggleFavorite = (matchId: string) => {
@@ -1023,7 +1077,7 @@ export default function App() {
                     <span className="font-extrabold text-xs sm:text-sm text-slate-900 dark:text-slate-100">실시간 경기 데이터</span>
                   </div>
 
-                  {/* 🔍 경기 상태 필터 (전체 / LIVE / 예정 / 종료) */}
+                  {/* 🔍 경기 상태 필터 (전체 / LIVE / 예정 / 종료) & ⏰ 현시간 경기 버튼 */}
                   <div className="flex items-center gap-1">
                     {[
                       { id: 'ALL', label: '전체' },
@@ -1043,6 +1097,13 @@ export default function App() {
                         {st.label}
                       </button>
                     ))}
+                    <button
+                      onClick={() => scrollToCurrentTimeMatch(true)}
+                      className="px-2 py-0.5 rounded text-[11px] font-bold bg-amber-500/15 hover:bg-amber-500/25 text-amber-600 dark:text-amber-400 border border-amber-500/30 transition-all flex items-center gap-1 cursor-pointer ml-0.5"
+                      title="현재 시간대(실시간/가장 가까운 예정) 경기로 바로 이동"
+                    >
+                      <span>⏰ 현시간</span>
+                    </button>
                     <span className={`text-[11px] font-mono font-bold px-2 py-0.5 rounded border ml-1 ${
                       isLight ? 'bg-slate-100 text-slate-700 border-slate-200' : 'bg-slate-800 text-slate-300 border-slate-700'
                     }`}>
@@ -1052,7 +1113,7 @@ export default function App() {
                 </div>
 
                 {/* 실제 모바일 경기 카드 목록 스크롤 영역 또는 승1패/승무패/승5패 배트맨 슬립 표 */}
-                <div className={`flex-1 overflow-hidden ${selectedFolder === 'SEUNG1PAE' || selectedFolder === 'SEUNGMUBAE' || selectedFolder === 'SEUNG5PAE' ? 'p-0 flex flex-col' : 'overflow-y-auto p-3 space-y-2.5 custom-scrollbar'}`}>
+                <div ref={desktopMatchListRef} className={`flex-1 overflow-hidden ${selectedFolder === 'SEUNG1PAE' || selectedFolder === 'SEUNGMUBAE' || selectedFolder === 'SEUNG5PAE' ? 'p-0 flex flex-col' : 'overflow-y-auto p-3 space-y-2.5 custom-scrollbar'}`}>
                   {selectedFolder === 'SEUNG1PAE' || selectedFolder === 'SEUNGMUBAE' || selectedFolder === 'SEUNG5PAE' ? (
                     <TotoSlipTableView
                       category={selectedFolder as any}
@@ -1080,22 +1141,43 @@ export default function App() {
                       </div>
                     </div>
                   ) : (
-                    filteredMatches.map((match) => (
-                      <MatchCard
-                        key={match.id}
-                        match={match}
-                        membershipTier={membershipTier}
-                        cardDensity="COMPACT"
-                        lang={appLanguage}
-                        markedPicks={markedPicks[match.id] || []}
-                        allMatches={matches}
-                        onSelectMatch={(m) => handleOpenDetailModal(m)}
-                        onOpenChat={handleOpenMatchChat}
-                        onToggleFavorite={handleToggleFavorite}
-                        onTogglePick={handleTogglePick}
-                        theme={theme}
-                      />
-                    ))
+                    filteredMatches.map((match, idx) => {
+                      const isMarkerTarget = currentTimeMatchIndex > 0 && idx === currentTimeMatchIndex;
+                      return (
+                        <React.Fragment key={match.id}>
+                          {isMarkerTarget && (
+                            <div
+                              id="current-time-marker-desktop"
+                              className="py-1.5 px-3 my-2 rounded-xl bg-gradient-to-r from-emerald-500/15 via-teal-500/10 to-cyan-500/15 border border-emerald-500/30 flex items-center justify-between text-xs font-bold text-emerald-600 dark:text-emerald-400 select-none shadow-xs backdrop-blur-xs"
+                            >
+                              <span className="flex items-center gap-2">
+                                <span className="relative flex h-2 w-2">
+                                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                                </span>
+                                <span>⏰ 현재 시간 ({new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}) 기준 실시간 / 예정 경기</span>
+                              </span>
+                              <span className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">▲ 이전 경기 ({currentTimeMatchIndex}개 위로 스크롤)</span>
+                            </div>
+                          )}
+                          <div data-match-id={match.id} className="scroll-mt-2">
+                            <MatchCard
+                              match={match}
+                              membershipTier={membershipTier}
+                              cardDensity="COMPACT"
+                              lang={appLanguage}
+                              markedPicks={markedPicks[match.id] || []}
+                              allMatches={matches}
+                              onSelectMatch={(m) => handleOpenDetailModal(m)}
+                              onOpenChat={handleOpenMatchChat}
+                              onToggleFavorite={handleToggleFavorite}
+                              onTogglePick={handleTogglePick}
+                              theme={theme}
+                            />
+                          </div>
+                        </React.Fragment>
+                      );
+                    })
                   )}
 
                   {/* ➕ Load More Button */}
@@ -1163,6 +1245,13 @@ export default function App() {
                       {st.label}
                     </button>
                   ))}
+                  <button
+                    onClick={() => scrollToCurrentTimeMatch(true)}
+                    className="px-2.5 py-1 rounded-full text-xs font-bold bg-amber-500/15 hover:bg-amber-500/25 text-amber-600 dark:text-amber-400 border border-amber-500/30 transition-all shrink-0 flex items-center gap-1 cursor-pointer"
+                    title="현재 시간대 경기로 이동"
+                  >
+                    <span>⏰ 현시간</span>
+                  </button>
                 </div>
                 <span className={`text-[11px] font-mono font-bold px-2 py-0.5 rounded border shrink-0 ${
                   isLight ? 'bg-slate-100 text-slate-700 border-slate-200' : 'bg-slate-800 text-slate-300 border-slate-700'
@@ -1172,7 +1261,7 @@ export default function App() {
               </div>
 
               {/* 모바일 메인 스크롤 뷰 */}
-              <div className="flex-1 overflow-y-auto p-3 space-y-2.5 custom-scrollbar pb-16">
+              <div ref={mobileMatchListRef} className="flex-1 overflow-y-auto p-3 space-y-2.5 custom-scrollbar pb-16">
                 {selectedFolder === 'SEUNG1PAE' || selectedFolder === 'SEUNGMUBAE' || selectedFolder === 'SEUNG5PAE' ? (
                   <TotoSlipTableView
                     category={selectedFolder as any}
@@ -1198,22 +1287,43 @@ export default function App() {
                     </p>
                   </div>
                 ) : (
-                  filteredMatches.map((match) => (
-                    <MatchCard
-                      key={match.id}
-                      match={match}
-                      membershipTier={membershipTier}
-                      cardDensity={cardDensity}
-                      lang={appLanguage}
-                      markedPicks={markedPicks[match.id] || []}
-                      allMatches={matches}
-                      onSelectMatch={(m) => handleOpenDetailModal(m)}
-                      onOpenChat={handleOpenMatchChat}
-                      onToggleFavorite={handleToggleFavorite}
-                      onTogglePick={handleTogglePick}
-                      theme={theme}
-                    />
-                  ))
+                  filteredMatches.map((match, idx) => {
+                    const isMarkerTarget = currentTimeMatchIndex > 0 && idx === currentTimeMatchIndex;
+                    return (
+                      <React.Fragment key={match.id}>
+                        {isMarkerTarget && (
+                          <div
+                            id="current-time-marker-mobile"
+                            className="py-1.5 px-3 my-2 rounded-xl bg-gradient-to-r from-emerald-500/15 via-teal-500/10 to-cyan-500/15 border border-emerald-500/30 flex items-center justify-between text-xs font-bold text-emerald-600 dark:text-emerald-400 select-none shadow-xs backdrop-blur-xs"
+                          >
+                            <span className="flex items-center gap-2">
+                              <span className="relative flex h-2 w-2">
+                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                              </span>
+                              <span>⏰ 현재 시간 ({new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}) 기준 경기</span>
+                            </span>
+                            <span className="text-[10px] text-slate-500 dark:text-slate-400 font-medium">▲ 이전 경기 ({currentTimeMatchIndex}개)</span>
+                          </div>
+                        )}
+                        <div data-match-id={match.id} className="scroll-mt-2">
+                          <MatchCard
+                            match={match}
+                            membershipTier={membershipTier}
+                            cardDensity={cardDensity}
+                            lang={appLanguage}
+                            markedPicks={markedPicks[match.id] || []}
+                            allMatches={matches}
+                            onSelectMatch={(m) => handleOpenDetailModal(m)}
+                            onOpenChat={handleOpenMatchChat}
+                            onToggleFavorite={handleToggleFavorite}
+                            onTogglePick={handleTogglePick}
+                            theme={theme}
+                          />
+                        </div>
+                      </React.Fragment>
+                    );
+                  })
                 )}
               </div>
             </div>

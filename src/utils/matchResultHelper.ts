@@ -73,3 +73,50 @@ export function calculateWinningPicks(match: Match, homeScore: number, awayScore
 
   return winningPicks;
 }
+
+/**
+ * ⏰ [현시간 기준 최적 타겟 경기 탐색 엔진]
+ * - 1순위: 현재 진행 중인 LIVE 경기
+ * - 2순위: 3시간 이내 시작했거나 앞으로 시작할 예정인 경기 (!isFinished && timestamp >= nowSec - 3 * 3600)
+ * - 3순위: 종료되지 않은 첫 번째 경기
+ * - 4순위: 현재 시각과 가장 가까운 경기
+ */
+export function findCurrentTimeMatchId(matches: Match[], customNowSec?: number): string | null {
+  if (!matches || matches.length === 0) return null;
+  const nowSec = customNowSec ?? Math.floor(Date.now() / 1000);
+
+  // 1. LIVE 경기 우선
+  const liveMatch = matches.find(m => {
+    const st = (m.status as string) || '';
+    const code = (m as any).statusCode || '';
+    return st === 'LIVE' || code === 'INP' || code === 'LIVE';
+  });
+  if (liveMatch) return liveMatch.id;
+
+  // 2. 최근 3시간 이내 시작했거나 예정된 미종료 경기
+  const activeOrUpcoming = matches.find(m => {
+    const isFinished = m.status === 'FINISHED' || (m as any).statusCode === 'FT' || m.isCompleted === true;
+    if (isFinished) return false;
+    const ts = (m as any).timestamp || 0;
+    return ts >= (nowSec - 3 * 3600);
+  });
+  if (activeOrUpcoming) return activeOrUpcoming.id;
+
+  // 3. 종료되지 않은 첫 번째 예정 경기
+  const notFinished = matches.find(m => {
+    return m.status !== 'FINISHED' && (m as any).statusCode !== 'FT' && !m.isCompleted;
+  });
+  if (notFinished) return notFinished.id;
+
+  // 4. 현재 시각과 차이가 가장 적은 경기
+  let closest = matches[0];
+  let minDiff = Math.abs(((closest as any).timestamp || 0) - nowSec);
+  for (const m of matches) {
+    const diff = Math.abs(((m as any).timestamp || 0) - nowSec);
+    if (diff < minDiff) {
+      minDiff = diff;
+      closest = m;
+    }
+  }
+  return closest ? closest.id : null;
+}
