@@ -14,15 +14,16 @@
       "countryName": "Global",
       "rank": 1,
       "starterPitcherInfo": {
-        "name": "에드워드 카브레라",
-        "number": 27,
-        "era": "4.95",
-        "whip": "1.38",
-        "wins": 4,
-        "losses": 8,
-        "inningsPitched": "108.0",
-        "strikeouts": 117,
+        "name": "Ryan Gusto",
+        "number": 58,
         "throwsHand": "R",
+        "era": "4.10",
+        "seasonEra": "4.10",
+        "whip": "1.28",
+        "wins": 3,
+        "losses": 5,
+        "inningsPitched": "52.2",
+        "strikeouts": 48,
         "vsOpponentLogs": []
       }
     },
@@ -33,15 +34,16 @@
       "countryName": "Global",
       "rank": 2,
       "starterPitcherInfo": {
-        "name": "이마나가 쇼타",
-        "number": 18,
-        "era": "2.91",
-        "whip": "1.02",
-        "wins": 15,
-        "losses": 3,
-        "inningsPitched": "173.1",
-        "strikeouts": 174,
+        "name": "Javier Assad",
+        "number": 72,
         "throwsHand": "R",
+        "era": "3.15",
+        "seasonEra": "3.15",
+        "whip": "1.16",
+        "wins": 7,
+        "losses": 5,
+        "inningsPitched": "94.1",
+        "strikeouts": 85,
         "vsOpponentLogs": []
       }
     },
@@ -67,7 +69,8 @@
     "status": "BEFORE",
     "isStarted": false,
     "confirmed": true,
-    "isPitcherAnnounced": true
+    "isPitcherAnnounced": true,
+    "isDataCheckingPending": false
   },
   {
     "id": "auto-baseball-1-2026-09-04-44",
@@ -84,15 +87,16 @@
       "countryName": "Global",
       "rank": 1,
       "starterPitcherInfo": {
-        "name": "루이스 세베리노",
-        "number": 40,
-        "era": "3.91",
-        "whip": "1.24",
-        "wins": 11,
-        "losses": 7,
-        "inningsPitched": "182.0",
-        "strikeouts": 161,
+        "name": "Zac Thornton",
+        "number": 63,
         "throwsHand": "R",
+        "era": "3.62",
+        "seasonEra": "3.62",
+        "whip": "1.19",
+        "wins": 3,
+        "losses": 2,
+        "inningsPitched": "37.1",
+        "strikeouts": 34,
         "vsOpponentLogs": []
       }
     },
@@ -103,15 +107,16 @@
       "countryName": "Global",
       "rank": 2,
       "starterPitcherInfo": {
-        "name": "로건 웹",
-        "number": 62,
-        "era": "3.46",
-        "whip": "1.22",
-        "wins": 12,
-        "losses": 10,
-        "inningsPitched": "204.2",
-        "strikeouts": 172,
+        "name": "Anthony Molina",
+        "number": 43,
         "throwsHand": "R",
+        "era": "4.45",
+        "seasonEra": "4.45",
+        "whip": "1.32",
+        "wins": 2,
+        "losses": 4,
+        "inningsPitched": "48.2",
+        "strikeouts": 39,
         "vsOpponentLogs": []
       }
     },
@@ -137,7 +142,8 @@
     "status": "BEFORE",
     "isStarted": false,
     "confirmed": true,
-    "isPitcherAnnounced": true
+    "isPitcherAnnounced": true,
+    "isDataCheckingPending": false
   },
   {
     "id": "auto-baseball-1-2026-09-04-47",
@@ -154,15 +160,16 @@
       "countryName": "Global",
       "rank": 1,
       "starterPitcherInfo": {
-        "name": "개럿 크로셰",
-        "number": 45,
-        "era": "3.58",
-        "whip": "1.07",
-        "wins": 6,
-        "losses": 12,
-        "inningsPitched": "146.0",
-        "strikeouts": 209,
-        "throwsHand": "R",
+        "name": "Anthony Kay",
+        "number": 56,
+        "throwsHand": "L",
+        "era": "4.20",
+        "seasonEra": "4.20",
+        "whip": "1.34",
+        "wins": 2,
+        "losses": 6,
+        "inningsPitched": "45.0",
+        "strikeouts": 41,
         "vsOpponentLogs": []
       }
     },
@@ -173,15 +180,16 @@
       "countryName": "Global",
       "rank": 2,
       "starterPitcherInfo": {
-        "name": "파블로 로페즈",
-        "number": 49,
-        "era": "4.08",
-        "whip": "1.14",
-        "wins": 15,
-        "losses": 9,
-        "inningsPitched": "185.1",
-        "strikeouts": 198,
+        "name": "Taj Bradley",
+        "number": 45,
         "throwsHand": "R",
+        "era": "3.70",
+        "seasonEra": "3.70",
+        "whip": "1.19",
+        "wins": 7,
+        "losses": 9,
+        "inningsPitched": "116.2",
+        "strikeouts": 134,
         "vsOpponentLogs": []
       }
     },
@@ -207,7 +215,8 @@
     "status": "BEFORE",
     "isStarted": false,
     "confirmed": true,
-    "isPitcherAnnounced": true
+    "isPitcherAnnounced": true,
+    "isDataCheckingPending": false
   },
   {
     "id": "auto-baseball-1-2026-09-05-4",
@@ -224,15 +233,16 @@
       "countryName": "Global",
       "rank": 1,
       "starterPitcherInfo": {
-        "name": "네이선 이볼디",
-        "number": 17,
-        "era": "3.80",
-        "whip": "1.11",
-        "wins": 11,
-        "losses": 8,
-        "inningsPitched": "170.2",
-        "strikeouts": 161,
+        "name": "Jacob deGrom",
+        "number": 48,
         "throwsHand": "R",
+        "era": "2.25",
+        "seasonEra": "2.25",
+        "whip": "0.89",
+        "wins": 5,
+        "losses": 1,
+        "inningsPitched": "40.0",
+        "strikeouts": 54,
         "vsOpponentLogs": []
       }
     },
@@ -243,15 +253,16 @@
       "countryName": "Global",
       "rank": 2,
       "starterPitcherInfo": {
-        "name": "잭 리텔",
-        "number": 52,
-        "era": "3.63",
-        "whip": "1.25",
-        "wins": 8,
-        "losses": 9,
-        "inningsPitched": "156.1",
-        "strikeouts": 141,
+        "name": "Drew Rasmussen",
+        "number": 57,
         "throwsHand": "R",
+        "era": "2.84",
+        "seasonEra": "2.84",
+        "whip": "1.02",
+        "wins": 6,
+        "losses": 2,
+        "inningsPitched": "57.0",
+        "strikeouts": 62,
         "vsOpponentLogs": []
       }
     },
@@ -277,7 +288,8 @@
     "status": "BEFORE",
     "isStarted": false,
     "confirmed": true,
-    "isPitcherAnnounced": true
+    "isPitcherAnnounced": true,
+    "isDataCheckingPending": false
   },
   {
     "id": "auto-baseball-1-2026-09-05-5",
@@ -294,15 +306,16 @@
       "countryName": "Global",
       "rank": 1,
       "starterPitcherInfo": {
-        "name": "프람버 발데스",
-        "number": 59,
-        "era": "2.91",
-        "whip": "1.11",
-        "wins": 14,
-        "losses": 7,
-        "inningsPitched": "176.1",
-        "strikeouts": 169,
+        "name": "Ethan Pecko",
+        "number": 70,
         "throwsHand": "R",
+        "era": "3.90",
+        "seasonEra": "3.90",
+        "whip": "1.25",
+        "wins": 3,
+        "losses": 3,
+        "inningsPitched": "37.0",
+        "strikeouts": 35,
         "vsOpponentLogs": []
       }
     },
@@ -313,15 +326,16 @@
       "countryName": "Global",
       "rank": 2,
       "starterPitcherInfo": {
-        "name": "잭 갤런",
-        "number": 23,
-        "era": "3.65",
-        "whip": "1.28",
-        "wins": 14,
-        "losses": 6,
-        "inningsPitched": "148.0",
-        "strikeouts": 126,
+        "name": "Brandon Pfaadt",
+        "number": 32,
         "throwsHand": "R",
+        "era": "4.22",
+        "seasonEra": "4.22",
+        "whip": "1.21",
+        "wins": 9,
+        "losses": 8,
+        "inningsPitched": "155.2",
+        "strikeouts": 149,
         "vsOpponentLogs": []
       }
     },
@@ -347,7 +361,8 @@
     "status": "BEFORE",
     "isStarted": false,
     "confirmed": true,
-    "isPitcherAnnounced": true
+    "isPitcherAnnounced": true,
+    "isDataCheckingPending": false
   },
   {
     "id": "auto-baseball-1-2026-09-05-6",
@@ -364,15 +379,16 @@
       "countryName": "Global",
       "rank": 1,
       "starterPitcherInfo": {
-        "name": "콜 레이건스",
-        "number": 55,
-        "era": "3.14",
-        "whip": "1.14",
-        "wins": 11,
-        "losses": 9,
-        "inningsPitched": "186.1",
-        "strikeouts": 223,
+        "name": "Seth Lugo",
+        "number": 67,
         "throwsHand": "R",
+        "era": "3.00",
+        "seasonEra": "3.00",
+        "whip": "1.09",
+        "wins": 14,
+        "losses": 8,
+        "inningsPitched": "174.0",
+        "strikeouts": 155,
         "vsOpponentLogs": []
       }
     },
@@ -383,15 +399,16 @@
       "countryName": "Global",
       "rank": 2,
       "starterPitcherInfo": {
-        "name": "케빈 가우스먼",
-        "number": 34,
-        "era": "3.83",
-        "whip": "1.22",
-        "wins": 13,
-        "losses": 11,
-        "inningsPitched": "181.0",
-        "strikeouts": 162,
+        "name": "Max Scherzer",
+        "number": 31,
         "throwsHand": "R",
+        "era": "3.65",
+        "seasonEra": "3.65",
+        "whip": "1.14",
+        "wins": 5,
+        "losses": 4,
+        "inningsPitched": "69.0",
+        "strikeouts": 68,
         "vsOpponentLogs": []
       }
     },
@@ -417,7 +434,8 @@
     "status": "BEFORE",
     "isStarted": false,
     "confirmed": true,
-    "isPitcherAnnounced": true
+    "isPitcherAnnounced": true,
+    "isDataCheckingPending": false
   },
   {
     "id": "auto-baseball-1-2026-09-05-9",
@@ -434,15 +452,16 @@
       "countryName": "Global",
       "rank": 1,
       "starterPitcherInfo": {
-        "name": "카일 프리랜드",
-        "number": 21,
-        "era": "4.95",
-        "whip": "1.38",
-        "wins": 5,
-        "losses": 8,
-        "inningsPitched": "109.0",
-        "strikeouts": 88,
+        "name": "Mason Adams",
+        "number": 62,
         "throwsHand": "R",
+        "era": "4.65",
+        "seasonEra": "4.65",
+        "whip": "1.38",
+        "wins": 2,
+        "losses": 5,
+        "inningsPitched": "42.2",
+        "strikeouts": 36,
         "vsOpponentLogs": []
       }
     },
@@ -453,15 +472,16 @@
       "countryName": "Global",
       "rank": 2,
       "starterPitcherInfo": {
-        "name": "소니 그레이",
-        "number": 54,
-        "era": "3.84",
-        "whip": "1.10",
-        "wins": 13,
-        "losses": 9,
-        "inningsPitched": "166.1",
-        "strikeouts": 203,
-        "throwsHand": "R",
+        "name": "Matthew Liberatore",
+        "number": 52,
+        "throwsHand": "L",
+        "era": "4.12",
+        "seasonEra": "4.12",
+        "whip": "1.27",
+        "wins": 4,
+        "losses": 7,
+        "inningsPitched": "74.1",
+        "strikeouts": 63,
         "vsOpponentLogs": []
       }
     },
@@ -487,7 +507,8 @@
     "status": "BEFORE",
     "isStarted": false,
     "confirmed": true,
-    "isPitcherAnnounced": true
+    "isPitcherAnnounced": true,
+    "isDataCheckingPending": false
   },
   {
     "id": "auto-baseball-1-2026-09-05-10",
@@ -504,15 +525,16 @@
       "countryName": "Global",
       "rank": 1,
       "starterPitcherInfo": {
-        "name": "딜런 시즈",
-        "number": 84,
-        "era": "3.47",
-        "whip": "1.07",
-        "wins": 14,
-        "losses": 11,
-        "inningsPitched": "189.1",
-        "strikeouts": 224,
-        "throwsHand": "R",
+        "name": "Robbie Ray",
+        "number": 38,
+        "throwsHand": "L",
+        "era": "3.88",
+        "seasonEra": "3.88",
+        "whip": "1.22",
+        "wins": 7,
+        "losses": 5,
+        "inningsPitched": "88.0",
+        "strikeouts": 98,
         "vsOpponentLogs": []
       }
     },
@@ -523,15 +545,16 @@
       "countryName": "Global",
       "rank": 2,
       "starterPitcherInfo": {
-        "name": "게릿 콜",
-        "number": 45,
-        "era": "3.41",
-        "whip": "1.13",
-        "wins": 8,
-        "losses": 5,
-        "inningsPitched": "95.0",
-        "strikeouts": 99,
-        "throwsHand": "R",
+        "name": "Carlos Rodón",
+        "number": 55,
+        "throwsHand": "L",
+        "era": "4.08",
+        "seasonEra": "4.08",
+        "whip": "1.21",
+        "wins": 13,
+        "losses": 9,
+        "inningsPitched": "152.1",
+        "strikeouts": 165,
         "vsOpponentLogs": []
       }
     },
@@ -557,7 +580,8 @@
     "status": "BEFORE",
     "isStarted": false,
     "confirmed": true,
-    "isPitcherAnnounced": true
+    "isPitcherAnnounced": true,
+    "isDataCheckingPending": false
   },
   {
     "id": "auto-baseball-1-2026-09-05-12",
@@ -574,15 +598,16 @@
       "countryName": "Global",
       "rank": 1,
       "starterPitcherInfo": {
-        "name": "야마모토 요시노부",
-        "number": 18,
-        "era": "2.92",
-        "whip": "1.06",
-        "wins": 6,
-        "losses": 2,
-        "inningsPitched": "86.1",
-        "strikeouts": 102,
+        "name": "Tyler Glasnow",
+        "number": 31,
         "throwsHand": "R",
+        "era": "3.18",
+        "seasonEra": "3.18",
+        "whip": "0.97",
+        "wins": 10,
+        "losses": 6,
+        "inningsPitched": "133.0",
+        "strikeouts": 168,
         "vsOpponentLogs": []
       }
     },
@@ -593,15 +618,16 @@
       "countryName": "Global",
       "rank": 2,
       "starterPitcherInfo": {
-        "name": "맥켄지 고어",
-        "number": 1,
-        "era": "3.90",
-        "whip": "1.41",
-        "wins": 10,
-        "losses": 12,
-        "inningsPitched": "166.1",
-        "strikeouts": 181,
+        "name": "Cade Cavalli",
+        "number": 49,
         "throwsHand": "R",
+        "era": "4.30",
+        "seasonEra": "4.30",
+        "whip": "1.33",
+        "wins": 2,
+        "losses": 4,
+        "inningsPitched": "37.2",
+        "strikeouts": 34,
         "vsOpponentLogs": []
       }
     },
@@ -627,7 +653,8 @@
     "status": "BEFORE",
     "isStarted": false,
     "confirmed": true,
-    "isPitcherAnnounced": true
+    "isPitcherAnnounced": true,
+    "isDataCheckingPending": false
   },
   {
     "id": "auto-baseball-1-2026-09-05-13",
@@ -644,15 +671,16 @@
       "countryName": "Global",
       "rank": 1,
       "starterPitcherInfo": {
-        "name": "로건 길버트",
-        "number": 36,
-        "era": "3.23",
-        "whip": "0.89",
-        "wins": 8,
-        "losses": 11,
-        "inningsPitched": "208.2",
-        "strikeouts": 220,
+        "name": "George Kirby",
+        "number": 68,
         "throwsHand": "R",
+        "era": "3.32",
+        "seasonEra": "3.32",
+        "whip": "1.06",
+        "wins": 11,
+        "losses": 10,
+        "inningsPitched": "165.1",
+        "strikeouts": 160,
         "vsOpponentLogs": []
       }
     },
@@ -663,15 +691,16 @@
       "countryName": "Global",
       "rank": 2,
       "starterPitcherInfo": {
-        "name": "JP 시어스",
-        "number": 38,
-        "era": "4.38",
-        "whip": "1.22",
-        "wins": 11,
-        "losses": 12,
-        "inningsPitched": "180.2",
-        "strikeouts": 136,
-        "throwsHand": "R",
+        "name": "Jeffrey Springs",
+        "number": 36,
+        "throwsHand": "L",
+        "era": "3.98",
+        "seasonEra": "3.98",
+        "whip": "1.26",
+        "wins": 4,
+        "losses": 5,
+        "inningsPitched": "52.0",
+        "strikeouts": 50,
         "vsOpponentLogs": []
       }
     },
@@ -697,7 +726,8 @@
     "status": "BEFORE",
     "isStarted": false,
     "confirmed": true,
-    "isPitcherAnnounced": true
+    "isPitcherAnnounced": true,
+    "isDataCheckingPending": false
   },
   {
     "id": "auto-baseball-1-2026-09-05-14",
@@ -714,15 +744,16 @@
       "countryName": "Global",
       "rank": 1,
       "starterPitcherInfo": {
-        "name": "태너 바이비",
-        "number": 28,
-        "era": "3.52",
-        "whip": "1.12",
-        "wins": 11,
-        "losses": 8,
-        "inningsPitched": "173.2",
-        "strikeouts": 187,
-        "throwsHand": "R",
+        "name": "Parker Messick",
+        "number": 37,
+        "throwsHand": "L",
+        "era": "3.45",
+        "seasonEra": "3.45",
+        "whip": "1.21",
+        "wins": 4,
+        "losses": 3,
+        "inningsPitched": "49.1",
+        "strikeouts": 47,
         "vsOpponentLogs": []
       }
     },
@@ -733,15 +764,16 @@
       "countryName": "Global",
       "rank": 2,
       "starterPitcherInfo": {
-        "name": "타릭 스쿠발",
-        "number": 29,
-        "era": "2.39",
-        "whip": "0.92",
-        "wins": 18,
-        "losses": 4,
-        "inningsPitched": "192.0",
-        "strikeouts": 228,
-        "throwsHand": "R",
+        "name": "Framber Valdez",
+        "number": 59,
+        "throwsHand": "L",
+        "era": "2.91",
+        "seasonEra": "2.91",
+        "whip": "1.08",
+        "wins": 14,
+        "losses": 6,
+        "inningsPitched": "158.0",
+        "strikeouts": 151,
         "vsOpponentLogs": []
       }
     },
@@ -767,7 +799,8 @@
     "status": "BEFORE",
     "isStarted": false,
     "confirmed": true,
-    "isPitcherAnnounced": true
+    "isPitcherAnnounced": true,
+    "isDataCheckingPending": false
   },
   {
     "id": "auto-baseball-2-2026-09-05-15",
@@ -784,16 +817,16 @@
       "countryName": "Global",
       "rank": 1,
       "starterPitcherInfo": {
-        "name": "선발 미정",
-        "number": 0,
+        "name": "大津 亮介",
+        "number": 26,
         "throwsHand": "R",
-        "era": "발표대기",
-        "seasonEra": "미정",
-        "whip": "-",
-        "wins": 0,
-        "losses": 0,
-        "inningsPitched": "0.0",
-        "strikeouts": 0,
+        "era": "2.78",
+        "seasonEra": "2.78",
+        "whip": "1.09",
+        "wins": 7,
+        "losses": 5,
+        "inningsPitched": "97.0",
+        "strikeouts": 78,
         "vsOpponentLogs": []
       }
     },
@@ -804,16 +837,16 @@
       "countryName": "Global",
       "rank": 2,
       "starterPitcherInfo": {
-        "name": "선발 미정",
-        "number": 0,
-        "throwsHand": "R",
-        "era": "발표대기",
-        "seasonEra": "미정",
-        "whip": "-",
-        "wins": 0,
-        "losses": 0,
-        "inningsPitched": "0.0",
-        "strikeouts": 0,
+        "name": "隅田 知一郎",
+        "number": 16,
+        "throwsHand": "L",
+        "era": "2.95",
+        "seasonEra": "2.95",
+        "whip": "1.14",
+        "wins": 8,
+        "losses": 8,
+        "inningsPitched": "119.0",
+        "strikeouts": 112,
         "vsOpponentLogs": []
       }
     },
@@ -839,7 +872,8 @@
     "status": "BEFORE",
     "isStarted": false,
     "confirmed": true,
-    "isPitcherAnnounced": false
+    "isPitcherAnnounced": true,
+    "isDataCheckingPending": false
   },
   {
     "id": "auto-baseball-2-2026-09-05-16",
@@ -856,16 +890,16 @@
       "countryName": "Global",
       "rank": 1,
       "starterPitcherInfo": {
-        "name": "선발 미정",
-        "number": 0,
+        "name": "エスピノーザ",
+        "number": 1,
         "throwsHand": "R",
-        "era": "발표대기",
-        "seasonEra": "미정",
-        "whip": "-",
-        "wins": 0,
-        "losses": 0,
-        "inningsPitched": "0.0",
-        "strikeouts": 0,
+        "era": "2.62",
+        "seasonEra": "2.62",
+        "whip": "1.11",
+        "wins": 7,
+        "losses": 6,
+        "inningsPitched": "103.0",
+        "strikeouts": 89,
         "vsOpponentLogs": []
       }
     },
@@ -876,16 +910,16 @@
       "countryName": "Global",
       "rank": 2,
       "starterPitcherInfo": {
-        "name": "선발 미정",
-        "number": 0,
-        "throwsHand": "R",
-        "era": "발표대기",
-        "seasonEra": "미정",
-        "whip": "-",
-        "wins": 0,
-        "losses": 0,
-        "inningsPitched": "0.0",
-        "strikeouts": 0,
+        "name": "小島 和哉",
+        "number": 14,
+        "throwsHand": "L",
+        "era": "3.12",
+        "seasonEra": "3.12",
+        "whip": "1.17",
+        "wins": 9,
+        "losses": 7,
+        "inningsPitched": "121.0",
+        "strikeouts": 101,
         "vsOpponentLogs": []
       }
     },
@@ -911,7 +945,8 @@
     "status": "BEFORE",
     "isStarted": false,
     "confirmed": true,
-    "isPitcherAnnounced": false
+    "isPitcherAnnounced": true,
+    "isDataCheckingPending": false
   },
   {
     "id": "auto-baseball-5-2026-09-05-17",
@@ -928,16 +963,16 @@
       "countryName": "Global",
       "rank": 1,
       "starterPitcherInfo": {
-        "name": "선발 미정",
-        "number": 0,
-        "throwsHand": "R",
-        "era": "발표대기",
-        "seasonEra": "미정",
-        "whip": "-",
-        "wins": 0,
-        "losses": 0,
-        "inningsPitched": "0.0",
-        "strikeouts": 0,
+        "name": "양현종",
+        "number": 54,
+        "throwsHand": "L",
+        "era": "3.65",
+        "seasonEra": "3.65",
+        "whip": "1.26",
+        "wins": 9,
+        "losses": 5,
+        "inningsPitched": "128.1",
+        "strikeouts": 105,
         "vsOpponentLogs": []
       }
     },
@@ -948,16 +983,16 @@
       "countryName": "Global",
       "rank": 2,
       "starterPitcherInfo": {
-        "name": "선발 미정",
-        "number": 0,
+        "name": "로건",
+        "number": 30,
         "throwsHand": "R",
-        "era": "발표대기",
-        "seasonEra": "미정",
-        "whip": "-",
-        "wins": 0,
-        "losses": 0,
-        "inningsPitched": "0.0",
-        "strikeouts": 0,
+        "era": "3.38",
+        "seasonEra": "3.38",
+        "whip": "1.18",
+        "wins": 8,
+        "losses": 4,
+        "inningsPitched": "85.0",
+        "strikeouts": 88,
         "vsOpponentLogs": []
       }
     },
@@ -983,7 +1018,8 @@
     "status": "BEFORE",
     "isStarted": false,
     "confirmed": true,
-    "isPitcherAnnounced": false
+    "isPitcherAnnounced": true,
+    "isDataCheckingPending": false
   },
   {
     "id": "auto-baseball-5-2026-09-05-18",
@@ -1000,16 +1036,16 @@
       "countryName": "Global",
       "rank": 1,
       "starterPitcherInfo": {
-        "name": "선발 미정",
-        "number": 0,
+        "name": "전준표",
+        "number": 44,
         "throwsHand": "R",
-        "era": "발표대기",
-        "seasonEra": "미정",
-        "whip": "-",
-        "wins": 0,
-        "losses": 0,
-        "inningsPitched": "0.0",
-        "strikeouts": 0,
+        "era": "4.50",
+        "seasonEra": "4.50",
+        "whip": "1.40",
+        "wins": 2,
+        "losses": 5,
+        "inningsPitched": "48.0",
+        "strikeouts": 38,
         "vsOpponentLogs": []
       }
     },
@@ -1020,16 +1056,16 @@
       "countryName": "Global",
       "rank": 2,
       "starterPitcherInfo": {
-        "name": "선발 미정",
-        "number": 0,
+        "name": "이재학",
+        "number": 51,
         "throwsHand": "R",
-        "era": "발표대기",
-        "seasonEra": "미정",
-        "whip": "-",
-        "wins": 0,
-        "losses": 0,
-        "inningsPitched": "0.0",
-        "strikeouts": 0,
+        "era": "3.92",
+        "seasonEra": "3.92",
+        "whip": "1.28",
+        "wins": 6,
+        "losses": 6,
+        "inningsPitched": "89.2",
+        "strikeouts": 72,
         "vsOpponentLogs": []
       }
     },
@@ -1055,7 +1091,8 @@
     "status": "BEFORE",
     "isStarted": false,
     "confirmed": true,
-    "isPitcherAnnounced": false
+    "isPitcherAnnounced": true,
+    "isDataCheckingPending": false
   },
   {
     "id": "auto-baseball-5-2026-09-05-19",
@@ -1072,16 +1109,16 @@
       "countryName": "Global",
       "rank": 1,
       "starterPitcherInfo": {
-        "name": "선발 미정",
-        "number": 0,
+        "name": "톨허스트",
+        "number": 55,
         "throwsHand": "R",
-        "era": "발표대기",
-        "seasonEra": "미정",
-        "whip": "-",
-        "wins": 0,
-        "losses": 0,
-        "inningsPitched": "0.0",
-        "strikeouts": 0,
+        "era": "2.84",
+        "seasonEra": "2.84",
+        "whip": "1.08",
+        "wins": 8,
+        "losses": 2,
+        "inningsPitched": "76.0",
+        "strikeouts": 74,
         "vsOpponentLogs": []
       }
     },
@@ -1092,16 +1129,16 @@
       "countryName": "Global",
       "rank": 2,
       "starterPitcherInfo": {
-        "name": "선발 미정",
-        "number": 0,
-        "throwsHand": "R",
-        "era": "발표대기",
-        "seasonEra": "미정",
-        "whip": "-",
-        "wins": 0,
-        "losses": 0,
-        "inningsPitched": "0.0",
-        "strikeouts": 0,
+        "name": "이승현",
+        "number": 57,
+        "throwsHand": "L",
+        "era": "3.42",
+        "seasonEra": "3.42",
+        "whip": "1.24",
+        "wins": 6,
+        "losses": 4,
+        "inningsPitched": "81.2",
+        "strikeouts": 68,
         "vsOpponentLogs": []
       }
     },
@@ -1127,7 +1164,8 @@
     "status": "BEFORE",
     "isStarted": false,
     "confirmed": true,
-    "isPitcherAnnounced": false
+    "isPitcherAnnounced": true,
+    "isDataCheckingPending": false
   },
   {
     "id": "auto-baseball-5-2026-09-05-20",
@@ -1144,16 +1182,16 @@
       "countryName": "Global",
       "rank": 1,
       "starterPitcherInfo": {
-        "name": "선발 미정",
-        "number": 0,
+        "name": "나균안",
+        "number": 43,
         "throwsHand": "R",
-        "era": "발표대기",
-        "seasonEra": "미정",
-        "whip": "-",
-        "wins": 0,
-        "losses": 0,
-        "inningsPitched": "0.0",
-        "strikeouts": 0,
+        "era": "4.15",
+        "seasonEra": "4.15",
+        "whip": "1.35",
+        "wins": 5,
+        "losses": 7,
+        "inningsPitched": "95.1",
+        "strikeouts": 82,
         "vsOpponentLogs": []
       }
     },
@@ -1164,16 +1202,16 @@
       "countryName": "Global",
       "rank": 2,
       "starterPitcherInfo": {
-        "name": "선발 미정",
-        "number": 0,
-        "throwsHand": "R",
-        "era": "발표대기",
-        "seasonEra": "미정",
-        "whip": "-",
-        "wins": 0,
-        "losses": 0,
-        "inningsPitched": "0.0",
-        "strikeouts": 0,
+        "name": "황준서",
+        "number": 29,
+        "throwsHand": "L",
+        "era": "3.88",
+        "seasonEra": "3.88",
+        "whip": "1.29",
+        "wins": 4,
+        "losses": 6,
+        "inningsPitched": "65.0",
+        "strikeouts": 59,
         "vsOpponentLogs": []
       }
     },
@@ -1199,7 +1237,8 @@
     "status": "BEFORE",
     "isStarted": false,
     "confirmed": true,
-    "isPitcherAnnounced": false
+    "isPitcherAnnounced": true,
+    "isDataCheckingPending": false
   },
   {
     "id": "auto-baseball-5-2026-09-05-21",
@@ -1216,16 +1255,16 @@
       "countryName": "Global",
       "rank": 1,
       "starterPitcherInfo": {
-        "name": "선발 미정",
-        "number": 0,
+        "name": "김민준",
+        "number": 41,
         "throwsHand": "R",
-        "era": "발표대기",
-        "seasonEra": "미정",
-        "whip": "-",
-        "wins": 0,
-        "losses": 0,
-        "inningsPitched": "0.0",
-        "strikeouts": 0,
+        "era": "4.02",
+        "seasonEra": "4.02",
+        "whip": "1.31",
+        "wins": 3,
+        "losses": 3,
+        "inningsPitched": "51.1",
+        "strikeouts": 42,
         "vsOpponentLogs": []
       }
     },
@@ -1236,16 +1275,16 @@
       "countryName": "Global",
       "rank": 2,
       "starterPitcherInfo": {
-        "name": "선발 미정",
-        "number": 0,
+        "name": "최민석",
+        "number": 38,
         "throwsHand": "R",
-        "era": "발표대기",
-        "seasonEra": "미정",
-        "whip": "-",
-        "wins": 0,
-        "losses": 0,
-        "inningsPitched": "0.0",
-        "strikeouts": 0,
+        "era": "3.75",
+        "seasonEra": "3.75",
+        "whip": "1.22",
+        "wins": 5,
+        "losses": 4,
+        "inningsPitched": "62.1",
+        "strikeouts": 51,
         "vsOpponentLogs": []
       }
     },
@@ -1271,7 +1310,8 @@
     "status": "BEFORE",
     "isStarted": false,
     "confirmed": true,
-    "isPitcherAnnounced": false
+    "isPitcherAnnounced": true,
+    "isDataCheckingPending": false
   },
   {
     "id": "auto-baseball-2-2026-09-05-23",
@@ -1343,7 +1383,8 @@
     "status": "BEFORE",
     "isStarted": false,
     "confirmed": true,
-    "isPitcherAnnounced": false
+    "isPitcherAnnounced": false,
+    "isDataCheckingPending": true
   },
   {
     "id": "auto-baseball-2-2026-09-05-24",
@@ -1415,7 +1456,8 @@
     "status": "BEFORE",
     "isStarted": false,
     "confirmed": true,
-    "isPitcherAnnounced": false
+    "isPitcherAnnounced": false,
+    "isDataCheckingPending": true
   },
   {
     "id": "auto-baseball-2-2026-09-05-25",
@@ -1487,7 +1529,8 @@
     "status": "BEFORE",
     "isStarted": false,
     "confirmed": true,
-    "isPitcherAnnounced": false
+    "isPitcherAnnounced": false,
+    "isDataCheckingPending": true
   },
   {
     "id": "auto-baseball-2-2026-09-05-26",
@@ -1559,7 +1602,8 @@
     "status": "BEFORE",
     "isStarted": false,
     "confirmed": true,
-    "isPitcherAnnounced": false
+    "isPitcherAnnounced": false,
+    "isDataCheckingPending": true
   },
   {
     "id": "auto-football-292-2026-09-05-111",
@@ -3448,15 +3492,16 @@
       "countryName": "Global",
       "rank": 1,
       "starterPitcherInfo": {
-        "name": "에드워드 카브레라",
-        "number": 27,
-        "era": "4.95",
+        "name": "Tyler Phillips",
+        "number": 62,
+        "throwsHand": "R",
+        "era": "4.80",
+        "seasonEra": "4.80",
         "whip": "1.38",
         "wins": 4,
-        "losses": 8,
-        "inningsPitched": "108.0",
-        "strikeouts": 117,
-        "throwsHand": "R",
+        "losses": 3,
+        "inningsPitched": "50.2",
+        "strikeouts": 36,
         "vsOpponentLogs": []
       }
     },
@@ -3467,15 +3512,16 @@
       "countryName": "Global",
       "rank": 2,
       "starterPitcherInfo": {
-        "name": "이마나가 쇼타",
-        "number": 18,
-        "era": "2.91",
-        "whip": "1.02",
-        "wins": 15,
-        "losses": 3,
-        "inningsPitched": "173.1",
-        "strikeouts": 174,
+        "name": "선발 미정",
+        "number": 0,
         "throwsHand": "R",
+        "era": "발표대기",
+        "seasonEra": "미정",
+        "whip": "-",
+        "wins": 0,
+        "losses": 0,
+        "inningsPitched": "0.0",
+        "strikeouts": 0,
         "vsOpponentLogs": []
       }
     },
@@ -3501,7 +3547,8 @@
     "status": "BEFORE",
     "isStarted": false,
     "confirmed": true,
-    "isPitcherAnnounced": true
+    "isPitcherAnnounced": false,
+    "isDataCheckingPending": true
   },
   {
     "id": "auto-baseball-1-2026-09-05-45",
@@ -3518,15 +3565,16 @@
       "countryName": "Global",
       "rank": 1,
       "starterPitcherInfo": {
-        "name": "루이스 세베리노",
-        "number": 40,
-        "era": "3.91",
-        "whip": "1.24",
-        "wins": 11,
-        "losses": 7,
-        "inningsPitched": "182.0",
-        "strikeouts": 161,
+        "name": "Christian Scott",
+        "number": 45,
         "throwsHand": "R",
+        "era": "3.95",
+        "seasonEra": "3.95",
+        "whip": "1.20",
+        "wins": 3,
+        "losses": 4,
+        "inningsPitched": "57.0",
+        "strikeouts": 58,
         "vsOpponentLogs": []
       }
     },
@@ -3537,15 +3585,16 @@
       "countryName": "Global",
       "rank": 2,
       "starterPitcherInfo": {
-        "name": "로건 웹",
-        "number": 62,
-        "era": "3.46",
-        "whip": "1.22",
-        "wins": 12,
-        "losses": 10,
-        "inningsPitched": "204.2",
-        "strikeouts": 172,
+        "name": "선발 미정",
+        "number": 0,
         "throwsHand": "R",
+        "era": "발표대기",
+        "seasonEra": "미정",
+        "whip": "-",
+        "wins": 0,
+        "losses": 0,
+        "inningsPitched": "0.0",
+        "strikeouts": 0,
         "vsOpponentLogs": []
       }
     },
@@ -3571,7 +3620,8 @@
     "status": "BEFORE",
     "isStarted": false,
     "confirmed": true,
-    "isPitcherAnnounced": true
+    "isPitcherAnnounced": false,
+    "isDataCheckingPending": true
   },
   {
     "id": "auto-baseball-1-2026-09-05-49",
@@ -3588,15 +3638,16 @@
       "countryName": "Global",
       "rank": 1,
       "starterPitcherInfo": {
-        "name": "잭 휠러",
-        "number": 45,
-        "era": "2.57",
-        "whip": "0.96",
-        "wins": 16,
-        "losses": 7,
-        "inningsPitched": "200.0",
-        "strikeouts": 224,
+        "name": "Aaron Nola",
+        "number": 27,
         "throwsHand": "R",
+        "era": "3.47",
+        "seasonEra": "3.47",
+        "whip": "1.16",
+        "wins": 12,
+        "losses": 7,
+        "inningsPitched": "168.1",
+        "strikeouts": 163,
         "vsOpponentLogs": []
       }
     },
@@ -3607,15 +3658,16 @@
       "countryName": "Global",
       "rank": 2,
       "starterPitcherInfo": {
-        "name": "크리스 세일",
-        "number": 51,
-        "era": "2.38",
-        "whip": "1.01",
-        "wins": 18,
-        "losses": 3,
-        "inningsPitched": "177.2",
-        "strikeouts": 225,
+        "name": "Tyler Mahle",
+        "number": 25,
         "throwsHand": "R",
+        "era": "3.85",
+        "seasonEra": "3.85",
+        "whip": "1.22",
+        "wins": 5,
+        "losses": 4,
+        "inningsPitched": "65.1",
+        "strikeouts": 62,
         "vsOpponentLogs": []
       }
     },
@@ -3641,7 +3693,8 @@
     "status": "BEFORE",
     "isStarted": false,
     "confirmed": true,
-    "isPitcherAnnounced": true
+    "isPitcherAnnounced": true,
+    "isDataCheckingPending": false
   },
   {
     "id": "auto-baseball-1-2026-09-05-50",
@@ -3658,15 +3711,16 @@
       "countryName": "Global",
       "rank": 1,
       "starterPitcherInfo": {
-        "name": "태너 바이비",
-        "number": 28,
-        "era": "3.52",
-        "whip": "1.12",
-        "wins": 11,
-        "losses": 8,
-        "inningsPitched": "173.2",
-        "strikeouts": 187,
+        "name": "Gavin Williams",
+        "number": 32,
         "throwsHand": "R",
+        "era": "4.20",
+        "seasonEra": "4.20",
+        "whip": "1.30",
+        "wins": 4,
+        "losses": 7,
+        "inningsPitched": "64.1",
+        "strikeouts": 68,
         "vsOpponentLogs": []
       }
     },
@@ -3677,15 +3731,16 @@
       "countryName": "Global",
       "rank": 2,
       "starterPitcherInfo": {
-        "name": "타릭 스쿠발",
-        "number": 29,
-        "era": "2.39",
-        "whip": "0.92",
-        "wins": 18,
-        "losses": 4,
-        "inningsPitched": "192.0",
-        "strikeouts": 228,
+        "name": "Jackson Jobe",
+        "number": 33,
         "throwsHand": "R",
+        "era": "3.20",
+        "seasonEra": "3.20",
+        "whip": "1.15",
+        "wins": 3,
+        "losses": 1,
+        "inningsPitched": "31.0",
+        "strikeouts": 32,
         "vsOpponentLogs": []
       }
     },
@@ -3711,7 +3766,8 @@
     "status": "BEFORE",
     "isStarted": false,
     "confirmed": true,
-    "isPitcherAnnounced": true
+    "isPitcherAnnounced": true,
+    "isDataCheckingPending": false
   },
   {
     "id": "auto-baseball-1-2026-09-05-53",
@@ -3728,15 +3784,16 @@
       "countryName": "Global",
       "rank": 1,
       "starterPitcherInfo": {
-        "name": "헌터 그린",
-        "number": 21,
-        "era": "2.75",
-        "whip": "1.02",
-        "wins": 9,
-        "losses": 5,
-        "inningsPitched": "150.1",
-        "strikeouts": 169,
+        "name": "Brady Singer",
+        "number": 51,
         "throwsHand": "R",
+        "era": "3.77",
+        "seasonEra": "3.77",
+        "whip": "1.25",
+        "wins": 9,
+        "losses": 10,
+        "inningsPitched": "152.2",
+        "strikeouts": 147,
         "vsOpponentLogs": []
       }
     },
@@ -3747,15 +3804,16 @@
       "countryName": "Global",
       "rank": 2,
       "starterPitcherInfo": {
-        "name": "프레디 페랄타",
-        "number": 51,
-        "era": "3.58",
-        "whip": "1.21",
-        "wins": 11,
-        "losses": 8,
-        "inningsPitched": "173.2",
-        "strikeouts": 200,
-        "throwsHand": "R",
+        "name": "Kyle Harrison",
+        "number": 45,
+        "throwsHand": "L",
+        "era": "4.15",
+        "seasonEra": "4.15",
+        "whip": "1.31",
+        "wins": 6,
+        "losses": 7,
+        "inningsPitched": "112.2",
+        "strikeouts": 104,
         "vsOpponentLogs": []
       }
     },
@@ -3781,7 +3839,8 @@
     "status": "BEFORE",
     "isStarted": false,
     "confirmed": true,
-    "isPitcherAnnounced": true
+    "isPitcherAnnounced": true,
+    "isDataCheckingPending": false
   },
   {
     "id": "auto-baseball-1-2026-09-05-54",
@@ -3798,15 +3857,16 @@
       "countryName": "Global",
       "rank": 1,
       "starterPitcherInfo": {
-        "name": "폴 스킨스",
+        "name": "Paul Skenes",
         "number": 30,
-        "era": "1.96",
-        "whip": "0.95",
-        "wins": 11,
-        "losses": 3,
-        "inningsPitched": "133.0",
-        "strikeouts": 170,
         "throwsHand": "R",
+        "era": "1.99",
+        "seasonEra": "1.99",
+        "whip": "0.94",
+        "wins": 11,
+        "losses": 2,
+        "inningsPitched": "120.0",
+        "strikeouts": 151,
         "vsOpponentLogs": []
       }
     },
@@ -3817,15 +3877,16 @@
       "countryName": "Global",
       "rank": 2,
       "starterPitcherInfo": {
-        "name": "타일러 앤더슨",
-        "number": 31,
-        "era": "3.81",
-        "whip": "1.29",
-        "wins": 10,
-        "losses": 14,
-        "inningsPitched": "179.1",
-        "strikeouts": 142,
+        "name": "Walbert Ureña",
+        "number": 68,
         "throwsHand": "R",
+        "era": "4.50",
+        "seasonEra": "4.50",
+        "whip": "1.40",
+        "wins": 1,
+        "losses": 3,
+        "inningsPitched": "28.0",
+        "strikeouts": 22,
         "vsOpponentLogs": []
       }
     },
@@ -3851,7 +3912,8 @@
     "status": "BEFORE",
     "isStarted": false,
     "confirmed": true,
-    "isPitcherAnnounced": true
+    "isPitcherAnnounced": true,
+    "isDataCheckingPending": false
   },
   {
     "id": "auto-baseball-1-2026-09-05-59",
@@ -3868,15 +3930,16 @@
       "countryName": "Global",
       "rank": 1,
       "starterPitcherInfo": {
-        "name": "네이선 이볼디",
-        "number": 17,
-        "era": "3.80",
-        "whip": "1.11",
-        "wins": 11,
-        "losses": 8,
-        "inningsPitched": "170.2",
-        "strikeouts": 161,
-        "throwsHand": "R",
+        "name": "MacKenzie Gore",
+        "number": 1,
+        "throwsHand": "L",
+        "era": "3.90",
+        "seasonEra": "3.90",
+        "whip": "1.30",
+        "wins": 8,
+        "losses": 11,
+        "inningsPitched": "138.1",
+        "strikeouts": 150,
         "vsOpponentLogs": []
       }
     },
@@ -3887,15 +3950,16 @@
       "countryName": "Global",
       "rank": 2,
       "starterPitcherInfo": {
-        "name": "잭 리텔",
-        "number": 52,
-        "era": "3.63",
-        "whip": "1.25",
-        "wins": 8,
-        "losses": 9,
-        "inningsPitched": "156.1",
-        "strikeouts": 141,
+        "name": "선발 미정",
+        "number": 0,
         "throwsHand": "R",
+        "era": "발표대기",
+        "seasonEra": "미정",
+        "whip": "-",
+        "wins": 0,
+        "losses": 0,
+        "inningsPitched": "0.0",
+        "strikeouts": 0,
         "vsOpponentLogs": []
       }
     },
@@ -3921,7 +3985,8 @@
     "status": "BEFORE",
     "isStarted": false,
     "confirmed": true,
-    "isPitcherAnnounced": true
+    "isPitcherAnnounced": false,
+    "isDataCheckingPending": true
   },
   {
     "id": "auto-baseball-1-2026-09-05-60",
@@ -3938,15 +4003,16 @@
       "countryName": "Global",
       "rank": 1,
       "starterPitcherInfo": {
-        "name": "코빈 번스",
+        "name": "Kyle Bradish",
         "number": 39,
-        "era": "2.92",
-        "whip": "1.10",
-        "wins": 15,
-        "losses": 8,
-        "inningsPitched": "194.1",
-        "strikeouts": 181,
         "throwsHand": "R",
+        "era": "3.10",
+        "seasonEra": "3.10",
+        "whip": "1.08",
+        "wins": 8,
+        "losses": 3,
+        "inningsPitched": "81.1",
+        "strikeouts": 95,
         "vsOpponentLogs": []
       }
     },
@@ -3957,15 +4023,16 @@
       "countryName": "Global",
       "rank": 2,
       "starterPitcherInfo": {
-        "name": "태너 하우크",
-        "number": 89,
-        "era": "3.12",
-        "whip": "1.15",
-        "wins": 8,
-        "losses": 10,
-        "inningsPitched": "178.2",
-        "strikeouts": 154,
-        "throwsHand": "R",
+        "name": "Payton Tolle",
+        "number": 73,
+        "throwsHand": "L",
+        "era": "3.95",
+        "seasonEra": "3.95",
+        "whip": "1.28",
+        "wins": 2,
+        "losses": 2,
+        "inningsPitched": "25.0",
+        "strikeouts": 27,
         "vsOpponentLogs": []
       }
     },
@@ -3991,7 +4058,8 @@
     "status": "BEFORE",
     "isStarted": false,
     "confirmed": true,
-    "isPitcherAnnounced": true
+    "isPitcherAnnounced": true,
+    "isDataCheckingPending": false
   },
   {
     "id": "auto-baseball-1-2026-09-05-61",
@@ -4008,15 +4076,16 @@
       "countryName": "Global",
       "rank": 1,
       "starterPitcherInfo": {
-        "name": "개럿 크로셰",
-        "number": 45,
-        "era": "3.58",
-        "whip": "1.07",
-        "wins": 6,
-        "losses": 12,
-        "inningsPitched": "146.0",
-        "strikeouts": 209,
+        "name": "Sean Burke",
+        "number": 61,
         "throwsHand": "R",
+        "era": "4.35",
+        "seasonEra": "4.35",
+        "whip": "1.34",
+        "wins": 2,
+        "losses": 4,
+        "inningsPitched": "35.0",
+        "strikeouts": 34,
         "vsOpponentLogs": []
       }
     },
@@ -4027,15 +4096,16 @@
       "countryName": "Global",
       "rank": 2,
       "starterPitcherInfo": {
-        "name": "파블로 로페즈",
-        "number": 49,
-        "era": "4.08",
-        "whip": "1.14",
-        "wins": 15,
-        "losses": 9,
-        "inningsPitched": "185.1",
-        "strikeouts": 198,
+        "name": "Bailey Ober",
+        "number": 17,
         "throwsHand": "R",
+        "era": "3.92",
+        "seasonEra": "3.92",
+        "whip": "1.02",
+        "wins": 12,
+        "losses": 7,
+        "inningsPitched": "154.0",
+        "strikeouts": 160,
         "vsOpponentLogs": []
       }
     },
@@ -4061,7 +4131,8 @@
     "status": "BEFORE",
     "isStarted": false,
     "confirmed": true,
-    "isPitcherAnnounced": true
+    "isPitcherAnnounced": true,
+    "isDataCheckingPending": false
   },
   {
     "id": "auto-baseball-1-2026-09-05-62",
@@ -4078,15 +4149,16 @@
       "countryName": "Global",
       "rank": 1,
       "starterPitcherInfo": {
-        "name": "콜 레이건스",
-        "number": 55,
-        "era": "3.14",
-        "whip": "1.14",
-        "wins": 11,
-        "losses": 9,
-        "inningsPitched": "186.1",
-        "strikeouts": 223,
+        "name": "Randy Dobnak",
+        "number": 68,
         "throwsHand": "R",
+        "era": "4.40",
+        "seasonEra": "4.40",
+        "whip": "1.32",
+        "wins": 2,
+        "losses": 4,
+        "inningsPitched": "41.0",
+        "strikeouts": 33,
         "vsOpponentLogs": []
       }
     },
@@ -4097,15 +4169,16 @@
       "countryName": "Global",
       "rank": 2,
       "starterPitcherInfo": {
-        "name": "케빈 가우스먼",
-        "number": 34,
-        "era": "3.83",
-        "whip": "1.22",
-        "wins": 13,
-        "losses": 11,
-        "inningsPitched": "181.0",
-        "strikeouts": 162,
+        "name": "선발 미정",
+        "number": 0,
         "throwsHand": "R",
+        "era": "발표대기",
+        "seasonEra": "미정",
+        "whip": "-",
+        "wins": 0,
+        "losses": 0,
+        "inningsPitched": "0.0",
+        "strikeouts": 0,
         "vsOpponentLogs": []
       }
     },
@@ -4131,7 +4204,8 @@
     "status": "BEFORE",
     "isStarted": false,
     "confirmed": true,
-    "isPitcherAnnounced": true
+    "isPitcherAnnounced": false,
+    "isDataCheckingPending": true
   },
   {
     "id": "auto-baseball-1-2026-09-05-63",
@@ -4148,15 +4222,16 @@
       "countryName": "Global",
       "rank": 1,
       "starterPitcherInfo": {
-        "name": "프람버 발데스",
-        "number": 59,
-        "era": "2.91",
-        "whip": "1.11",
-        "wins": 14,
-        "losses": 7,
-        "inningsPitched": "176.1",
-        "strikeouts": 169,
+        "name": "Peter Lambert",
+        "number": 36,
         "throwsHand": "R",
+        "era": "4.60",
+        "seasonEra": "4.60",
+        "whip": "1.35",
+        "wins": 3,
+        "losses": 5,
+        "inningsPitched": "58.2",
+        "strikeouts": 51,
         "vsOpponentLogs": []
       }
     },
@@ -4167,15 +4242,16 @@
       "countryName": "Global",
       "rank": 2,
       "starterPitcherInfo": {
-        "name": "잭 갤런",
-        "number": 23,
-        "era": "3.65",
-        "whip": "1.28",
-        "wins": 14,
-        "losses": 6,
-        "inningsPitched": "148.0",
-        "strikeouts": 126,
-        "throwsHand": "R",
+        "name": "Eduardo Rodriguez",
+        "number": 57,
+        "throwsHand": "L",
+        "era": "3.82",
+        "seasonEra": "3.82",
+        "whip": "1.22",
+        "wins": 5,
+        "losses": 3,
+        "inningsPitched": "54.0",
+        "strikeouts": 52,
         "vsOpponentLogs": []
       }
     },
@@ -4201,7 +4277,8 @@
     "status": "BEFORE",
     "isStarted": false,
     "confirmed": true,
-    "isPitcherAnnounced": true
+    "isPitcherAnnounced": true,
+    "isDataCheckingPending": false
   },
   {
     "id": "auto-baseball-1-2026-09-05-64",
@@ -4218,15 +4295,16 @@
       "countryName": "Global",
       "rank": 1,
       "starterPitcherInfo": {
-        "name": "딜런 시즈",
-        "number": 84,
-        "era": "3.47",
-        "whip": "1.07",
-        "wins": 14,
-        "losses": 11,
-        "inningsPitched": "189.1",
-        "strikeouts": 224,
+        "name": "Michael King",
+        "number": 34,
         "throwsHand": "R",
+        "era": "3.08",
+        "seasonEra": "3.08",
+        "whip": "1.18",
+        "wins": 12,
+        "losses": 8,
+        "inningsPitched": "154.2",
+        "strikeouts": 181,
         "vsOpponentLogs": []
       }
     },
@@ -4237,15 +4315,16 @@
       "countryName": "Global",
       "rank": 2,
       "starterPitcherInfo": {
-        "name": "게릿 콜",
+        "name": "Gerrit Cole",
         "number": 45,
-        "era": "3.41",
-        "whip": "1.13",
-        "wins": 8,
-        "losses": 5,
-        "inningsPitched": "95.0",
-        "strikeouts": 99,
         "throwsHand": "R",
+        "era": "3.36",
+        "seasonEra": "3.36",
+        "whip": "1.12",
+        "wins": 6,
+        "losses": 4,
+        "inningsPitched": "75.0",
+        "strikeouts": 79,
         "vsOpponentLogs": []
       }
     },
@@ -4271,7 +4350,8 @@
     "status": "BEFORE",
     "isStarted": false,
     "confirmed": true,
-    "isPitcherAnnounced": true
+    "isPitcherAnnounced": true,
+    "isDataCheckingPending": false
   },
   {
     "id": "auto-baseball-1-2026-09-06-3",
@@ -4288,15 +4368,16 @@
       "countryName": "Global",
       "rank": 1,
       "starterPitcherInfo": {
-        "name": "카일 프리랜드",
-        "number": 21,
-        "era": "4.95",
-        "whip": "1.38",
-        "wins": 5,
-        "losses": 8,
-        "inningsPitched": "109.0",
-        "strikeouts": 88,
+        "name": "Tanner Gordon",
+        "number": 60,
         "throwsHand": "R",
+        "era": "5.10",
+        "seasonEra": "5.10",
+        "whip": "1.45",
+        "wins": 2,
+        "losses": 6,
+        "inningsPitched": "44.0",
+        "strikeouts": 35,
         "vsOpponentLogs": []
       }
     },
@@ -4307,15 +4388,16 @@
       "countryName": "Global",
       "rank": 2,
       "starterPitcherInfo": {
-        "name": "소니 그레이",
-        "number": 54,
-        "era": "3.84",
-        "whip": "1.10",
-        "wins": 13,
-        "losses": 9,
-        "inningsPitched": "166.1",
-        "strikeouts": 203,
+        "name": "Kyle Leahy",
+        "number": 64,
         "throwsHand": "R",
+        "era": "4.15",
+        "seasonEra": "4.15",
+        "whip": "1.24",
+        "wins": 3,
+        "losses": 2,
+        "inningsPitched": "47.2",
+        "strikeouts": 43,
         "vsOpponentLogs": []
       }
     },
@@ -4341,7 +4423,8 @@
     "status": "BEFORE",
     "isStarted": false,
     "confirmed": true,
-    "isPitcherAnnounced": true
+    "isPitcherAnnounced": true,
+    "isDataCheckingPending": false
   },
   {
     "id": "auto-baseball-1-2026-09-06-5",
@@ -4358,15 +4441,16 @@
       "countryName": "Global",
       "rank": 1,
       "starterPitcherInfo": {
-        "name": "야마모토 요시노부",
-        "number": 18,
-        "era": "2.92",
-        "whip": "1.06",
-        "wins": 6,
-        "losses": 2,
-        "inningsPitched": "86.1",
-        "strikeouts": 102,
+        "name": "선발 미정",
+        "number": 0,
         "throwsHand": "R",
+        "era": "발표대기",
+        "seasonEra": "미정",
+        "whip": "-",
+        "wins": 0,
+        "losses": 0,
+        "inningsPitched": "0.0",
+        "strikeouts": 0,
         "vsOpponentLogs": []
       }
     },
@@ -4377,15 +4461,16 @@
       "countryName": "Global",
       "rank": 2,
       "starterPitcherInfo": {
-        "name": "맥켄지 고어",
-        "number": 1,
-        "era": "3.90",
-        "whip": "1.41",
-        "wins": 10,
-        "losses": 12,
-        "inningsPitched": "166.1",
-        "strikeouts": 181,
-        "throwsHand": "R",
+        "name": "Andrew Alvarez",
+        "number": 66,
+        "throwsHand": "L",
+        "era": "4.50",
+        "seasonEra": "4.50",
+        "whip": "1.38",
+        "wins": 1,
+        "losses": 3,
+        "inningsPitched": "32.0",
+        "strikeouts": 28,
         "vsOpponentLogs": []
       }
     },
@@ -4411,7 +4496,8 @@
     "status": "BEFORE",
     "isStarted": false,
     "confirmed": true,
-    "isPitcherAnnounced": true
+    "isPitcherAnnounced": false,
+    "isDataCheckingPending": true
   },
   {
     "id": "auto-baseball-1-2026-09-06-7",
@@ -4428,15 +4514,16 @@
       "countryName": "Global",
       "rank": 1,
       "starterPitcherInfo": {
-        "name": "로건 길버트",
-        "number": 36,
-        "era": "3.23",
-        "whip": "0.89",
-        "wins": 8,
-        "losses": 11,
-        "inningsPitched": "208.2",
-        "strikeouts": 220,
+        "name": "Bryan Woo",
+        "number": 22,
         "throwsHand": "R",
+        "era": "2.88",
+        "seasonEra": "2.88",
+        "whip": "0.93",
+        "wins": 8,
+        "losses": 2,
+        "inningsPitched": "99.2",
+        "strikeouts": 82,
         "vsOpponentLogs": []
       }
     },
@@ -4447,15 +4534,16 @@
       "countryName": "Global",
       "rank": 2,
       "starterPitcherInfo": {
-        "name": "JP 시어스",
-        "number": 38,
-        "era": "4.38",
-        "whip": "1.22",
-        "wins": 11,
-        "losses": 12,
-        "inningsPitched": "180.2",
-        "strikeouts": 136,
-        "throwsHand": "R",
+        "name": "Gage Jump",
+        "number": 54,
+        "throwsHand": "L",
+        "era": "4.05",
+        "seasonEra": "4.05",
+        "whip": "1.28",
+        "wins": 1,
+        "losses": 2,
+        "inningsPitched": "20.0",
+        "strikeouts": 21,
         "vsOpponentLogs": []
       }
     },
@@ -4481,7 +4569,8 @@
     "status": "BEFORE",
     "isStarted": false,
     "confirmed": true,
-    "isPitcherAnnounced": true
+    "isPitcherAnnounced": true,
+    "isDataCheckingPending": false
   },
   {
     "id": "auto-baseball-2-2026-09-06-8",
@@ -4498,16 +4587,16 @@
       "countryName": "Global",
       "rank": 1,
       "starterPitcherInfo": {
-        "name": "선발 미정",
-        "number": 0,
-        "throwsHand": "R",
-        "era": "발표대기",
-        "seasonEra": "미정",
-        "whip": "-",
-        "wins": 0,
-        "losses": 0,
-        "inningsPitched": "0.0",
-        "strikeouts": 0,
+        "name": "曽谷 龍平",
+        "number": 17,
+        "throwsHand": "L",
+        "era": "2.45",
+        "seasonEra": "2.45",
+        "whip": "1.05",
+        "wins": 7,
+        "losses": 4,
+        "inningsPitched": "91.2",
+        "strikeouts": 86,
         "vsOpponentLogs": []
       }
     },
@@ -4518,16 +4607,16 @@
       "countryName": "Global",
       "rank": 2,
       "starterPitcherInfo": {
-        "name": "선발 미정",
-        "number": 0,
-        "throwsHand": "R",
-        "era": "발표대기",
-        "seasonEra": "미정",
-        "whip": "-",
-        "wins": 0,
-        "losses": 0,
-        "inningsPitched": "0.0",
-        "strikeouts": 0,
+        "name": "Ｊ．ルケーシー",
+        "number": 48,
+        "throwsHand": "L",
+        "era": "3.20",
+        "seasonEra": "3.20",
+        "whip": "1.20",
+        "wins": 4,
+        "losses": 3,
+        "inningsPitched": "56.1",
+        "strikeouts": 49,
         "vsOpponentLogs": []
       }
     },
@@ -4553,7 +4642,8 @@
     "status": "BEFORE",
     "isStarted": false,
     "confirmed": true,
-    "isPitcherAnnounced": false
+    "isPitcherAnnounced": true,
+    "isDataCheckingPending": false
   },
   {
     "id": "auto-baseball-2-2026-09-06-9",
@@ -4570,16 +4660,16 @@
       "countryName": "Global",
       "rank": 1,
       "starterPitcherInfo": {
-        "name": "선발 미정",
-        "number": 0,
+        "name": "上茶谷 大河",
+        "number": 64,
         "throwsHand": "R",
-        "era": "발표대기",
-        "seasonEra": "미정",
-        "whip": "-",
-        "wins": 0,
-        "losses": 0,
-        "inningsPitched": "0.0",
-        "strikeouts": 0,
+        "era": "3.35",
+        "seasonEra": "3.35",
+        "whip": "1.22",
+        "wins": 5,
+        "losses": 3,
+        "inningsPitched": "61.2",
+        "strikeouts": 45,
         "vsOpponentLogs": []
       }
     },
@@ -4590,16 +4680,16 @@
       "countryName": "Global",
       "rank": 2,
       "starterPitcherInfo": {
-        "name": "선발 미정",
-        "number": 0,
-        "throwsHand": "R",
-        "era": "발표대기",
-        "seasonEra": "미정",
-        "whip": "-",
-        "wins": 0,
-        "losses": 0,
-        "inningsPitched": "0.0",
-        "strikeouts": 0,
+        "name": "武内 夏暉",
+        "number": 21,
+        "throwsHand": "L",
+        "era": "2.21",
+        "seasonEra": "2.21",
+        "whip": "0.98",
+        "wins": 8,
+        "losses": 3,
+        "inningsPitched": "93.2",
+        "strikeouts": 79,
         "vsOpponentLogs": []
       }
     },
@@ -4625,7 +4715,8 @@
     "status": "BEFORE",
     "isStarted": false,
     "confirmed": true,
-    "isPitcherAnnounced": false
+    "isPitcherAnnounced": true,
+    "isDataCheckingPending": false
   },
   {
     "id": "auto-baseball-2-2026-09-06-10",
@@ -4697,7 +4788,8 @@
     "status": "BEFORE",
     "isStarted": false,
     "confirmed": true,
-    "isPitcherAnnounced": false
+    "isPitcherAnnounced": false,
+    "isDataCheckingPending": true
   },
   {
     "id": "auto-baseball-2-2026-09-06-11",
@@ -4769,7 +4861,8 @@
     "status": "BEFORE",
     "isStarted": false,
     "confirmed": true,
-    "isPitcherAnnounced": false
+    "isPitcherAnnounced": false,
+    "isDataCheckingPending": true
   },
   {
     "id": "auto-baseball-5-2026-09-06-12",
@@ -4841,7 +4934,8 @@
     "status": "BEFORE",
     "isStarted": false,
     "confirmed": true,
-    "isPitcherAnnounced": false
+    "isPitcherAnnounced": false,
+    "isDataCheckingPending": true
   },
   {
     "id": "auto-baseball-5-2026-09-06-13",
@@ -4913,7 +5007,8 @@
     "status": "BEFORE",
     "isStarted": false,
     "confirmed": true,
-    "isPitcherAnnounced": false
+    "isPitcherAnnounced": false,
+    "isDataCheckingPending": true
   },
   {
     "id": "auto-baseball-5-2026-09-06-14",
@@ -4985,7 +5080,8 @@
     "status": "BEFORE",
     "isStarted": false,
     "confirmed": true,
-    "isPitcherAnnounced": false
+    "isPitcherAnnounced": false,
+    "isDataCheckingPending": true
   },
   {
     "id": "auto-baseball-5-2026-09-06-15",
@@ -5057,7 +5153,8 @@
     "status": "BEFORE",
     "isStarted": false,
     "confirmed": true,
-    "isPitcherAnnounced": false
+    "isPitcherAnnounced": false,
+    "isDataCheckingPending": true
   },
   {
     "id": "auto-baseball-2-2026-09-06-18",
@@ -5129,7 +5226,8 @@
     "status": "BEFORE",
     "isStarted": false,
     "confirmed": true,
-    "isPitcherAnnounced": false
+    "isPitcherAnnounced": false,
+    "isDataCheckingPending": true
   },
   {
     "id": "auto-baseball-2-2026-09-06-19",
@@ -5201,7 +5299,8 @@
     "status": "BEFORE",
     "isStarted": false,
     "confirmed": true,
-    "isPitcherAnnounced": false
+    "isPitcherAnnounced": false,
+    "isDataCheckingPending": true
   },
   {
     "id": "auto-baseball-5-2026-09-06-22",
@@ -5273,7 +5372,8 @@
     "status": "BEFORE",
     "isStarted": false,
     "confirmed": true,
-    "isPitcherAnnounced": false
+    "isPitcherAnnounced": false,
+    "isDataCheckingPending": true
   },
   {
     "id": "auto-football-292-2026-09-06-141",
@@ -6154,15 +6254,16 @@
       "countryName": "Global",
       "rank": 1,
       "starterPitcherInfo": {
-        "name": "헌터 그린",
-        "number": 21,
-        "era": "2.75",
-        "whip": "1.02",
-        "wins": 9,
-        "losses": 5,
-        "inningsPitched": "150.1",
-        "strikeouts": 169,
+        "name": "선발 미정",
+        "number": 0,
         "throwsHand": "R",
+        "era": "발표대기",
+        "seasonEra": "미정",
+        "whip": "-",
+        "wins": 0,
+        "losses": 0,
+        "inningsPitched": "0.0",
+        "strikeouts": 0,
         "vsOpponentLogs": []
       }
     },
@@ -6173,15 +6274,16 @@
       "countryName": "Global",
       "rank": 2,
       "starterPitcherInfo": {
-        "name": "프레디 페랄타",
-        "number": 51,
-        "era": "3.58",
-        "whip": "1.21",
-        "wins": 11,
-        "losses": 8,
-        "inningsPitched": "173.2",
-        "strikeouts": 200,
+        "name": "선발 미정",
+        "number": 0,
         "throwsHand": "R",
+        "era": "발표대기",
+        "seasonEra": "미정",
+        "whip": "-",
+        "wins": 0,
+        "losses": 0,
+        "inningsPitched": "0.0",
+        "strikeouts": 0,
         "vsOpponentLogs": []
       }
     },
@@ -6207,7 +6309,8 @@
     "status": "BEFORE",
     "isStarted": false,
     "confirmed": true,
-    "isPitcherAnnounced": true
+    "isPitcherAnnounced": false,
+    "isDataCheckingPending": true
   },
   {
     "id": "auto-football-140-2026-09-06-943",
@@ -6368,15 +6471,16 @@
       "countryName": "Global",
       "rank": 1,
       "starterPitcherInfo": {
-        "name": "잭 휠러",
-        "number": 45,
-        "era": "2.57",
-        "whip": "0.96",
-        "wins": 16,
-        "losses": 7,
-        "inningsPitched": "200.0",
-        "strikeouts": 224,
+        "name": "선발 미정",
+        "number": 0,
         "throwsHand": "R",
+        "era": "발표대기",
+        "seasonEra": "미정",
+        "whip": "-",
+        "wins": 0,
+        "losses": 0,
+        "inningsPitched": "0.0",
+        "strikeouts": 0,
         "vsOpponentLogs": []
       }
     },
@@ -6387,15 +6491,16 @@
       "countryName": "Global",
       "rank": 2,
       "starterPitcherInfo": {
-        "name": "크리스 세일",
-        "number": 51,
-        "era": "2.38",
-        "whip": "1.01",
-        "wins": 18,
-        "losses": 3,
-        "inningsPitched": "177.2",
-        "strikeouts": 225,
+        "name": "선발 미정",
+        "number": 0,
         "throwsHand": "R",
+        "era": "발표대기",
+        "seasonEra": "미정",
+        "whip": "-",
+        "wins": 0,
+        "losses": 0,
+        "inningsPitched": "0.0",
+        "strikeouts": 0,
         "vsOpponentLogs": []
       }
     },
@@ -6421,7 +6526,8 @@
     "status": "BEFORE",
     "isStarted": false,
     "confirmed": true,
-    "isPitcherAnnounced": true
+    "isPitcherAnnounced": false,
+    "isDataCheckingPending": true
   },
   {
     "id": "auto-baseball-1-2026-09-06-41",
@@ -6438,15 +6544,16 @@
       "countryName": "Global",
       "rank": 1,
       "starterPitcherInfo": {
-        "name": "코빈 번스",
-        "number": 39,
-        "era": "2.92",
-        "whip": "1.10",
-        "wins": 15,
-        "losses": 8,
-        "inningsPitched": "194.1",
-        "strikeouts": 181,
+        "name": "선발 미정",
+        "number": 0,
         "throwsHand": "R",
+        "era": "발표대기",
+        "seasonEra": "미정",
+        "whip": "-",
+        "wins": 0,
+        "losses": 0,
+        "inningsPitched": "0.0",
+        "strikeouts": 0,
         "vsOpponentLogs": []
       }
     },
@@ -6457,15 +6564,16 @@
       "countryName": "Global",
       "rank": 2,
       "starterPitcherInfo": {
-        "name": "태너 하우크",
-        "number": 89,
-        "era": "3.12",
-        "whip": "1.15",
-        "wins": 8,
-        "losses": 10,
-        "inningsPitched": "178.2",
-        "strikeouts": 154,
+        "name": "선발 미정",
+        "number": 0,
         "throwsHand": "R",
+        "era": "발표대기",
+        "seasonEra": "미정",
+        "whip": "-",
+        "wins": 0,
+        "losses": 0,
+        "inningsPitched": "0.0",
+        "strikeouts": 0,
         "vsOpponentLogs": []
       }
     },
@@ -6491,7 +6599,8 @@
     "status": "BEFORE",
     "isStarted": false,
     "confirmed": true,
-    "isPitcherAnnounced": true
+    "isPitcherAnnounced": false,
+    "isDataCheckingPending": true
   },
   {
     "id": "auto-baseball-1-2026-09-06-42",
@@ -6508,15 +6617,16 @@
       "countryName": "Global",
       "rank": 1,
       "starterPitcherInfo": {
-        "name": "폴 스킨스",
-        "number": 30,
-        "era": "1.96",
-        "whip": "0.95",
-        "wins": 11,
-        "losses": 3,
-        "inningsPitched": "133.0",
-        "strikeouts": 170,
+        "name": "선발 미정",
+        "number": 0,
         "throwsHand": "R",
+        "era": "발표대기",
+        "seasonEra": "미정",
+        "whip": "-",
+        "wins": 0,
+        "losses": 0,
+        "inningsPitched": "0.0",
+        "strikeouts": 0,
         "vsOpponentLogs": []
       }
     },
@@ -6527,15 +6637,16 @@
       "countryName": "Global",
       "rank": 2,
       "starterPitcherInfo": {
-        "name": "타일러 앤더슨",
-        "number": 31,
-        "era": "3.81",
-        "whip": "1.29",
-        "wins": 10,
-        "losses": 14,
-        "inningsPitched": "179.1",
-        "strikeouts": 142,
+        "name": "선발 미정",
+        "number": 0,
         "throwsHand": "R",
+        "era": "발표대기",
+        "seasonEra": "미정",
+        "whip": "-",
+        "wins": 0,
+        "losses": 0,
+        "inningsPitched": "0.0",
+        "strikeouts": 0,
         "vsOpponentLogs": []
       }
     },
@@ -6561,7 +6672,8 @@
     "status": "BEFORE",
     "isStarted": false,
     "confirmed": true,
-    "isPitcherAnnounced": true
+    "isPitcherAnnounced": false,
+    "isDataCheckingPending": true
   },
   {
     "id": "auto-baseball-1-2026-09-06-43",
@@ -6578,15 +6690,16 @@
       "countryName": "Global",
       "rank": 1,
       "starterPitcherInfo": {
-        "name": "태너 바이비",
-        "number": 28,
-        "era": "3.52",
-        "whip": "1.12",
-        "wins": 11,
-        "losses": 8,
-        "inningsPitched": "173.2",
-        "strikeouts": 187,
+        "name": "선발 미정",
+        "number": 0,
         "throwsHand": "R",
+        "era": "발표대기",
+        "seasonEra": "미정",
+        "whip": "-",
+        "wins": 0,
+        "losses": 0,
+        "inningsPitched": "0.0",
+        "strikeouts": 0,
         "vsOpponentLogs": []
       }
     },
@@ -6597,15 +6710,16 @@
       "countryName": "Global",
       "rank": 2,
       "starterPitcherInfo": {
-        "name": "타릭 스쿠발",
-        "number": 29,
-        "era": "2.39",
-        "whip": "0.92",
-        "wins": 18,
-        "losses": 4,
-        "inningsPitched": "192.0",
-        "strikeouts": 228,
+        "name": "선발 미정",
+        "number": 0,
         "throwsHand": "R",
+        "era": "발표대기",
+        "seasonEra": "미정",
+        "whip": "-",
+        "wins": 0,
+        "losses": 0,
+        "inningsPitched": "0.0",
+        "strikeouts": 0,
         "vsOpponentLogs": []
       }
     },
@@ -6631,7 +6745,8 @@
     "status": "BEFORE",
     "isStarted": false,
     "confirmed": true,
-    "isPitcherAnnounced": true
+    "isPitcherAnnounced": false,
+    "isDataCheckingPending": true
   },
   {
     "id": "auto-baseball-1-2026-09-06-44",
@@ -6648,15 +6763,16 @@
       "countryName": "Global",
       "rank": 1,
       "starterPitcherInfo": {
-        "name": "에드워드 카브레라",
-        "number": 27,
-        "era": "4.95",
-        "whip": "1.38",
-        "wins": 4,
-        "losses": 8,
-        "inningsPitched": "108.0",
-        "strikeouts": 117,
+        "name": "선발 미정",
+        "number": 0,
         "throwsHand": "R",
+        "era": "발표대기",
+        "seasonEra": "미정",
+        "whip": "-",
+        "wins": 0,
+        "losses": 0,
+        "inningsPitched": "0.0",
+        "strikeouts": 0,
         "vsOpponentLogs": []
       }
     },
@@ -6667,15 +6783,16 @@
       "countryName": "Global",
       "rank": 2,
       "starterPitcherInfo": {
-        "name": "이마나가 쇼타",
-        "number": 18,
-        "era": "2.91",
-        "whip": "1.02",
-        "wins": 15,
-        "losses": 3,
-        "inningsPitched": "173.1",
-        "strikeouts": 174,
+        "name": "선발 미정",
+        "number": 0,
         "throwsHand": "R",
+        "era": "발표대기",
+        "seasonEra": "미정",
+        "whip": "-",
+        "wins": 0,
+        "losses": 0,
+        "inningsPitched": "0.0",
+        "strikeouts": 0,
         "vsOpponentLogs": []
       }
     },
@@ -6701,7 +6818,8 @@
     "status": "BEFORE",
     "isStarted": false,
     "confirmed": true,
-    "isPitcherAnnounced": true
+    "isPitcherAnnounced": false,
+    "isDataCheckingPending": true
   },
   {
     "id": "auto-baseball-1-2026-09-06-45",
@@ -6718,15 +6836,16 @@
       "countryName": "Global",
       "rank": 1,
       "starterPitcherInfo": {
-        "name": "루이스 세베리노",
-        "number": 40,
-        "era": "3.91",
-        "whip": "1.24",
-        "wins": 11,
-        "losses": 7,
-        "inningsPitched": "182.0",
-        "strikeouts": 161,
+        "name": "선발 미정",
+        "number": 0,
         "throwsHand": "R",
+        "era": "발표대기",
+        "seasonEra": "미정",
+        "whip": "-",
+        "wins": 0,
+        "losses": 0,
+        "inningsPitched": "0.0",
+        "strikeouts": 0,
         "vsOpponentLogs": []
       }
     },
@@ -6737,15 +6856,16 @@
       "countryName": "Global",
       "rank": 2,
       "starterPitcherInfo": {
-        "name": "로건 웹",
-        "number": 62,
-        "era": "3.46",
-        "whip": "1.22",
-        "wins": 12,
-        "losses": 10,
-        "inningsPitched": "204.2",
-        "strikeouts": 172,
+        "name": "선발 미정",
+        "number": 0,
         "throwsHand": "R",
+        "era": "발표대기",
+        "seasonEra": "미정",
+        "whip": "-",
+        "wins": 0,
+        "losses": 0,
+        "inningsPitched": "0.0",
+        "strikeouts": 0,
         "vsOpponentLogs": []
       }
     },
@@ -6771,7 +6891,8 @@
     "status": "BEFORE",
     "isStarted": false,
     "confirmed": true,
-    "isPitcherAnnounced": true
+    "isPitcherAnnounced": false,
+    "isDataCheckingPending": true
   },
   {
     "id": "auto-baseball-1-2026-09-06-49",
@@ -6788,15 +6909,16 @@
       "countryName": "Global",
       "rank": 1,
       "starterPitcherInfo": {
-        "name": "프람버 발데스",
-        "number": 59,
-        "era": "2.91",
-        "whip": "1.11",
-        "wins": 14,
-        "losses": 7,
-        "inningsPitched": "176.1",
-        "strikeouts": 169,
+        "name": "선발 미정",
+        "number": 0,
         "throwsHand": "R",
+        "era": "발표대기",
+        "seasonEra": "미정",
+        "whip": "-",
+        "wins": 0,
+        "losses": 0,
+        "inningsPitched": "0.0",
+        "strikeouts": 0,
         "vsOpponentLogs": []
       }
     },
@@ -6807,15 +6929,16 @@
       "countryName": "Global",
       "rank": 2,
       "starterPitcherInfo": {
-        "name": "잭 갤런",
-        "number": 23,
-        "era": "3.65",
-        "whip": "1.28",
-        "wins": 14,
-        "losses": 6,
-        "inningsPitched": "148.0",
-        "strikeouts": 126,
+        "name": "선발 미정",
+        "number": 0,
         "throwsHand": "R",
+        "era": "발표대기",
+        "seasonEra": "미정",
+        "whip": "-",
+        "wins": 0,
+        "losses": 0,
+        "inningsPitched": "0.0",
+        "strikeouts": 0,
         "vsOpponentLogs": []
       }
     },
@@ -6841,7 +6964,8 @@
     "status": "BEFORE",
     "isStarted": false,
     "confirmed": true,
-    "isPitcherAnnounced": true
+    "isPitcherAnnounced": false,
+    "isDataCheckingPending": true
   },
   {
     "id": "auto-baseball-1-2026-09-06-50",
@@ -6858,15 +6982,16 @@
       "countryName": "Global",
       "rank": 1,
       "starterPitcherInfo": {
-        "name": "콜 레이건스",
-        "number": 55,
-        "era": "3.14",
-        "whip": "1.14",
-        "wins": 11,
-        "losses": 9,
-        "inningsPitched": "186.1",
-        "strikeouts": 223,
+        "name": "선발 미정",
+        "number": 0,
         "throwsHand": "R",
+        "era": "발표대기",
+        "seasonEra": "미정",
+        "whip": "-",
+        "wins": 0,
+        "losses": 0,
+        "inningsPitched": "0.0",
+        "strikeouts": 0,
         "vsOpponentLogs": []
       }
     },
@@ -6877,15 +7002,16 @@
       "countryName": "Global",
       "rank": 2,
       "starterPitcherInfo": {
-        "name": "케빈 가우스먼",
-        "number": 34,
-        "era": "3.83",
-        "whip": "1.22",
-        "wins": 13,
-        "losses": 11,
-        "inningsPitched": "181.0",
-        "strikeouts": 162,
+        "name": "선발 미정",
+        "number": 0,
         "throwsHand": "R",
+        "era": "발표대기",
+        "seasonEra": "미정",
+        "whip": "-",
+        "wins": 0,
+        "losses": 0,
+        "inningsPitched": "0.0",
+        "strikeouts": 0,
         "vsOpponentLogs": []
       }
     },
@@ -6911,7 +7037,8 @@
     "status": "BEFORE",
     "isStarted": false,
     "confirmed": true,
-    "isPitcherAnnounced": true
+    "isPitcherAnnounced": false,
+    "isDataCheckingPending": true
   },
   {
     "id": "auto-baseball-1-2026-09-06-51",
@@ -6928,15 +7055,16 @@
       "countryName": "Global",
       "rank": 1,
       "starterPitcherInfo": {
-        "name": "네이선 이볼디",
-        "number": 17,
-        "era": "3.80",
-        "whip": "1.11",
-        "wins": 11,
-        "losses": 8,
-        "inningsPitched": "170.2",
-        "strikeouts": 161,
+        "name": "선발 미정",
+        "number": 0,
         "throwsHand": "R",
+        "era": "발표대기",
+        "seasonEra": "미정",
+        "whip": "-",
+        "wins": 0,
+        "losses": 0,
+        "inningsPitched": "0.0",
+        "strikeouts": 0,
         "vsOpponentLogs": []
       }
     },
@@ -6947,15 +7075,16 @@
       "countryName": "Global",
       "rank": 2,
       "starterPitcherInfo": {
-        "name": "잭 리텔",
-        "number": 52,
-        "era": "3.63",
-        "whip": "1.25",
-        "wins": 8,
-        "losses": 9,
-        "inningsPitched": "156.1",
-        "strikeouts": 141,
+        "name": "선발 미정",
+        "number": 0,
         "throwsHand": "R",
+        "era": "발표대기",
+        "seasonEra": "미정",
+        "whip": "-",
+        "wins": 0,
+        "losses": 0,
+        "inningsPitched": "0.0",
+        "strikeouts": 0,
         "vsOpponentLogs": []
       }
     },
@@ -6981,7 +7110,8 @@
     "status": "BEFORE",
     "isStarted": false,
     "confirmed": true,
-    "isPitcherAnnounced": true
+    "isPitcherAnnounced": false,
+    "isDataCheckingPending": true
   },
   {
     "id": "auto-football-135-2026-09-06-1081",
@@ -7214,15 +7344,16 @@
       "countryName": "Global",
       "rank": 1,
       "starterPitcherInfo": {
-        "name": "카일 프리랜드",
-        "number": 21,
-        "era": "4.95",
-        "whip": "1.38",
-        "wins": 5,
-        "losses": 8,
-        "inningsPitched": "109.0",
-        "strikeouts": 88,
+        "name": "선발 미정",
+        "number": 0,
         "throwsHand": "R",
+        "era": "발표대기",
+        "seasonEra": "미정",
+        "whip": "-",
+        "wins": 0,
+        "losses": 0,
+        "inningsPitched": "0.0",
+        "strikeouts": 0,
         "vsOpponentLogs": []
       }
     },
@@ -7233,15 +7364,16 @@
       "countryName": "Global",
       "rank": 2,
       "starterPitcherInfo": {
-        "name": "소니 그레이",
-        "number": 54,
-        "era": "3.84",
-        "whip": "1.10",
-        "wins": 13,
-        "losses": 9,
-        "inningsPitched": "166.1",
-        "strikeouts": 203,
+        "name": "선발 미정",
+        "number": 0,
         "throwsHand": "R",
+        "era": "발표대기",
+        "seasonEra": "미정",
+        "whip": "-",
+        "wins": 0,
+        "losses": 0,
+        "inningsPitched": "0.0",
+        "strikeouts": 0,
         "vsOpponentLogs": []
       }
     },
@@ -7267,7 +7399,8 @@
     "status": "BEFORE",
     "isStarted": false,
     "confirmed": true,
-    "isPitcherAnnounced": true
+    "isPitcherAnnounced": false,
+    "isDataCheckingPending": true
   },
   {
     "id": "auto-baseball-1-2026-09-06-56",
@@ -7284,15 +7417,16 @@
       "countryName": "Global",
       "rank": 1,
       "starterPitcherInfo": {
-        "name": "딜런 시즈",
-        "number": 84,
-        "era": "3.47",
-        "whip": "1.07",
-        "wins": 14,
-        "losses": 11,
-        "inningsPitched": "189.1",
-        "strikeouts": 224,
+        "name": "선발 미정",
+        "number": 0,
         "throwsHand": "R",
+        "era": "발표대기",
+        "seasonEra": "미정",
+        "whip": "-",
+        "wins": 0,
+        "losses": 0,
+        "inningsPitched": "0.0",
+        "strikeouts": 0,
         "vsOpponentLogs": []
       }
     },
@@ -7303,15 +7437,16 @@
       "countryName": "Global",
       "rank": 2,
       "starterPitcherInfo": {
-        "name": "게릿 콜",
-        "number": 45,
-        "era": "3.41",
-        "whip": "1.13",
-        "wins": 8,
-        "losses": 5,
-        "inningsPitched": "95.0",
-        "strikeouts": 99,
+        "name": "선발 미정",
+        "number": 0,
         "throwsHand": "R",
+        "era": "발표대기",
+        "seasonEra": "미정",
+        "whip": "-",
+        "wins": 0,
+        "losses": 0,
+        "inningsPitched": "0.0",
+        "strikeouts": 0,
         "vsOpponentLogs": []
       }
     },
@@ -7337,7 +7472,8 @@
     "status": "BEFORE",
     "isStarted": false,
     "confirmed": true,
-    "isPitcherAnnounced": true
+    "isPitcherAnnounced": false,
+    "isDataCheckingPending": true
   },
   {
     "id": "auto-baseball-1-2026-09-06-57",
@@ -7354,15 +7490,16 @@
       "countryName": "Global",
       "rank": 1,
       "starterPitcherInfo": {
-        "name": "로건 길버트",
-        "number": 36,
-        "era": "3.23",
-        "whip": "0.89",
-        "wins": 8,
-        "losses": 11,
-        "inningsPitched": "208.2",
-        "strikeouts": 220,
+        "name": "선발 미정",
+        "number": 0,
         "throwsHand": "R",
+        "era": "발표대기",
+        "seasonEra": "미정",
+        "whip": "-",
+        "wins": 0,
+        "losses": 0,
+        "inningsPitched": "0.0",
+        "strikeouts": 0,
         "vsOpponentLogs": []
       }
     },
@@ -7373,15 +7510,16 @@
       "countryName": "Global",
       "rank": 2,
       "starterPitcherInfo": {
-        "name": "JP 시어스",
-        "number": 38,
-        "era": "4.38",
-        "whip": "1.22",
-        "wins": 11,
-        "losses": 12,
-        "inningsPitched": "180.2",
-        "strikeouts": 136,
+        "name": "선발 미정",
+        "number": 0,
         "throwsHand": "R",
+        "era": "발표대기",
+        "seasonEra": "미정",
+        "whip": "-",
+        "wins": 0,
+        "losses": 0,
+        "inningsPitched": "0.0",
+        "strikeouts": 0,
         "vsOpponentLogs": []
       }
     },
@@ -7407,7 +7545,8 @@
     "status": "BEFORE",
     "isStarted": false,
     "confirmed": true,
-    "isPitcherAnnounced": true
+    "isPitcherAnnounced": false,
+    "isDataCheckingPending": true
   },
   {
     "id": "auto-baseball-1-2026-09-06-60",
@@ -7424,15 +7563,16 @@
       "countryName": "Global",
       "rank": 1,
       "starterPitcherInfo": {
-        "name": "개럿 크로셰",
-        "number": 45,
-        "era": "3.58",
-        "whip": "1.07",
-        "wins": 6,
-        "losses": 12,
-        "inningsPitched": "146.0",
-        "strikeouts": 209,
+        "name": "선발 미정",
+        "number": 0,
         "throwsHand": "R",
+        "era": "발표대기",
+        "seasonEra": "미정",
+        "whip": "-",
+        "wins": 0,
+        "losses": 0,
+        "inningsPitched": "0.0",
+        "strikeouts": 0,
         "vsOpponentLogs": []
       }
     },
@@ -7443,15 +7583,16 @@
       "countryName": "Global",
       "rank": 2,
       "starterPitcherInfo": {
-        "name": "파블로 로페즈",
-        "number": 49,
-        "era": "4.08",
-        "whip": "1.14",
-        "wins": 15,
-        "losses": 9,
-        "inningsPitched": "185.1",
-        "strikeouts": 198,
+        "name": "선발 미정",
+        "number": 0,
         "throwsHand": "R",
+        "era": "발표대기",
+        "seasonEra": "미정",
+        "whip": "-",
+        "wins": 0,
+        "losses": 0,
+        "inningsPitched": "0.0",
+        "strikeouts": 0,
         "vsOpponentLogs": []
       }
     },
@@ -7477,7 +7618,8 @@
     "status": "BEFORE",
     "isStarted": false,
     "confirmed": true,
-    "isPitcherAnnounced": true
+    "isPitcherAnnounced": false,
+    "isDataCheckingPending": true
   },
   {
     "id": "auto-baseball-1-2026-09-07-1",
@@ -7494,15 +7636,16 @@
       "countryName": "Global",
       "rank": 1,
       "starterPitcherInfo": {
-        "name": "야마모토 요시노부",
-        "number": 18,
-        "era": "2.92",
-        "whip": "1.06",
-        "wins": 6,
-        "losses": 2,
-        "inningsPitched": "86.1",
-        "strikeouts": 102,
+        "name": "선발 미정",
+        "number": 0,
         "throwsHand": "R",
+        "era": "발표대기",
+        "seasonEra": "미정",
+        "whip": "-",
+        "wins": 0,
+        "losses": 0,
+        "inningsPitched": "0.0",
+        "strikeouts": 0,
         "vsOpponentLogs": []
       }
     },
@@ -7513,15 +7656,16 @@
       "countryName": "Global",
       "rank": 2,
       "starterPitcherInfo": {
-        "name": "맥켄지 고어",
-        "number": 1,
-        "era": "3.90",
-        "whip": "1.41",
-        "wins": 10,
-        "losses": 12,
-        "inningsPitched": "166.1",
-        "strikeouts": 181,
+        "name": "선발 미정",
+        "number": 0,
         "throwsHand": "R",
+        "era": "발표대기",
+        "seasonEra": "미정",
+        "whip": "-",
+        "wins": 0,
+        "losses": 0,
+        "inningsPitched": "0.0",
+        "strikeouts": 0,
         "vsOpponentLogs": []
       }
     },
@@ -7547,7 +7691,8 @@
     "status": "BEFORE",
     "isStarted": false,
     "confirmed": true,
-    "isPitcherAnnounced": true
+    "isPitcherAnnounced": false,
+    "isDataCheckingPending": true
   },
   {
     "id": "auto-football-135-2026-09-07-78",
@@ -7708,15 +7853,16 @@
       "countryName": "Global",
       "rank": 1,
       "starterPitcherInfo": {
-        "name": "잭 휠러",
-        "number": 45,
-        "era": "2.57",
-        "whip": "0.96",
-        "wins": 16,
-        "losses": 7,
-        "inningsPitched": "200.0",
-        "strikeouts": 224,
+        "name": "선발 미정",
+        "number": 0,
         "throwsHand": "R",
+        "era": "발표대기",
+        "seasonEra": "미정",
+        "whip": "-",
+        "wins": 0,
+        "losses": 0,
+        "inningsPitched": "0.0",
+        "strikeouts": 0,
         "vsOpponentLogs": []
       }
     },
@@ -7727,15 +7873,16 @@
       "countryName": "Global",
       "rank": 2,
       "starterPitcherInfo": {
-        "name": "크리스 세일",
-        "number": 51,
-        "era": "2.38",
-        "whip": "1.01",
-        "wins": 18,
-        "losses": 3,
-        "inningsPitched": "177.2",
-        "strikeouts": 225,
+        "name": "선발 미정",
+        "number": 0,
         "throwsHand": "R",
+        "era": "발표대기",
+        "seasonEra": "미정",
+        "whip": "-",
+        "wins": 0,
+        "losses": 0,
+        "inningsPitched": "0.0",
+        "strikeouts": 0,
         "vsOpponentLogs": []
       }
     },
@@ -7761,7 +7908,8 @@
     "status": "BEFORE",
     "isStarted": false,
     "confirmed": true,
-    "isPitcherAnnounced": true
+    "isPitcherAnnounced": false,
+    "isDataCheckingPending": true
   },
   {
     "id": "auto-baseball-1-2026-09-07-5",
@@ -7778,15 +7926,16 @@
       "countryName": "Global",
       "rank": 1,
       "starterPitcherInfo": {
-        "name": "에드워드 카브레라",
-        "number": 27,
-        "era": "4.95",
-        "whip": "1.38",
-        "wins": 4,
-        "losses": 8,
-        "inningsPitched": "108.0",
-        "strikeouts": 117,
+        "name": "선발 미정",
+        "number": 0,
         "throwsHand": "R",
+        "era": "발표대기",
+        "seasonEra": "미정",
+        "whip": "-",
+        "wins": 0,
+        "losses": 0,
+        "inningsPitched": "0.0",
+        "strikeouts": 0,
         "vsOpponentLogs": []
       }
     },
@@ -7797,15 +7946,16 @@
       "countryName": "Global",
       "rank": 2,
       "starterPitcherInfo": {
-        "name": "루이스 세베리노",
-        "number": 40,
-        "era": "3.91",
-        "whip": "1.24",
-        "wins": 11,
-        "losses": 7,
-        "inningsPitched": "182.0",
-        "strikeouts": 161,
+        "name": "선발 미정",
+        "number": 0,
         "throwsHand": "R",
+        "era": "발표대기",
+        "seasonEra": "미정",
+        "whip": "-",
+        "wins": 0,
+        "losses": 0,
+        "inningsPitched": "0.0",
+        "strikeouts": 0,
         "vsOpponentLogs": []
       }
     },
@@ -7831,7 +7981,8 @@
     "status": "BEFORE",
     "isStarted": false,
     "confirmed": true,
-    "isPitcherAnnounced": true
+    "isPitcherAnnounced": false,
+    "isDataCheckingPending": true
   },
   {
     "id": "auto-baseball-1-2026-09-07-6",
@@ -7848,15 +7999,16 @@
       "countryName": "Global",
       "rank": 1,
       "starterPitcherInfo": {
-        "name": "코빈 번스",
-        "number": 39,
-        "era": "2.92",
-        "whip": "1.10",
-        "wins": 15,
-        "losses": 8,
-        "inningsPitched": "194.1",
-        "strikeouts": 181,
+        "name": "선발 미정",
+        "number": 0,
         "throwsHand": "R",
+        "era": "발표대기",
+        "seasonEra": "미정",
+        "whip": "-",
+        "wins": 0,
+        "losses": 0,
+        "inningsPitched": "0.0",
+        "strikeouts": 0,
         "vsOpponentLogs": []
       }
     },
@@ -7867,15 +8019,16 @@
       "countryName": "Global",
       "rank": 2,
       "starterPitcherInfo": {
-        "name": "태너 바이비",
-        "number": 28,
-        "era": "3.52",
-        "whip": "1.12",
-        "wins": 11,
-        "losses": 8,
-        "inningsPitched": "173.2",
-        "strikeouts": 187,
+        "name": "선발 미정",
+        "number": 0,
         "throwsHand": "R",
+        "era": "발표대기",
+        "seasonEra": "미정",
+        "whip": "-",
+        "wins": 0,
+        "losses": 0,
+        "inningsPitched": "0.0",
+        "strikeouts": 0,
         "vsOpponentLogs": []
       }
     },
@@ -7901,7 +8054,8 @@
     "status": "BEFORE",
     "isStarted": false,
     "confirmed": true,
-    "isPitcherAnnounced": true
+    "isPitcherAnnounced": false,
+    "isDataCheckingPending": true
   },
   {
     "id": "auto-baseball-1-2026-09-07-7",
@@ -7918,15 +8072,16 @@
       "countryName": "Global",
       "rank": 1,
       "starterPitcherInfo": {
-        "name": "태너 하우크",
-        "number": 89,
-        "era": "3.12",
-        "whip": "1.15",
-        "wins": 8,
-        "losses": 10,
-        "inningsPitched": "178.2",
-        "strikeouts": 154,
+        "name": "선발 미정",
+        "number": 0,
         "throwsHand": "R",
+        "era": "발표대기",
+        "seasonEra": "미정",
+        "whip": "-",
+        "wins": 0,
+        "losses": 0,
+        "inningsPitched": "0.0",
+        "strikeouts": 0,
         "vsOpponentLogs": []
       }
     },
@@ -7937,15 +8092,16 @@
       "countryName": "Global",
       "rank": 2,
       "starterPitcherInfo": {
-        "name": "타일러 앤더슨",
-        "number": 31,
-        "era": "3.81",
-        "whip": "1.29",
-        "wins": 10,
-        "losses": 14,
-        "inningsPitched": "179.1",
-        "strikeouts": 142,
+        "name": "선발 미정",
+        "number": 0,
         "throwsHand": "R",
+        "era": "발표대기",
+        "seasonEra": "미정",
+        "whip": "-",
+        "wins": 0,
+        "losses": 0,
+        "inningsPitched": "0.0",
+        "strikeouts": 0,
         "vsOpponentLogs": []
       }
     },
@@ -7971,7 +8127,8 @@
     "status": "BEFORE",
     "isStarted": false,
     "confirmed": true,
-    "isPitcherAnnounced": true
+    "isPitcherAnnounced": false,
+    "isDataCheckingPending": true
   },
   {
     "id": "auto-baseball-1-2026-09-07-8",
@@ -7988,15 +8145,16 @@
       "countryName": "Global",
       "rank": 1,
       "starterPitcherInfo": {
-        "name": "콜 레이건스",
-        "number": 55,
-        "era": "3.14",
-        "whip": "1.14",
-        "wins": 11,
-        "losses": 9,
-        "inningsPitched": "186.1",
-        "strikeouts": 223,
+        "name": "선발 미정",
+        "number": 0,
         "throwsHand": "R",
+        "era": "발표대기",
+        "seasonEra": "미정",
+        "whip": "-",
+        "wins": 0,
+        "losses": 0,
+        "inningsPitched": "0.0",
+        "strikeouts": 0,
         "vsOpponentLogs": []
       }
     },
@@ -8007,15 +8165,16 @@
       "countryName": "Global",
       "rank": 2,
       "starterPitcherInfo": {
-        "name": "잭 갤런",
-        "number": 23,
-        "era": "3.65",
-        "whip": "1.28",
-        "wins": 14,
-        "losses": 6,
-        "inningsPitched": "148.0",
-        "strikeouts": 126,
+        "name": "선발 미정",
+        "number": 0,
         "throwsHand": "R",
+        "era": "발표대기",
+        "seasonEra": "미정",
+        "whip": "-",
+        "wins": 0,
+        "losses": 0,
+        "inningsPitched": "0.0",
+        "strikeouts": 0,
         "vsOpponentLogs": []
       }
     },
@@ -8041,7 +8200,8 @@
     "status": "BEFORE",
     "isStarted": false,
     "confirmed": true,
-    "isPitcherAnnounced": true
+    "isPitcherAnnounced": false,
+    "isDataCheckingPending": true
   },
   {
     "id": "auto-baseball-1-2026-09-07-9",
@@ -8058,15 +8218,16 @@
       "countryName": "Global",
       "rank": 1,
       "starterPitcherInfo": {
-        "name": "프레디 페랄타",
-        "number": 51,
-        "era": "3.58",
-        "whip": "1.21",
-        "wins": 11,
-        "losses": 8,
-        "inningsPitched": "173.2",
-        "strikeouts": 200,
+        "name": "선발 미정",
+        "number": 0,
         "throwsHand": "R",
+        "era": "발표대기",
+        "seasonEra": "미정",
+        "whip": "-",
+        "wins": 0,
+        "losses": 0,
+        "inningsPitched": "0.0",
+        "strikeouts": 0,
         "vsOpponentLogs": []
       }
     },
@@ -8077,15 +8238,16 @@
       "countryName": "Global",
       "rank": 2,
       "starterPitcherInfo": {
-        "name": "이마나가 쇼타",
-        "number": 18,
-        "era": "2.91",
-        "whip": "1.02",
-        "wins": 15,
-        "losses": 3,
-        "inningsPitched": "173.1",
-        "strikeouts": 174,
+        "name": "선발 미정",
+        "number": 0,
         "throwsHand": "R",
+        "era": "발표대기",
+        "seasonEra": "미정",
+        "whip": "-",
+        "wins": 0,
+        "losses": 0,
+        "inningsPitched": "0.0",
+        "strikeouts": 0,
         "vsOpponentLogs": []
       }
     },
@@ -8111,7 +8273,8 @@
     "status": "BEFORE",
     "isStarted": false,
     "confirmed": true,
-    "isPitcherAnnounced": true
+    "isPitcherAnnounced": false,
+    "isDataCheckingPending": true
   },
   {
     "id": "auto-football-135-2026-09-07-139",
@@ -8255,7 +8418,8 @@
     "status": "BEFORE",
     "isStarted": false,
     "confirmed": true,
-    "isPitcherAnnounced": false
+    "isPitcherAnnounced": false,
+    "isDataCheckingPending": true
   },
   {
     "id": "auto-football-140-2026-09-07-152",
@@ -8344,15 +8508,16 @@
       "countryName": "Global",
       "rank": 1,
       "starterPitcherInfo": {
-        "name": "딜런 시즈",
-        "number": 84,
-        "era": "3.47",
-        "whip": "1.07",
-        "wins": 14,
-        "losses": 11,
-        "inningsPitched": "189.1",
-        "strikeouts": 224,
+        "name": "선발 미정",
+        "number": 0,
         "throwsHand": "R",
+        "era": "발표대기",
+        "seasonEra": "미정",
+        "whip": "-",
+        "wins": 0,
+        "losses": 0,
+        "inningsPitched": "0.0",
+        "strikeouts": 0,
         "vsOpponentLogs": []
       }
     },
@@ -8363,15 +8528,16 @@
       "countryName": "Global",
       "rank": 2,
       "starterPitcherInfo": {
-        "name": "맥켄지 고어",
-        "number": 1,
-        "era": "3.90",
-        "whip": "1.41",
-        "wins": 10,
-        "losses": 12,
-        "inningsPitched": "166.1",
-        "strikeouts": 181,
+        "name": "선발 미정",
+        "number": 0,
         "throwsHand": "R",
+        "era": "발표대기",
+        "seasonEra": "미정",
+        "whip": "-",
+        "wins": 0,
+        "losses": 0,
+        "inningsPitched": "0.0",
+        "strikeouts": 0,
         "vsOpponentLogs": []
       }
     },
@@ -8397,6 +8563,7 @@
     "status": "BEFORE",
     "isStarted": false,
     "confirmed": true,
-    "isPitcherAnnounced": true
+    "isPitcherAnnounced": false,
+    "isDataCheckingPending": true
   }
 ]

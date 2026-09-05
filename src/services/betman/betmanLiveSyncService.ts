@@ -8,15 +8,23 @@ import { verifiedMatchDatabase } from '../db/verifiedMatchDatabase';
 
 export const RENDER_BACKEND_URL = 'https://tokeon-backend.onrender.com';
 
+const OFFICIAL_CACHE_VERSION = 'v20260905_official_sync_v5';
+
 // 🚀 초기 메모리 상태를 localStorage 캐시 또는 번들된 최신 시드(118+ 경기)로 즉시 하이드레이션
 function getInitialMatches(): Match[] {
   try {
     if (typeof window !== 'undefined' && window.localStorage) {
-      const saved = localStorage.getItem('tokeon_cached_live_matches');
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          return parsed;
+      const currentVer = localStorage.getItem('tokeon_cache_version');
+      if (currentVer !== OFFICIAL_CACHE_VERSION) {
+        localStorage.removeItem('tokeon_cached_live_matches');
+        localStorage.setItem('tokeon_cache_version', OFFICIAL_CACHE_VERSION);
+      } else {
+        const saved = localStorage.getItem('tokeon_cached_live_matches');
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            return parsed;
+          }
         }
       }
     }
@@ -25,6 +33,7 @@ function getInitialMatches(): Match[] {
   }
   return (cachedSeedMatches as unknown as Match[]) || [];
 }
+
 
 let lastKnownLiveMatches: Match[] = getInitialMatches();
 

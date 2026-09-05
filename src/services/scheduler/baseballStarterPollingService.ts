@@ -257,8 +257,9 @@ export class BaseballStarterPollingService {
         } 
         // 🇰🇷🇯🇵 B. KBO & NPB 한국/일본야구 (1순위: 공식 사이트 발표 확인 시에만 변경, 미공시 시 선발 미정 유지)
         else if (league.includes('kbo') || league.includes('npb') || league.includes('professional baseball') || m.countryFlag === '🇰🇷' || m.countryFlag === '🇯🇵') {
-          const officialHome = KboNpbOfficialLineupService.getOfficialStarter(m.homeTeam.name);
-          const officialAway = KboNpbOfficialLineupService.getOfficialStarter(m.awayTeam.name);
+          const officialHome = KboNpbOfficialLineupService.getOfficialStarter(m.homeTeam.name, m.matchTime || m.id);
+          const officialAway = KboNpbOfficialLineupService.getOfficialStarter(m.awayTeam.name, m.matchTime || m.id);
+
 
           if (officialHome && officialHome.name && !officialHome.name.includes('미정')) {
             if (homeStarter.name !== officialHome.name) {
