@@ -809,7 +809,8 @@ export default function App() {
   // ⏰ [현시간 기준 경기 자동 포커스 및 스크롤 관리]
   const desktopMatchListRef = useRef<HTMLDivElement>(null);
   const mobileMatchListRef = useRef<HTMLDivElement>(null);
-  const hasAutoScrolledRef = useRef<boolean>(false);
+  const initialScrollCountRef = useRef<number>(0);
+  const userInteractedScrollRef = useRef<boolean>(false);
   const prevFolderRef = useRef<string>(selectedFolder);
 
   const currentTimeMatchId = useMemo(() => findCurrentTimeMatchId(filteredMatches), [filteredMatches]);
@@ -821,42 +822,54 @@ export default function App() {
   const scrollToCurrentTimeMatch = useCallback((smooth: boolean = true) => {
     if (!filteredMatches || filteredMatches.length === 0 || !currentTimeMatchId) return;
 
-    const scrollContainer = (container: HTMLElement | null, markerId: string) => {
+    const doScroll = (container: HTMLElement | null, markerId: string) => {
       if (!container) return;
+      // Skip hidden container (e.g. desktop container on mobile, or mobile container on desktop)
+      if (container.offsetParent === null && container.offsetWidth === 0 && container.offsetHeight === 0) {
+        return;
+      }
       const targetEl = (container.querySelector(markerId) || container.querySelector(`[data-match-id="${currentTimeMatchId}"]`)) as HTMLElement | null;
       if (!targetEl) return;
-      const containerRect = container.getBoundingClientRect();
-      const targetRect = targetEl.getBoundingClientRect();
-      const targetTop = targetRect.top - containerRect.top + container.scrollTop;
-      
-      container.scrollTo({
-        top: Math.max(0, targetTop - 10),
-        behavior: smooth ? 'smooth' : 'auto'
-      });
+
+      try {
+        targetEl.scrollIntoView({
+          behavior: smooth ? 'smooth' : 'auto',
+          block: 'start'
+        });
+      } catch (e) {
+        const containerRect = container.getBoundingClientRect();
+        const targetRect = targetEl.getBoundingClientRect();
+        const targetTop = targetRect.top - containerRect.top + container.scrollTop;
+        container.scrollTo({
+          top: Math.max(0, targetTop - 12),
+          behavior: smooth ? 'smooth' : 'auto'
+        });
+      }
     };
 
-    scrollContainer(desktopMatchListRef.current, '#current-time-marker-desktop');
-    scrollContainer(mobileMatchListRef.current, '#current-time-marker-mobile');
+    doScroll(desktopMatchListRef.current, '#current-time-marker-desktop');
+    doScroll(mobileMatchListRef.current, '#current-time-marker-mobile');
   }, [filteredMatches, currentTimeMatchId]);
 
-  // 창 오픈 시 또는 폴더/종목 탭 전환 시 현시간 기준 경기로 자동 스크롤
+  // 창 오픈 시 및 데이터 로딩 완료 시 현시간 기준 경기로 자동 스크롤
   useEffect(() => {
     if (filteredMatches.length === 0) return;
 
-    if (!hasAutoScrolledRef.current) {
-      hasAutoScrolledRef.current = true;
-      prevFolderRef.current = selectedFolder;
-      const timer = setTimeout(() => {
-        scrollToCurrentTimeMatch(false);
-      }, 150);
-      return () => clearTimeout(timer);
-    }
-
+    // 1. 종목 탭 변경 시 즉시 스크롤
     if (prevFolderRef.current !== selectedFolder) {
       prevFolderRef.current = selectedFolder;
       const timer = setTimeout(() => {
         scrollToCurrentTimeMatch(true);
       }, 100);
+      return () => clearTimeout(timer);
+    }
+
+    // 2. 초기 로딩 및 백엔드 데이터 머지 완료 시점까지 자동 스크롤 (사용자가 직접 스크롤하기 전까지 최대 4회 안전 보정)
+    if (!userInteractedScrollRef.current && initialScrollCountRef.current < 4) {
+      initialScrollCountRef.current += 1;
+      const timer = setTimeout(() => {
+        scrollToCurrentTimeMatch(false);
+      }, 180);
       return () => clearTimeout(timer);
     }
   }, [filteredMatches, selectedFolder, scrollToCurrentTimeMatch]);
@@ -1113,7 +1126,12 @@ export default function App() {
                 </div>
 
                 {/* 실제 모바일 경기 카드 목록 스크롤 영역 또는 승1패/승무패/승5패 배트맨 슬립 표 */}
-                <div ref={desktopMatchListRef} className={`flex-1 overflow-hidden ${selectedFolder === 'SEUNG1PAE' || selectedFolder === 'SEUNGMUBAE' || selectedFolder === 'SEUNG5PAE' ? 'p-0 flex flex-col' : 'overflow-y-auto p-3 space-y-2.5 custom-scrollbar'}`}>
+                <div
+                  ref={desktopMatchListRef}
+                  onWheel={() => { userInteractedScrollRef.current = true; }}
+                  onTouchMove={() => { userInteractedScrollRef.current = true; }}
+                  className={`flex-1 overflow-hidden ${selectedFolder === 'SEUNG1PAE' || selectedFolder === 'SEUNGMUBAE' || selectedFolder === 'SEUNG5PAE' ? 'p-0 flex flex-col' : 'overflow-y-auto p-3 space-y-2.5 custom-scrollbar'}`}
+                >
                   {selectedFolder === 'SEUNG1PAE' || selectedFolder === 'SEUNGMUBAE' || selectedFolder === 'SEUNG5PAE' ? (
                     <TotoSlipTableView
                       category={selectedFolder as any}
@@ -1260,8 +1278,12 @@ export default function App() {
                 </span>
               </div>
 
-              {/* 모바일 메인 스크롤 뷰 */}
-              <div ref={mobileMatchListRef} className="flex-1 overflow-y-auto p-3 space-y-2.5 custom-scrollbar pb-16">
+              <div
+                ref={mobileMatchListRef}
+                onWheel={() => { userInteractedScrollRef.current = true; }}
+                onTouchMove={() => { userInteractedScrollRef.current = true; }}
+                className="flex-1 overflow-y-auto p-3 space-y-2.5 custom-scrollbar pb-16"
+              >
                 {selectedFolder === 'SEUNG1PAE' || selectedFolder === 'SEUNGMUBAE' || selectedFolder === 'SEUNG5PAE' ? (
                   <TotoSlipTableView
                     category={selectedFolder as any}

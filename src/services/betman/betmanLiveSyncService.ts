@@ -8,7 +8,7 @@ import { verifiedMatchDatabase } from '../db/verifiedMatchDatabase';
 
 export const RENDER_BACKEND_URL = 'https://tokeon-backend.onrender.com';
 
-const OFFICIAL_CACHE_VERSION = 'v20260905_official_sync_v5';
+const OFFICIAL_CACHE_VERSION = 'v20260905_official_sync_v6';
 
 // 🚀 초기 메모리 상태를 localStorage 캐시 또는 번들된 최신 시드(118+ 경기)로 즉시 하이드레이션
 function getInitialMatches(): Match[] {
@@ -69,16 +69,45 @@ export class BetmanLiveSyncService {
       if (res.ok) {
         const data = await res.json();
         if (data && Array.isArray(data.matches) && data.matches.length > 0) {
-          lastKnownLiveMatches = data.matches;
+          // 🛡️ 과거/오전/종료 경기 100% 보존 머지 파이프라인:
+          // 백엔드가 제공하지 않는 이전 경기(오전 MLB, 14:00 NPB, 17:00 KBO 등)가 삭제되지 않도록 기존 시드 및 캐시와 안전하게 병합
+          const mergedMap = new Map<string, Match>();
+          
+          // 1. 기존 시드 등록 (오전/낮 경기 포함)
+          const seedList = (cachedSeedMatches as unknown as Match[]) || [];
+          for (const m of seedList) {
+            if (m && m.id) mergedMap.set(m.id, m);
+          }
+
+          // 2. 현재 메모리에 있는 경기 등록
+          for (const m of lastKnownLiveMatches) {
+            if (m && m.id) mergedMap.set(m.id, m);
+          }
+
+          // 3. 백엔드 실시간 최신 정보 오버레이 (진행 중 스코어 등 덮어쓰기)
+          for (const m of data.matches) {
+            if (m && m.id) {
+              const prev = mergedMap.get(m.id);
+              mergedMap.set(m.id, prev ? { ...prev, ...m } : m);
+            }
+          }
+
+          const mergedMatches = Array.from(mergedMap.values()).sort((a, b) => {
+            const tsA = (a as any).timestamp || 0;
+            const tsB = (b as any).timestamp || 0;
+            return tsA - tsB;
+          });
+
+          lastKnownLiveMatches = mergedMatches;
           try {
             if (typeof window !== 'undefined' && window.localStorage) {
-              localStorage.setItem('tokeon_cached_live_matches', JSON.stringify(data.matches));
+              localStorage.setItem('tokeon_cached_live_matches', JSON.stringify(mergedMatches));
             }
-            verifiedMatchDatabase.ingestAndVerifyMatches(data.matches);
+            verifiedMatchDatabase.ingestAndVerifyMatches(mergedMatches);
           } catch (storageErr) {
             console.warn('[BetmanLiveSyncService] Storage cache write error:', storageErr);
           }
-          return data.matches;
+          return mergedMatches;
         }
       }
     } catch (e) {
