@@ -160,10 +160,16 @@ export const MatchCardComponent = ({
                 {getLocalizedTeamName(match.homeTeam.name, lang)}
               </span>
             </div>
-            {match.sport === 'baseball' && match.homeTeam.starterPitcherInfo?.name && (
-              <span className="text-[10px] text-slate-500 dark:text-slate-400 font-medium block truncate">
-                선발 {match.homeTeam.starterPitcherInfo.name} ({match.homeTeam.starterPitcherInfo.era || 'ERA --'})
-              </span>
+            {match.sport === 'baseball' && (
+              match.homeTeam.starterPitcherInfo?.name && !match.homeTeam.starterPitcherInfo.name.includes('미정') ? (
+                <span className="text-[10px] text-emerald-500 font-bold block truncate">
+                  선발 {match.homeTeam.starterPitcherInfo.name} ({match.homeTeam.starterPitcherInfo.era || 'ERA --'})
+                </span>
+              ) : (
+                <span className="text-[9px] text-amber-500 bg-amber-500/10 px-1 py-0.2 rounded border border-amber-500/30 font-bold inline-block truncate mt-0.5">
+                  🟡 선발 미정 ⏳
+                </span>
+              )
             )}
           </div>
         </div>
@@ -198,10 +204,16 @@ export const MatchCardComponent = ({
               </span>
               <span className="text-[10px] font-black text-cyan-400 shrink-0">원정</span>
             </div>
-            {match.sport === 'baseball' && match.awayTeam.starterPitcherInfo?.name && (
-              <span className="text-[10px] text-slate-500 dark:text-slate-400 font-medium block truncate">
-                선발 {match.awayTeam.starterPitcherInfo.name} ({match.awayTeam.starterPitcherInfo.era || 'ERA --'})
-              </span>
+            {match.sport === 'baseball' && (
+              match.awayTeam.starterPitcherInfo?.name && !match.awayTeam.starterPitcherInfo.name.includes('미정') ? (
+                <span className="text-[10px] text-cyan-400 font-bold block truncate">
+                  선발 {match.awayTeam.starterPitcherInfo.name} ({match.awayTeam.starterPitcherInfo.era || 'ERA --'})
+                </span>
+              ) : (
+                <span className="text-[9px] text-amber-500 bg-amber-500/10 px-1 py-0.2 rounded border border-amber-500/30 font-bold inline-block truncate mt-0.5">
+                  🟡 선발 미정 ⏳
+                </span>
+              )
             )}
           </div>
           <div className="w-8 h-8 rounded-full overflow-hidden shrink-0 flex items-center justify-center bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm">

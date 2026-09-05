@@ -85,67 +85,34 @@ export const LineupTacticsView = ({ match, theme = 'light' }: LineupTacticsViewP
   const realStartersMatch = findRealStarters(activeTeam.name);
 
   const getPlayerByPos = (posCode: string, fallbackName: string, fallbackNum: number, fallbackVal: string) => {
+    // 공식 발표된 선발 명단에서 포지션별 선수 매칭
     const found = players.find(p => p.position.toUpperCase().includes(posCode.toUpperCase()));
     if (found && !found.name.includes('선수') && !found.name.includes('포수') && !found.name.includes('1루수') && !found.name.includes('2루수') && !found.name.includes('3루수') && !found.name.includes('유격수') && !found.name.includes('외야수')) {
       return {
         name: found.name,
         num: found.number,
-        val: found.marketValue || fallbackVal,
+        val: found.marketValue || '공식 1군',
         form: found.formStatus || 'GREEN',
         isHot: found.isHotForm,
         stamina: found.stamina || 'GREEN',
         mins: found.minutesPlayed14d || 0,
-        playerObj: found
+        playerObj: found,
+        isConfirmed: true
       };
     }
 
-    const bbFound = realBaseballPlayers.find(p => p.position.toUpperCase().includes(posCode.toUpperCase()));
-    if (bbFound && !bbFound.name.includes('선수') && !bbFound.name.includes('타자')) {
-      return {
-        name: bbFound.name,
-        num: bbFound.number || fallbackNum,
-        val: bbFound.marketValue || fallbackVal,
-        form: bbFound.formStatus || 'GREEN',
-        isHot: bbFound.isHotForm,
-        stamina: bbFound.stamina || 'GREEN',
-        mins: bbFound.minutesPlayed14d || 0,
-        playerObj: bbFound
-      };
-    }
-
-    if (realStartersMatch && realStartersMatch.length > 0) {
-      const matchP = realStartersMatch.find(p => p.position.toUpperCase().includes(posCode.toUpperCase()));
-      if (matchP) {
-        return {
-          name: matchP.name,
-          num: matchP.number || fallbackNum,
-          val: matchP.marketValue || fallbackVal,
-          form: 'GREEN' as const,
-          isHot: false,
-          stamina: 'GREEN' as const,
-          mins: 0,
-          playerObj: undefined
-        };
-      }
-    }
-    
-    if (kboStarters) {
-      const kboP = kboStarters.find(p => p.pos === posCode);
-      if (kboP) {
-        return {
-          name: kboP.name,
-          num: fallbackNum,
-          val: kboP.val,
-          form: 'GREEN' as const,
-          isHot: false,
-          stamina: 'GREEN' as const,
-          mins: 0,
-          playerObj: undefined
-        };
-      }
-    }
-
-    return { name: fallbackName, num: fallbackNum, val: fallbackVal, form: 'GREEN' as const, isHot: false, stamina: 'GREEN' as const, mins: 0, playerObj: undefined };
+    // 공식 사이트 라인업 발표 대기 상태 (과거 구단 이적 선수 노출 원천 차단)
+    return {
+      name: `${posCode} 발표 대기`,
+      num: fallbackNum,
+      val: '공식 오더지 대기 ⏳',
+      form: 'YELLOW' as const,
+      isHot: false,
+      stamina: 'GREEN' as const,
+      mins: 0,
+      playerObj: undefined,
+      isConfirmed: false
+    };
   };
 
   // Baseball Pitcher Confirmed Check (오직 연맹 공식 예고선발만 표출 - 임의 추측 및 과거 2024 더미 데이터 원천 차단)
@@ -176,14 +143,14 @@ export const LineupTacticsView = ({ match, theme = 'light' }: LineupTacticsViewP
 
   const baseballFielders = [
     { pos: 'P', name: sp.name, num: sp.num, val: sp.val, form: sp.form, isHot: sp.isHot, isConfirmed: sp.isConfirmed, playerObj: sp.playerObj, positionStyle: 'bottom-[120px] left-1/2 -translate-x-1/2 z-20' },
-    { pos: 'C', name: c.name, num: c.num, val: c.val, form: c.form, isHot: c.isHot, isConfirmed: true, playerObj: c.playerObj, positionStyle: 'bottom-2 left-1/2 -translate-x-1/2 z-20' },
-    { pos: '1B', name: b1.name, num: b1.num, val: b1.val, form: b1.form, isHot: b1.isHot, isConfirmed: true, playerObj: b1.playerObj, positionStyle: 'bottom-[135px] right-[12%] sm:right-[18%] z-20' },
-    { pos: '2B', name: b2.name, num: b2.num, val: b2.val, form: b2.form, isHot: b2.isHot, isConfirmed: true, playerObj: b2.playerObj, positionStyle: 'bottom-[225px] right-[28%] sm:right-[30%] z-20' },
-    { pos: 'SS', name: ss.name, num: ss.num, val: ss.val, form: ss.form, isHot: ss.isHot, isConfirmed: true, playerObj: ss.playerObj, positionStyle: 'bottom-[225px] left-[28%] sm:left-[30%] z-20' },
-    { pos: '3B', name: b3.name, num: b3.num, val: b3.val, form: b3.form, isHot: b3.isHot, isConfirmed: true, playerObj: b3.playerObj, positionStyle: 'bottom-[135px] left-[12%] sm:left-[18%] z-20' },
-    { pos: 'LF', name: lf.name, num: lf.num, val: lf.val, form: lf.form, isHot: lf.isHot, isConfirmed: true, playerObj: lf.playerObj, positionStyle: 'top-12 left-[12%] sm:left-[16%] z-20' },
-    { pos: 'CF', name: cf.name, num: cf.num, val: cf.val, form: cf.form, isHot: cf.isHot, isConfirmed: true, playerObj: cf.playerObj, positionStyle: 'top-6 left-1/2 -translate-x-1/2 z-20' },
-    { pos: 'RF', name: rf.name, num: rf.num, val: rf.val, form: rf.form, isHot: rf.isHot, isConfirmed: true, playerObj: rf.playerObj, positionStyle: 'top-12 right-[12%] sm:right-[16%] z-20' },
+    { pos: 'C', name: c.name, num: c.num, val: c.val, form: c.form, isHot: c.isHot, isConfirmed: c.isConfirmed, playerObj: c.playerObj, positionStyle: 'bottom-2 left-1/2 -translate-x-1/2 z-20' },
+    { pos: '1B', name: b1.name, num: b1.num, val: b1.val, form: b1.form, isHot: b1.isHot, isConfirmed: b1.isConfirmed, playerObj: b1.playerObj, positionStyle: 'bottom-[135px] right-[12%] sm:right-[18%] z-20' },
+    { pos: '2B', name: b2.name, num: b2.num, val: b2.val, form: b2.form, isHot: b2.isHot, isConfirmed: b2.isConfirmed, playerObj: b2.playerObj, positionStyle: 'bottom-[225px] right-[28%] sm:right-[30%] z-20' },
+    { pos: 'SS', name: ss.name, num: ss.num, val: ss.val, form: ss.form, isHot: ss.isHot, isConfirmed: ss.isConfirmed, playerObj: ss.playerObj, positionStyle: 'bottom-[225px] left-[28%] sm:left-[30%] z-20' },
+    { pos: '3B', name: b3.name, num: b3.num, val: b3.val, form: b3.form, isHot: b3.isHot, isConfirmed: b3.isConfirmed, playerObj: b3.playerObj, positionStyle: 'bottom-[135px] left-[12%] sm:left-[18%] z-20' },
+    { pos: 'LF', name: lf.name, num: lf.num, val: lf.val, form: lf.form, isHot: lf.isHot, isConfirmed: lf.isConfirmed, playerObj: lf.playerObj, positionStyle: 'top-12 left-[12%] sm:left-[16%] z-20' },
+    { pos: 'CF', name: cf.name, num: cf.num, val: cf.val, form: cf.form, isHot: cf.isHot, isConfirmed: cf.isConfirmed, playerObj: cf.playerObj, positionStyle: 'top-6 left-1/2 -translate-x-1/2 z-20' },
+    { pos: 'RF', name: rf.name, num: rf.num, val: rf.val, form: rf.form, isHot: rf.isHot, isConfirmed: rf.isConfirmed, playerObj: rf.playerObj, positionStyle: 'top-12 right-[12%] sm:right-[16%] z-20' },
   ];
 
   const getSingleTeamRows = (lineup: typeof homeLineup, teamName: string, isHome: boolean = true) => {
@@ -460,11 +427,11 @@ export const LineupTacticsView = ({ match, theme = 'light' }: LineupTacticsViewP
                   </div>
 
                   <span className={`text-[10px] sm:text-[11px] font-black px-2 py-0.5 rounded-lg border shadow-md whitespace-nowrap ${
-                    isPitcher && !f.isConfirmed
+                    !f.isConfirmed
                       ? 'bg-amber-950/90 text-amber-300 border-amber-500/50'
                       : 'text-slate-900 bg-white/95 border-slate-300'
                   }`}>
-                    {isPitcher && !f.isConfirmed ? '선발 미정 ⏳' : `${f.pos} • ${f.name}`}
+                    {!f.isConfirmed ? `${f.pos} • 발표 대기 ⏳` : `${f.pos} • ${f.name}`}
                   </span>
                   <span className="text-[9px] font-extrabold text-amber-300 bg-slate-950/85 px-1.5 py-0.2 rounded border border-amber-500/40 shadow-sm">{f.val}</span>
                 </div>

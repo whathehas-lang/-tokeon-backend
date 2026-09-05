@@ -4,6 +4,7 @@ import type { Match, MembershipTier } from '../types/sports';
 import { LiveCheerChat } from './LiveCheerChat';
 import { BaseballSeriesPitchView } from './BaseballSeriesPitchView';
 import { CoreWinFactorView } from './CoreWinFactorView';
+import { LineupTacticsView } from './LineupTacticsView';
 import { SportsEntityMappingService } from '../services/mappers/sportsEntityMappingService';
 import { getLocalizedTeamName } from '../utils/languageHelper';
 import { getEvaluatedMatchStatus, getMatchScore } from '../utils/matchResultHelper';
@@ -17,7 +18,7 @@ interface MatchDetailModalProps {
   theme?: 'light' | 'dark';
 }
 
-type DetailSubTab = 'SUMMARY' | 'ODDS' | 'SPECIAL' | 'H2H' | 'FORM' | 'CHAT';
+type DetailSubTab = 'SUMMARY' | 'LINEUP' | 'ODDS' | 'SPECIAL' | 'H2H' | 'FORM' | 'CHAT';
 
 export const MatchDetailModal = ({ 
   match, 
@@ -177,10 +178,16 @@ export const MatchDetailModal = ({
                   {getLocalizedTeamName(match.homeTeam.name, 'ko')}
                 </span>
               </div>
-              {match.sport === 'baseball' && match.homeTeam.starterPitcherInfo?.name && (
-                <span className="text-[11px] text-slate-500 dark:text-slate-400 font-medium mt-0.5 truncate max-w-full">
-                  선발 {match.homeTeam.starterPitcherInfo.name} ({match.homeTeam.starterPitcherInfo.era || 'ERA --'})
-                </span>
+              {match.sport === 'baseball' && (
+                match.homeTeam.starterPitcherInfo?.name && !match.homeTeam.starterPitcherInfo.name.includes('미정') ? (
+                  <span className="text-[11px] text-emerald-400 font-bold mt-0.5 truncate max-w-full">
+                    선발 {match.homeTeam.starterPitcherInfo.name} ({match.homeTeam.starterPitcherInfo.era || 'ERA --'})
+                  </span>
+                ) : (
+                  <span className="text-[10px] text-amber-400 bg-amber-400/10 px-1.5 py-0.5 rounded border border-amber-400/30 font-bold mt-0.5 truncate max-w-full animate-pulse">
+                    🟡 선발 미정 (10분 주기 확인 ⏳)
+                  </span>
+                )
               )}
             </div>
 
@@ -230,10 +237,16 @@ export const MatchDetailModal = ({
                 </span>
                 <span className="text-[10px] font-black text-cyan-400 bg-cyan-500/10 px-1.5 py-0.2 rounded border border-cyan-500/20">원정</span>
               </div>
-              {match.sport === 'baseball' && match.awayTeam.starterPitcherInfo?.name && (
-                <span className="text-[11px] text-slate-500 dark:text-slate-400 font-medium mt-0.5 truncate max-w-full">
-                  선발 {match.awayTeam.starterPitcherInfo.name} ({match.awayTeam.starterPitcherInfo.era || 'ERA --'})
-                </span>
+              {match.sport === 'baseball' && (
+                match.awayTeam.starterPitcherInfo?.name && !match.awayTeam.starterPitcherInfo.name.includes('미정') ? (
+                  <span className="text-[11px] text-cyan-400 font-bold mt-0.5 truncate max-w-full">
+                    선발 {match.awayTeam.starterPitcherInfo.name} ({match.awayTeam.starterPitcherInfo.era || 'ERA --'})
+                  </span>
+                ) : (
+                  <span className="text-[10px] text-amber-400 bg-amber-400/10 px-1.5 py-0.5 rounded border border-amber-400/30 font-bold mt-0.5 truncate max-w-full animate-pulse">
+                    🟡 선발 미정 (10분 주기 확인 ⏳)
+                  </span>
+                )
               )}
             </div>
           </div>
@@ -245,8 +258,9 @@ export const MatchDetailModal = ({
         }`}>
           {[
             { id: 'SUMMARY', label: '📊 종합 분석', icon: Activity },
+            { id: 'LINEUP', label: match.sport === 'baseball' ? '⚾ 선발 라인업' : '📋 선발 명단', icon: Layers },
             { id: 'ODDS', label: '🌐 배당/승률', icon: Trophy },
-            { id: 'SPECIAL', label: match.sport === 'baseball' ? '⚾ 선발/불펜' : '⚽ 정밀 지표', icon: match.sport === 'baseball' ? Zap : Flame },
+            { id: 'SPECIAL', label: match.sport === 'baseball' ? '🔥 불펜/피로도' : '⚽ 정밀 지표', icon: match.sport === 'baseball' ? Zap : Flame },
             { id: 'H2H', label: '⚔️ 상대전적', icon: Swords },
             { id: 'FORM', label: '🔥 최근 폼', icon: TrendingUp },
             { id: 'CHAT', label: '💬 실시간 톡', icon: MessageCircle },
@@ -353,6 +367,16 @@ export const MatchDetailModal = ({
                 <ShieldCheck className="w-4 h-4 shrink-0" />
                 <span>토큰(Tokeon)은 전 세계 공식 스포츠 기구 및 공인 배당 팩트만을 집계하여 제공합니다.</span>
               </div>
+            </div>
+          )}
+
+          {/* TAB: 선발 라인업 (LINEUP) - ⚾ 야구 다이아몬드 & ⚽ 축구 포메이션 1:1 오피셜 연동 */}
+          {activeTab === 'LINEUP' && (
+            <div className="space-y-4">
+              <LineupTacticsView
+                match={match}
+                theme={theme}
+              />
             </div>
           )}
 
